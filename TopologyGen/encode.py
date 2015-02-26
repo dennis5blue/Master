@@ -38,6 +38,7 @@ def corrDiscover(camIndex, processList, outFile):
 		
 		print "ref: ", i,"code: ", camIndex
 		lines = [line for line in output_1.split('\n') if "byte" in line]
+		print lines
 		byteInfo = " ".join(lines[0].strip().replace("[","").replace("]","").split())
 		outFile.write("Ref "+str(i)+" Code: "+str(camIndex)+" "+byteInfo+"\n")
 

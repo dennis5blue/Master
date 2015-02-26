@@ -7,16 +7,16 @@ def channelGain(x, y):
     return g
 
 def main(argv=None):
-	indepFilePath = "../sourceData/image_correlation/image_phase_0.out"
-	corrFilePath = "../sourceData/image_correlation/image_phase_1_camera_"
-	saveFilePath = "../sourceData/image_correlation/"
-	posFilePath = "../sourceData/image_png/log.txt"
+	indepFilePath = "../SourceData/test_correlation/image_phase_0.out"
+	corrFilePath = "../SourceData/test_correlation/image_phase_1_camera_"
+	saveFilePath = "../SourceData/test_correlation/"
+	posFilePath = "../SourceData/test_png/log.txt"
 
 	W = 180 # kHz bandwidth
 	P = 10  # dbm power
 	indepCompression = open(indepFilePath,"r")
 	ifPosition = open(posFilePath,'r')
-	indepRate = open(saveFilePath+"indepRateAndByte.out","w+")
+	indepRate = open(saveFilePath+"indepByte.out","w+")
 	ofPos = open(saveFilePath+"pos.out","w+")
 
 	lines = indepCompression.readlines();
@@ -34,7 +34,7 @@ def main(argv=None):
 			yy = float(tokens[2])*100
 			ofPos.write(str(xx)+' '+str(yy)+'\n')
 
-	for camera in range(20):
+	for camera in range(18):
 		corrCompression = open(corrFilePath+str(camera)+".out","r")
 		corrMatrix = open(saveFilePath+"corrMatrix","a+")
 		lines = corrCompression.readlines()

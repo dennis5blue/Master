@@ -14,6 +14,9 @@ This is the document for generating correlation matrix
 
     $python encode.py --phase 1 --camera k is to perform the differential coding for camera k
 	(Can use the encode_phase1.sh for phase 1 encoding)
+
+	$python encode.py --phase 2 is to perform the differential coding (temporal correlation)
+	(must check the folder name for encoding path)
  4. Execute parse.py to generate the rate.out and pos.out
 	Give the path by $python parse.py
 	Note that do not execute this script two times, since the written mode is append, it may cause duplicate data

@@ -42,7 +42,25 @@ def corrDiscover(camIndex, processList, outFile):
 		byteInfo = " ".join(lines[0].strip().replace("[","").replace("]","").split())
 		outFile.write("Ref "+str(i)+" Code: "+str(camIndex)+" "+byteInfo+"\n")
 
-
+# Temporal correlation discovering
+def temporalCorrDiscover(processList, outFile):
+	for i in range(len(processList)):
+		encodeCamera = processList[int(i)]
+		print "Encoding Camera: ",encodeCamera
+	
+		call(["rm","../../JMVCtempFiles/cam"+str(i)+"rec_0.yuv","../../JMVCtempFiles/cam"+str(i)+"rec_1.yuv"])
+		call(["rm","../../JMVCtempFiles/cam"+str(i)+"stream_0.264","../../JMVCtempFiles/cam"+str(i)+"stream_1.264"])
+		call(["rm","../../JMVCtempFiles/cam"+str(i)+"tmp_0.yuv","../../JMVCtempFiles/cam"+str(i)+"tmp_1.yuv"])
+		call(["cp",testSeqPath+"../day/"+encodeCamera, "../../JMVCtempFiles/cam"+str(i)+"tmp_0.yuv"])
+		output_0 =  Popen([encoderPath,"-vf",configurePath+"01cam"+str(i)+"Diff.cfg","0"],stdout=PIPE).communicate()[0]
+		call(["cp",testSeqPath+encodeCamera, "../../JMVCtempFiles/cam"+str(i)+"tmp_1.yuv"])
+		output_1 =  Popen([encoderPath,"-vf",configurePath+"01cam"+str(i)+"Diff.cfg","1"],stdout=PIPE).communicate()[0]
+		
+		print "ref: ", testSeqPath+"../day/"+encodeCamera,"code: ", i
+		lines = [line for line in output_1.split('\n') if "byte" in line]
+		print lines
+		byteInfo = " ".join(lines[0].strip().replace("[","").replace("]","").split())
+		outFile.write("Ref "+str(i)+" Code: "+str(i)+" "+byteInfo+"\n")
 
 def main(argv = None): 
     if sys.argv[1].startswith('--'):
@@ -51,7 +69,7 @@ def main(argv = None):
 			global testSeqPath
 			global fileNamePrefix
 			global saveFilePath
-			testSeqPath = "../SourceData/test_yuv/"
+			testSeqPath = "../SourceData/test_yuv/night/"
 			fileNamePrefix = "image"
 			saveFilePath = "../SourceData/test_correlation/"
 		if option == "help":
@@ -84,6 +102,11 @@ def main(argv = None):
 			outFile = open(saveFilePath+fileNamePrefix+"_phase_"+str(1)+"_camera_"+str(camIndex)+".out","w+")
 			#print (processList)
 			corrDiscover(camIndex, processList, outFile)
+		if sys.argv[2] == "2":
+			call(["rm","../../JMVCtempFiles/rec_0.yuv","../../JMVCtempFiles/rec_1.yuv"])
+			outFile = open(saveFilePath+fileNamePrefix+"_phase_"+str(2)+".out","w+")
+			#print (processList)
+			temporalCorrDiscover(processList, outFile)
         
 if __name__ == "__main__":
     sys.exit(main())

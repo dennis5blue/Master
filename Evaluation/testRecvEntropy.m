@@ -18,7 +18,7 @@ BsY = 0;
 txPower = 0.1; % transmission power (watt) (power density)
 n0 = 1e-16; % cannot change this value (hard code in CalChannelGain)
 N = 18; % number of total cameras
-run = 5; % number of frames need to be transmitted
+run = 10; % number of frames need to be transmitted
 T = 2000; % number of total available time slots
 t = 0.5; % time slot duration (ms)
 W = 10000/N; % bandwidth (kHz)
@@ -46,6 +46,9 @@ for k=2:run
     branchesSet = newBranchesSet;
 end
 
+bestSchedule = [];
+maxRecvEmtropy = 0;
+supportCamSet = [];
 for i=1:length(branchesSet)
     targetSchedule = branchesSet{i};
     scheduleValue = struct('cam',{},'transBytes',{},'slotsNeeded',{},'frameMode',{},'cumSlots',{});
@@ -84,7 +87,39 @@ for i=1:length(branchesSet)
             for aa=1:length(scheduleValue)
                 availableCam = [availableCam scheduleValue{aa}.cam];
             end
-            availableCam
         end
     end
+    
+    if GetJointEntropy(availableCam,H) > maxRecvEmtropy
+        maxRecvEmtropy = GetJointEntropy(availableCam,H);
+        bestSchedule = scheduleValue;
+        supportCamSet = availableCam;
+    end
 end
+
+maxRecvEmtropy
+bestSchedule
+supportCamSet
+
+% Start ploting
+trellis = [];
+proposed = [];
+for i=1:(length(bestSchedule)-1)
+    trellis = [trellis bestSchedule{i}.slotsNeeded];
+    proposed = [proposed 400];
+end
+% Create a stacked bar chart using the bar function
+figure(1);
+bar(1:length(trellis), [trellis' proposed'], 0.5, 'stack');
+
+% Adjust the axis limits
+axis([0 length(trellis)+1 0 450]);
+set(gca, 'XTick', 1:length(trellis));
+
+% Add title and axis labels
+title('Required time slots');
+xlabel('frame');
+ylabel('number of time slots');
+
+% Add a legend
+legend('ref', 'proposed');

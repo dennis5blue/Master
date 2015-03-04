@@ -6,6 +6,10 @@ function [ ans ] = FindMaxEntropyIncrease( Ns, candidates, corrMatrix, schedCams
     end
     
     [values,index] = sort([temp.increment],'descend');  %# Sort all values, largest first
-    ans = [temp(index(1:Ns)).cam]; % get the highest Ns ones 
+    if length(index) >= Ns
+        ans = [temp(index(1:Ns)).cam]; % get the highest Ns ones 
+    else
+        ans = [temp(index(1:length(index))).cam]; % get all
+    end
 end
 

@@ -18,8 +18,8 @@ BsY = 0;
 txPower = 0.1; % transmission power (watt) (power density)
 n0 = 1e-16; % cannot change this value (hard code in CalChannelGain)
 N = 18; % number of total cameras
-run = 18; % number of frames need to be transmitted
-T = 4000; % number of total available time slots
+run = 3; % number of frames need to be transmitted
+T = 600; % number of total available time slots
 t = 0.5; % time slot duration (ms)
 W = 10000/N; % bandwidth (kHz)
 Ns = 2; % remaining branches while pruning
@@ -93,15 +93,15 @@ for i=1:length(branchesSet)
         end
     end
     
-    if GetJointEntropy(availableCam,H) > maxRecvEmtropy
-        maxRecvEmtropy = GetJointEntropy(availableCam,H);
+    if GetSumEntropy(availableCam,H) > maxRecvEmtropy
+        maxRecvEmtropy = GetSumEntropy(availableCam,H);
         bestSchedule = scheduleValue;
         supportCamSet = availableCam;
     end
 end
-maxRecvEmtropy
-bestSchedule
-supportCamSet
+%maxRecvEmtropy
+%bestSchedule
+%supportCamSet
 
 %---------------------------------------------%
 % Greedy scheduling (maximum reduction first) %
@@ -115,6 +115,7 @@ for i=2:N
         firstCam = i;
     end
 end
+firstCam = 13;
 tempCamSet(find(tempCamSet == firstCam)) = [];
 greedyScheduleValue = struct('cam',{},'transBytes',{},'slotsNeeded',{},'frameMode',{},'cumSlots',{});
 greedyScheduleValue{1}.cam = firstCam;
@@ -167,7 +168,7 @@ for i=2:N
         greedyAvailableCam = [greedyAvailableCam greedyScheduleValue{aa}.cam];
     end
 end
-greedyRecvEntropy = GetJointEntropy(greedyAvailableCam,H);
+greedyRecvEntropy = GetSumEntropy(greedyAvailableCam,H);
 greedySchedule = greedyScheduleValue;
 greedySupportCamSet = greedyAvailableCam;
 
@@ -175,30 +176,127 @@ greedySupportCamSet = greedyAvailableCam;
 %----------------------------------------------------------%
 % Greedy scheduling with cluster (maximum reduction first) %
 %----------------------------------------------------------%
-tempCamSetClus1 = [1:N:2]
-tempCamSetClus2 = [2:N:2]
+% divided into two clusters
+tempCamSetClus1 = [1:2:N];
+tempCamSetClus2 = [2:2:N];
+
+greedyClusScheduleValue1 = struct('cam',{},'transBytes',{},'slotsNeeded',{},'frameMode',{},'cumSlots',{});
+firstCam = tempCamSetClus1(1);
+greedyClusScheduleValue1{1}.cam = firstCam;
+greedyClusScheduleValue1{1}.transBytes = H(1).indep(firstCam);
+snr = txPower*CalChannelGain(pos(firstCam,1),pos(firstCam,2),BsX,BsY)/n0;
+thisRunSlotsNeeded = ceil(H(1).indep(firstCam)/(t*W*log2(1+snr))); % assume ideal power control for two clusters
+greedyClusScheduleValue1{1}.slotsNeeded = thisRunSlotsNeeded;
+greedyClusScheduleValue1{1}.frameMode = 1; % 1 means I-frame
+greedyClusScheduleValue1{1}.cumSlots = thisRunSlotsNeeded;
+
+greedyClusScheduleValue2 = struct('cam',{},'transBytes',{},'slotsNeeded',{},'frameMode',{},'cumSlots',{});
+firstCam = tempCamSetClus2(1);
+greedyClusScheduleValue2{1}.cam = firstCam;
+greedyClusScheduleValue2{1}.transBytes = H(1).indep(firstCam);
+snr = txPower*CalChannelGain(pos(firstCam,1),pos(firstCam,2),BsX,BsY)/n0;
+thisRunSlotsNeeded = ceil(H(1).indep(firstCam)/(t*W*log2(1+snr)));
+greedyClusScheduleValue2{1}.slotsNeeded = thisRunSlotsNeeded;
+greedyClusScheduleValue2{1}.frameMode = 1; % 1 means I-frame
+greedyClusScheduleValue2{1}.cumSlots = thisRunSlotsNeeded;
+
+for i=2:length(tempCamSetClus1) % note that the size of two clusters need to be the same (or we will have error here)
+    nextCam1 = tempCamSetClus1(i);
+    nextCam2 = tempCamSetClus2(i);
+    
+    if  CheckOverhear( nextCam1, greedyClusScheduleValue1, pos, n0, txPower, H, t, W/2 ) == 1
+        greedyClusScheduleValue1{i}.cam = nextCam1;
+        greedyClusScheduleValue1{i}.transBytes = H(1).corr(nextCam1,greedyClusScheduleValue1{i-1}.cam);
+        snr = txPower*CalChannelGain(pos(nextCam1,1),pos(nextCam1,2),BsX,BsY)/n0;
+        thisRunSlotsNeeded = ceil(H(1).corr(nextCam1,greedyClusScheduleValue1{i-1}.cam)/(t*W*log2(1+snr)));            
+        greedyClusScheduleValue1{i}.slotsNeeded = thisRunSlotsNeeded;
+        greedyClusScheduleValue1{i}.frameMode = 0; % 0 means p-frame
+        greedyClusScheduleValue1{i}.cumSlots = greedyClusScheduleValue1{i-1}.cumSlots + thisRunSlotsNeeded;
+    else
+        greedyClusScheduleValue1{i}.cam = nextCam1;
+        greedyClusScheduleValue1{i}.transBytes = H(1).indep(nextCam1);
+        snr = txPower*CalChannelGain(pos(nextCam1,1),pos(nextCam1,2),BsX,BsY)/n0;
+        thisRunSlotsNeeded = ceil(H(1).indep(nextCam1)/(t*W*log2(1+snr)));            
+        greedyClusScheduleValue1{i}.slotsNeeded = thisRunSlotsNeeded;
+        greedyClusScheduleValue1{i}.frameMode = 1; % 1 means I-frame
+        greedyClusScheduleValue1{i}.cumSlots = greedyClusScheduleValue1{i-1}.cumSlots + thisRunSlotsNeeded;
+    end
+    
+    if  CheckOverhear( nextCam2, greedyClusScheduleValue2, pos, n0, txPower, H, t, W/2 ) == 1
+        greedyClusScheduleValue2{i}.cam = nextCam2;
+        greedyClusScheduleValue2{i}.transBytes = H(1).corr(nextCam2,greedyClusScheduleValue2{i-1}.cam);
+        snr = txPower*CalChannelGain(pos(nextCam2,1),pos(nextCam2,2),BsX,BsY)/n0;
+        thisRunSlotsNeeded = ceil(H(1).corr(nextCam2,greedyClusScheduleValue2{i-1}.cam)/(t*W*log2(1+snr)));            
+        greedyClusScheduleValue2{i}.slotsNeeded = thisRunSlotsNeeded;
+        greedyClusScheduleValue2{i}.frameMode = 0; % 0 means p-frame
+        greedyClusScheduleValue2{i}.cumSlots = greedyClusScheduleValue2{i-1}.cumSlots + thisRunSlotsNeeded;
+    else
+        greedyClusScheduleValue2{i}.cam = nextCam2;
+        greedyClusScheduleValue2{i}.transBytes = H(1).indep(nextCam2);
+        snr = txPower*CalChannelGain(pos(nextCam2,1),pos(nextCam2,2),BsX,BsY)/n0;
+        thisRunSlotsNeeded = ceil(H(1).indep(nextCam2)/(t*W*log2(1+snr)));            
+        greedyClusScheduleValue2{i}.slotsNeeded = thisRunSlotsNeeded;
+        greedyClusScheduleValue2{i}.frameMode = 1; % 1 means I-frame
+        greedyClusScheduleValue2{i}.cumSlots = greedyClusScheduleValue2{i-1}.cumSlots + thisRunSlotsNeeded;
+    end
+    
+    if greedyClusScheduleValue1{i}.cumSlots > T && greedyClusScheduleValue2{i}.cumSlots > T % exceed maximum available time slots
+        break;
+    end
+    greedyClusAvailableCam = [];
+    for aa=1:length(greedyClusScheduleValue1)
+        greedyClusAvailableCam = [greedyClusAvailableCam greedyClusScheduleValue1{aa}.cam];
+    end
+    for bb=1:length(greedyClusScheduleValue2)
+        greedyClusAvailableCam = [greedyClusAvailableCam greedyClusScheduleValue2{bb}.cam];
+    end
+end
+greedyClusRecvEntropy = GetSumEntropy(greedyClusAvailableCam,H);
+greedyClusSchedule1 = greedyClusScheduleValue1;
+greedyClusSchedule2 = greedyClusScheduleValue2;
+greedyClusSupportCamSet = greedyClusAvailableCam;
+
 %---------------%
 % Start ploting %
 %---------------%
+
+maxRecvEmtropy
+greedyRecvEntropy 
+greedyClusRecvEntropy
+
+% below is for ploting required time slots
+%{
 plotTrellis = [];
 plotGreedy = [];
+plotClusGreedy = [];
 for i=1:(length(bestSchedule)-1)
     plotTrellis = [plotTrellis bestSchedule{i}.slotsNeeded];
 end
 for i=1:(length(greedySchedule)-1)
     plotGreedy = [plotGreedy greedySchedule{i}.slotsNeeded];
 end
+for i=1:(length(greedyClusSchedule1)-1)
+    plotClusGreedy = [plotClusGreedy greedyClusSchedule1{i}.slotsNeeded];
+end
+for i=1:(length(greedyClusSchedule2)-1)
+    plotClusGreedy = [plotClusGreedy greedyClusSchedule2{i}.slotsNeeded];
+end
 
 % make them have equal size
-if length(plotGreedy) > length(plotTrellis)
+if length(plotGreedy) > length(plotTrellis) && length(plotGreedy) > length(plotClusGreedy)
     plotTrellis((length(plotTrellis)+1):length(plotGreedy)) = 0;
-else
+    plotClusGreedy((length(plotClusGreedy)+1):length(plotGreedy)) = 0;
+elseif length(plotTrellis) > length(plotGreedy) && length(plotTrellis) > length(plotClusGreedy)
     plotGreedy((length(plotGreedy)+1):length(plotTrellis)) = 0;
+    plotClusGreedy((length(plotClusGreedy)+1):length(plotTrellis)) = 0;
+else
+    plotTrellis((length(plotTrellis)+1):length(plotClusGreedy)) = 0;
+    plotGreedy((length(plotGreedy)+1):length(plotClusGreedy)) = 0;    
 end
 % Create a stacked bar chart using the bar function
 figure(1);
 %bar(1:length(plotGreedy), [plotTrellis' plotGreedy'], 0.5, 'stack');
-bar(1:length(plotGreedy), [plotTrellis' plotGreedy'], 0.5);
+bar(1:length(plotGreedy), [plotTrellis' plotGreedy' plotClusGreedy'], 0.5);
 
 % Adjust the axis limits
 axis([0 length(plotTrellis)+1 0 500]);
@@ -210,4 +308,5 @@ xlabel('frame');
 ylabel('number of time slots');
 
 % Add a legend
-legend('ref', 'greedy');
+legend('ref', 'greedy without cluster','greedy with cluster');
+%}

@@ -19,11 +19,11 @@ clc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Parameters
-opts.BlockSize   = 8;
+opts.BlockSize   = 4;
 opts.SearchLimit = 10;
 opts.RegionNum = 25;
-opts.WhichRegion0 = [5 4];
-opts.WhichRegion1 = [5 4];
+opts.WhichRegion0 = [5 1];
+opts.WhichRegion1 = [5 1];
 
 % Read image
 img0 = im2double(imread('imgs/cam1.png'));

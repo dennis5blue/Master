@@ -21,12 +21,22 @@ clc
 % Parameters
 opts.BlockSize   = 8;
 opts.SearchLimit = 10;
+opts.RegionNum = 25;
+opts.WhichRegion0 = [5 4];
+opts.WhichRegion1 = [5 4];
 
 % Read image
 img0 = im2double(imread('imgs/cam1.png'));
 img1 = im2double(imread('imgs/cam3.png'));
-img0 = img0(1:72,1:128,:);
-img1 = img1(1:72,1:128,:);
+xSize = length(img0(:,1,1))/sqrt(opts.RegionNum);
+ySize = length(img0(1,:,1))/sqrt(opts.RegionNum);
+img0 = img0((opts.WhichRegion0(1)-1)*xSize+1:opts.WhichRegion0(1)*xSize, ...
+    (opts.WhichRegion0(2)-1)*ySize+1:opts.WhichRegion0(2)*ySize,:);
+img1 = img1((opts.WhichRegion1(1)-1)*xSize+1:opts.WhichRegion1(1)*xSize, ...
+    (opts.WhichRegion1(2)-1)*ySize+1:opts.WhichRegion1(2)*ySize,:);
+
+%img0 = im2double(imread('imgs/foreman001.png'));
+%img1 = im2double(imread('imgs/foreman002.png'));
 
 % Motion estimation
 tic

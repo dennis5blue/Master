@@ -20,14 +20,14 @@ clc
 
 % Parameters
 opts.BlockSize   = 4;
-opts.SearchLimit = 10;
-opts.RegionNum = 25;
-opts.WhichRegion0 = [5 1];
-opts.WhichRegion1 = [5 1];
+opts.SearchLimit = 10; % default = 10
+opts.RegionNum = 36;
+opts.WhichRegion0 = [4 4];
+opts.WhichRegion1 = [4 2];
 
 % Read image
-img0 = im2double(imread('imgs/cam1.png'));
-img1 = im2double(imread('imgs/cam3.png'));
+img0 = im2double(imread('imgs/camera_8.png'));
+img1 = im2double(imread('imgs/camera_9.png'));
 xSize = length(img0(:,1,1))/sqrt(opts.RegionNum);
 ySize = length(img0(1,:,1))/sqrt(opts.RegionNum);
 img0 = img0((opts.WhichRegion0(1)-1)*xSize+1:opts.WhichRegion0(1)*xSize, ...

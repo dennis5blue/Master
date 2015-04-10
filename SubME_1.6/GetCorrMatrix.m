@@ -1,4 +1,5 @@
-function [corrMatrix] = GetCorrMatrix(c0, c1, numX, numY)
+function [corrMatrix] = GetCorrMatrix(c0, c1, numX, numY, ifShow)
+    % c0 , c1: camera index; numX, numY: number of regions;
     % Parameters
     opts.BlockSize   = 4;
     opts.SearchLimit = 10;
@@ -17,14 +18,10 @@ function [corrMatrix] = GetCorrMatrix(c0, c1, numX, numY)
     reg1 = img1((x1-1)*xSize+1:x1*xSize, (y1-1)*ySize+1:y1*ySize,:);
 
     % Motion estimation
-    tic
     [MVx, MVy] = Bidirectional_ME(reg0, reg1, opts);
-    toc
 
     % Motion Compensation
-    tic
     regMC = reconstruct(reg0, MVx, MVy, 0.5);
-    toc
 
     % Evaluation
     [M N C] = size(regMC);
@@ -33,17 +30,19 @@ function [corrMatrix] = GetCorrMatrix(c0, c1, numX, numY)
     PSNR = 10*log10(max(regMC(:))^2/MSE);
 
     % Show results
-    figure(1);
-    subplot(221);
-    imshow(reg0); title('img_0');
+    if ifShow == 1
+        figure(1);
+        subplot(221);
+        imshow(reg0); title('img_0');
 
-    subplot(222);
-    imshow(reg1); title('img_1');
+        subplot(222);
+        imshow(reg1); title('img_1');
 
-    subplot(223);
-    imshow(regMC); title('img_M');
+        subplot(223);
+        imshow(regMC); title('img_M');
 
-    subplot(224); 
-    T = sprintf('img_M - img_1, PSNR %3g dB', PSNR);
-    imshow(rgb2gray(regMC)-rgb2gray(reg1(1:M, 1:N, :)), []); title(T);
+        subplot(224); 
+        T = sprintf('img_M - img_1, PSNR %3g dB', PSNR);
+        imshow(rgb2gray(regMC)-rgb2gray(reg1(1:M, 1:N, :)), []); title(T);
+    end
 end

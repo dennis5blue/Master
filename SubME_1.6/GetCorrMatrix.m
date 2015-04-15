@@ -12,10 +12,12 @@ function [corrMatrix] = GetCorrMatrix(targetCam, refCam, ifShow)
     % Start checking correlated regions
     for xx = 1:targetCam.numX
         for yy = 1:targetCam.numY
+            %[yy xx]
             PSNR = 0;
             targetCam.x = xx; targetCam.y = yy;
             for i = 1:refCam.numX
                 for j = 1:refCam.numY
+                    %[j i]
                     refCam.x = i; refCam.y = j;
                     PSNR = PredictTwoRegions(targetCam, refCam, ifShow);
                     if PSNR > 20

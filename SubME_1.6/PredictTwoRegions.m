@@ -1,5 +1,5 @@
 function [PSNR] = PredictTwoRegions(camOpts0, camOpts1, ifShow)
-    % c0 , c1: camera index; numX, numY: number of regions;
+    % camOpts requirments: (cam, numX, numY, x, y)
     % Parameters
     opts.BlockSize   = 4;
     opts.SearchLimit = 10;

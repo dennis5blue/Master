@@ -53,10 +53,12 @@ for run = 1:N-1
 end
 
 vecPSNR = [];
-for nSlots = 500:500:2000
+vecSupNum = [];
+for nSlots = 200:200:1500
     % Find best schedule
     bestSche = 0;
     bestPsnr = 0;
+    bestSupCams = [];
     for i = 1:length(Schedule)
         supCams = [];
         totalReqSlots = 0;
@@ -76,9 +78,15 @@ for nSlots = 500:500:2000
         if temp > bestPsnr
             bestPsnr = temp;
             bestSche = i;
+            bestSupCams = supCams;
         end
     end
+    vecSupNum = [vecSupNum length(bestSupCams)];
     vecPSNR = [vecPSNR bestPsnr];
 end
 
-% vecPSNR = [29.8070 30.6299 31.7285 32.2934] % for trellis
+vecPSNR
+vecSupNum
+
+% vecPSNR = [29.8070 30.6299 31.7285 32.2934] % for trellis 500:500:2000
+% vecPSNR = [28.9598 29.5429 29.9164 30.2003 30.6299 31.3172 31.6835] % 200:200:1500

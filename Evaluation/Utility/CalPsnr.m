@@ -27,10 +27,12 @@ function [ avePSNR ] = CalPsnr( sched, unsched, numCams, rate, res, reg )
             corrMatrix = corrMatrix.corrMatrix;
             phiMatrix = [phiMatrix corrMatrix(:)];
         end
+        %phiMatrix
+        %rate
         D = phiMatrix*rate;
         sumDistortion = 0;
         for k = 1:length(D)
-            distortion = variance*(2^(-2*(sum(D(k,:))) ));
+            distortion = variance*(2^(-2*( double(sum(D(k,:))) ) ));
             sumDistortion = sumDistortion + distortion;
         end
         PSNR = 10*log10(double(( ( 255 )^2 )/(sumDistortion/(reg.X*reg.Y))));

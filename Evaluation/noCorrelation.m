@@ -22,12 +22,18 @@ W = 180; % kHz
 
 rate = bits./(res.X*res.Y); % in bpp
 
+V = [];
+D = [];
+P = [];
 for i = 0:N-1
     I = imread(['../SourceData/test2_png/camera_' num2str(i) '.png']);
     mean     = sum(I(:))/length(I(:));
     variance = sum((I(:) - mean).^2)/(length(I(:)) - 1);
     distortion = variance*(2^(-2*rate(i+1)));
     PSNR = 10*log10(double(( ( 255 )^2 )/distortion));
+    V = [V variance];
+    D = [D distortion];
+    P = [P PSNR];
 end
 
 SNR = [];
@@ -40,7 +46,6 @@ vecPSNR = [];
 vecSupNum = [];
 Schedule = idx-1;
 for nSlots = 200:200:1500
-    % Find best schedule
     supCams = [];
     totalReqSlots = 0;
     for c = 1:length(Schedule)
@@ -54,14 +59,15 @@ for nSlots = 200:200:1500
         supCams = [supCams cam];
     end
     vecSupNum = [vecSupNum length(supCams)];
-    unSupCams = [0:N-1];
-    unSupCams(ismember(unSupCams,supCams))=[];
-    %disp(['supCams: ' mat2str(supCams)]);
-    %disp(['unSupCams: ' mat2str(unSupCams)]);
-    PSNR = CalPsnr(supCams,unSupCams,N,rate,res,reg);
-    vecPSNR = [vecPSNR PSNR];
+    
+    PSNR = 0;
+    for i = 0:N-1
+        if ismember(i,vecSupNum)
+            PSNR = PSNR + P(i+1);
+        else
+            PSNR = PSNR + 10*log10(double(( ( 255 )^2 )/V(i+1)));
+        end
+    end
+    vecPSNR = [vecPSNR PSNR/N];
 end
-
 vecPSNR
-vecSupNum
-% vecPSNR = [28.9432 29.4944 29.9860 30.4781 30.8502 31.1287 31.4953] % for greedy SNR 200:200:1500

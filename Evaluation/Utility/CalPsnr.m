@@ -1,6 +1,4 @@
 function [ avePSNR ] = CalPsnr( sched, unsched, numCams, rate, res, reg )
-    sched
-    unsched
     avePSNR = 0;
     for i = 1:length(unsched)
         rate(unsched(i)+1) = 0;
@@ -13,7 +11,7 @@ function [ avePSNR ] = CalPsnr( sched, unsched, numCams, rate, res, reg )
         variance = sum((I(:) - mean).^2)/(length(I(:)) - 1);
         distortion = variance*(2^(-2*rate(cam+1)));
         PSNR = 10*log10(double(( ( 255 )^2 )/distortion));
-        disp(['Scheduled ' num2str(PSNR)]);
+        %disp(['Scheduled ' num2str(PSNR)]);
         avePSNR = avePSNR + PSNR;
     end
     
@@ -36,7 +34,7 @@ function [ avePSNR ] = CalPsnr( sched, unsched, numCams, rate, res, reg )
             sumDistortion = sumDistortion + distortion;
         end
         PSNR = 10*log10(double(( ( 255 )^2 )/(sumDistortion/(reg.X*reg.Y))));
-        disp(['Unscheduled ' num2str(PSNR)]);
+        %disp(['Unscheduled ' num2str(PSNR)]);
         avePSNR = avePSNR + PSNR;
     end
     avePSNR = avePSNR/numCams;

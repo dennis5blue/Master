@@ -19,39 +19,72 @@ N = 10; % number of total cameras
 res.X = 1280; res.Y = 720;
 reg.X = 16; reg.Y = 9;
 W = 180; % kHz
+nPath = 2; % number of survivor paths
 
 rate = bits./(res.X*res.Y); % in bpp
 
-for i = 0:N-1
+% Formula for calculating PSNR
+%{
+for i = 1:N
     I = imread(['../SourceData/test2_png/camera_' num2str(i) '.png']);
     mean     = sum(I(:))/length(I(:));
     variance = sum((I(:) - mean).^2)/(length(I(:)) - 1);
-    distortion = variance*(2^(-2*rate(i+1)));
+    distortion = variance*(2^(-2*rate(i)));
     PSNR = 10*log10(double(( ( 255 )^2 )/distortion));
+end
+%}
+
+vecC = [];
+vecTxTime = [];
+for i = 1:N
+    snr = txPower*CalChannelGain(pos(i,1),pos(i,2),bsX,bsY)/n0;
+    capacity = tau*W*log2(1+snr);
+    reqSlots = ceil(bits(i)/capacity);
+    vecC = [vecC capacity];
+    vecTxTime = [vecTxTime reqSlots];
+    
 end
 
 % Greedy optimization
-Schedule = [0:9]';
+Schedule = [1:10]';
 for run = 1:N-1
-    nextSchedule = -1*ones(1,N)';
-    for i = 1:length(Schedule)
+    % Append the scheduling matrix for nPath times
+    m_numSchedules = nPath*length(Schedule(:,1));
+    tempSchedule = -1*ones(m_numSchedules,run);
+    for i = 1:length(Schedule(:,1))
+        for j = 1:nPath
+            tempSchedule((i-1)*nPath+j,:) = Schedule(i,:);
+        end
+    end
+    Schedule = tempSchedule
+    
+    nextSchedule = -1*ones(1,m_numSchedules)';
+    % Find nPath cameras with the better profit
+    for i = 1:nPath:m_numSchedules
         schedCams = Schedule(i,:);
-        unschedCams = [0:N-1];
+        unschedCams = [1:N];
         unschedCams(ismember(unschedCams,schedCams))=[];
-        p = -1;
-        bestCam = -1;
+        m_vecProfit = [];
+        m_vecCandidates = [];
         for c = 1:length(unschedCams)
             cam = unschedCams(c);
-            if CalProfit(cam,schedCams,unschedCams,N,reg) > p
-                p = CalProfit(cam,schedCams,unschedCams,N,reg);
-                bestCam = cam;
+            m_vecCandidates = [m_vecCandidates cam];
+            m_vecProfit = [m_vecProfit CalProfit(cam,schedCams,unschedCams,N,reg)];
+        end
+        [m_profit, m_idx] = sort(m_vecProfit,'descend');
+        if length(m_idx) < nPath
+            nextSchedule(i:i+nPath-1) = m_vecCandidates(m_idx(1));
+        else
+            for j = 0:nPath-1
+                nextCam = m_vecCandidates( m_idx(j+1) );
+                nextSchedule(i+j) = nextCam;
             end
         end
-        nextSchedule(i) = bestCam;
     end
     Schedule = [Schedule nextSchedule];
 end
 
+% Calculate performance
 vecPSNR = [];
 vecSupNum = [];
 for nSlots = 200:200:1500
@@ -64,15 +97,15 @@ for nSlots = 200:200:1500
         totalReqSlots = 0;
         for c = 1:length(Schedule(i,:))
             cam = Schedule(i,c);
-            snr = txPower*CalChannelGain(pos(cam+1,1),pos(cam+1,2),bsX,bsY)/n0;
-            reqSlots = ceil(bits(cam+1)/(tau*W*log2(1+snr)));
+            snr = txPower*CalChannelGain(pos(cam,1),pos(cam,2),bsX,bsY)/n0;
+            reqSlots = ceil(bits(cam)/(tau*W*log2(1+snr)));
             totalReqSlots = totalReqSlots + reqSlots;
             if totalReqSlots > nSlots
                 break;
             end
             supCams = [supCams cam];
         end
-        unSupCams = [0:N-1];
+        unSupCams = [1:N];
         unSupCams(ismember(unSupCams,supCams))=[];
         temp = CalPsnr(supCams,unSupCams,N,rate,res,reg);
         if temp > bestPsnr
@@ -89,4 +122,4 @@ vecPSNR
 vecSupNum
 
 % vecPSNR = [29.8070 30.6299 31.7285 32.2934] % for trellis 500:500:2000
-% vecPSNR = [28.9598 29.5429 29.9164 30.2003 30.6299 31.3172 31.6835] % 200:200:1500
+% vecPSNR = [28.9598 29.5429 29.9164 30.2003 30.6299 31.3172 31.6835] %200:200:1500 nPath = 1

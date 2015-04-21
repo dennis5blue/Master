@@ -22,31 +22,31 @@ W = 180; % kHz
 
 rate = bits./(res.X*res.Y); % in bpp
 
-for i = 0:N-1
+for i = 1:N
     I = imread(['../SourceData/test2_png/camera_' num2str(i) '.png']);
     mean     = sum(I(:))/length(I(:));
     variance = sum((I(:) - mean).^2)/(length(I(:)) - 1);
-    distortion = variance*(2^(-2*rate(i+1)));
+    distortion = variance*(2^(-2*rate(i)));
     PSNR = 10*log10(double(( ( 255 )^2 )/distortion));
 end
 
 SNR = [];
-for i = 0:N-1
-    SNR = [SNR txPower*CalChannelGain(pos(i+1,1),pos(i+1,2),bsX,bsY)/n0];
+for i = 1:N
+    SNR = [SNR txPower*CalChannelGain(pos(i,1),pos(i,2),bsX,bsY)/n0];
 end
 [val idx] = sort(SNR,'descend');
 
 vecPSNR = [];
 vecSupNum = [];
-Schedule = idx-1;
+Schedule = idx;
 for nSlots = 200:200:1500
     % Find best schedule
     supCams = [];
     totalReqSlots = 0;
     for c = 1:length(Schedule)
         cam = Schedule(c);
-        snr = txPower*CalChannelGain(pos(cam+1,1),pos(cam+1,2),bsX,bsY)/n0;
-        reqSlots = ceil(bits(cam+1)/(tau*W*log2(1+snr)));
+        snr = txPower*CalChannelGain(pos(cam,1),pos(cam,2),bsX,bsY)/n0;
+        reqSlots = ceil(bits(cam)/(tau*W*log2(1+snr)));
         totalReqSlots = totalReqSlots + reqSlots;
         if totalReqSlots > nSlots
             break;
@@ -54,7 +54,7 @@ for nSlots = 200:200:1500
         supCams = [supCams cam];
     end
     vecSupNum = [vecSupNum length(supCams)];
-    unSupCams = [0:N-1];
+    unSupCams = [1:N];
     unSupCams(ismember(unSupCams,supCams))=[];
     %disp(['supCams: ' mat2str(supCams)]);
     %disp(['unSupCams: ' mat2str(unSupCams)]);

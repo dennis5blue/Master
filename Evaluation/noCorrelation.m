@@ -25,11 +25,11 @@ rate = bits./(res.X*res.Y); % in bpp
 V = [];
 D = [];
 P = [];
-for i = 0:N-1
+for i = 1:N
     I = imread(['../SourceData/test2_png/camera_' num2str(i) '.png']);
     mean     = sum(I(:))/length(I(:));
     variance = sum((I(:) - mean).^2)/(length(I(:)) - 1);
-    distortion = variance*(2^(-2*rate(i+1)));
+    distortion = variance*(2^(-2*rate(i)));
     PSNR = 10*log10(double(( ( 255 )^2 )/distortion));
     V = [V variance];
     D = [D distortion];
@@ -37,21 +37,21 @@ for i = 0:N-1
 end
 
 SNR = [];
-for i = 0:N-1
-    SNR = [SNR txPower*CalChannelGain(pos(i+1,1),pos(i+1,2),bsX,bsY)/n0];
+for i = 1:N
+    SNR = [SNR txPower*CalChannelGain(pos(i,1),pos(i,2),bsX,bsY)/n0];
 end
 [val idx] = sort(SNR,'descend');
 
 vecPSNR = [];
 vecSupNum = [];
-Schedule = idx-1;
+Schedule = idx;
 for nSlots = 200:200:1500
     supCams = [];
     totalReqSlots = 0;
     for c = 1:length(Schedule)
         cam = Schedule(c);
-        snr = txPower*CalChannelGain(pos(cam+1,1),pos(cam+1,2),bsX,bsY)/n0;
-        reqSlots = ceil(bits(cam+1)/(tau*W*log2(1+snr)));
+        snr = txPower*CalChannelGain(pos(cam,1),pos(cam,2),bsX,bsY)/n0;
+        reqSlots = ceil(bits(cam)/(tau*W*log2(1+snr)));
         totalReqSlots = totalReqSlots + reqSlots;
         if totalReqSlots > nSlots
             break;
@@ -61,11 +61,11 @@ for nSlots = 200:200:1500
     vecSupNum = [vecSupNum length(supCams)];
     
     PSNR = 0;
-    for i = 0:N-1
+    for i = 1:N
         if ismember(i,vecSupNum)
-            PSNR = PSNR + P(i+1);
+            PSNR = PSNR + P(i);
         else
-            PSNR = PSNR + 10*log10(double(( ( 255 )^2 )/V(i+1)));
+            PSNR = PSNR + 10*log10(double(( ( 255 )^2 )/V(i)));
         end
     end
     vecPSNR = [vecPSNR PSNR/N];

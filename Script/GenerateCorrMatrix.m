@@ -19,5 +19,5 @@ function GenerateCorrMatrix( c0, c1 )
     ifShow = 0;
     
     corrMatrix = GetCorrMatrix(targetCam,refCam,ifShow);
-    save(['corrMatrix_' num2str(c0) '_' num2str(c1) '.mat']);
+    save(['./mat3/corrMatrix_' num2str(c0) '_' num2str(c1) '.mat']);
 end

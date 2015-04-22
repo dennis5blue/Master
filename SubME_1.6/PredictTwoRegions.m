@@ -5,9 +5,9 @@ function [PSNR] = PredictTwoRegions(camOpts0, camOpts1, ifShow)
     opts.SearchLimit = 10;
     
     % Read image
-    cam0 = ['imgs/camera_',num2str(camOpts0.cam),'.png'];
+    cam0 = ['imgs3/camera_',num2str(camOpts0.cam),'.png'];
     img0 = im2double(imread(cam0));
-    cam1 = ['imgs/camera_',num2str(camOpts1.cam),'.png'];
+    cam1 = ['imgs3/camera_',num2str(camOpts1.cam),'.png'];
     img1 = im2double(imread(cam1));
     xSize = length(img0(1,:,1))/camOpts0.numX;
     ySize = length(img0(:,1,1))/camOpts0.numY;

@@ -1,7 +1,7 @@
 #mcc -R -nojvm -R -nodisplay -R -nodesktop -R -nosplash -mv -I ../SubME_1.6/ GenerateCorrMatrix.m
-for (( nn=0; nn<=9; nn=nn+1 ))
+for (( nn=1; nn<=20; nn=nn+1 ))
 do
-  for (( mm=0; mm<=9; mm=mm+1 ))
+  for (( mm=1; mm<=20; mm=mm+1 ))
   do
     echo "
     ### Job name
@@ -13,7 +13,7 @@ do
 
     ### put the job to which queue (qwork)
     #PBS -q qwork
-    " > ./Prediction_"$nn"_"$mm".sh
+    " > ./temp/Prediction_"$nn"_"$mm".sh
 
     echo '
     # show the time and information
@@ -23,7 +23,7 @@ do
     echo Start time is `date`
     time1=`date +%s`
     echo Directory is `pwd`
-    ' >> ./Prediction_"$nn"_"$mm".sh
+    ' >> ./temp/Prediction_"$nn"_"$mm".sh
 
     echo "
     # run the script
@@ -32,14 +32,14 @@ do
     export MCR_CACHE_ROOT=\$MCR_tmp
     ./GenerateCorrMatrix "$nn" "$mm"
     rm -rf \$MCR_tmp						
-    " >>  ./Prediction_"$nn"_"$mm".sh
+    " >>  ./temp/Prediction_"$nn"_"$mm".sh
 
     echo '
     echo End time is `date`
     time2=`date +%s`
     echo Computing time is `echo $time2-$time1 | bc` sec
-    ' >>   ./Prediction_"$nn"_"$mm".sh
+    ' >>   ./temp/Prediction_"$nn"_"$mm".sh
 
-    qsub ./Prediction_"$nn"_"$mm".sh
+    qsub ./temp/Prediction_"$nn"_"$mm".sh
   done
 done

@@ -6,7 +6,7 @@ import re
 import sys
 
 def main(argv=None):
-	pngSeqPath = "../SourceData/test_png/"
+	pngSeqPath = "../SourceData/test3_png/"
 	yuvSeqPath = "../SourceData/test_yuv/"
 	
 	output = Popen(["ls", pngSeqPath],stdout=PIPE).communicate()[0] 
@@ -16,7 +16,7 @@ def main(argv=None):
  
 	processList = len(fileList)*[None] 
 	for i in range(len(fileList)):
-		idx = int(re.sub(r'camera_|\.png','',fileList[i]))
+		idx = int(re.sub(r'camera_|\.png','',fileList[i]))-1 # minus 1 since python index start at 0
 		processList[idx] = re.sub(r'\.png','',fileList[i])
 		#print (processList[idx])
 		#print (len(processList))

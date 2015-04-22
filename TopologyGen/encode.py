@@ -69,7 +69,7 @@ def main(argv = None):
 			global testSeqPath
 			global fileNamePrefix
 			global saveFilePath
-			testSeqPath = "../SourceData/test_yuv/night/"
+			testSeqPath = "../SourceData/test_yuv/"
 			fileNamePrefix = "image"
 			saveFilePath = "../SourceData/test_correlation/"
 		if option == "help":
@@ -84,7 +84,7 @@ def main(argv = None):
 		processList = len(fileList)*[None]
 		#print (fileList)
 		for i in range(len(fileList)):
-			idx = int(re.sub(r'camera_|\.yuv','',fileList[i]))
+			idx = int(re.sub(r'camera_|\.yuv','',fileList[i]))-1 # minus 1 since python index start at 0
 			processList[idx] = fileList[i]
 			#print (processList)
 		if sys.argv[2] == "0":

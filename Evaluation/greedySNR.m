@@ -1,12 +1,13 @@
 clc;
 clear;
 addpath('./Utility');
+inputPath = '../SourceData/test2_png/';
 
 % Read files
-bits = 8.*dlmread('../SourceData/test_phase_0.txt');
-pos = dlmread('../SourceData/test_pos.txt');
+bits = 8.*dlmread([inputPath 'test_phase_0.txt']);
+pos = dlmread([inputPath 'test_pos.txt']);
 pos = 100.*pos(:,1:3);
-dir = dlmread('../SourceData/test_pos.txt');
+dir = dlmread([inputPath 'test_pos.txt']);
 dir = dir(:,6);
 
 % Parameters settings
@@ -23,7 +24,7 @@ W = 180; % kHz
 rate = bits./(res.X*res.Y); % in bpp
 
 for i = 1:N
-    I = imread(['../SourceData/test2_png/camera_' num2str(i) '.png']);
+    I = imread([inputPath 'camera_' num2str(i) '.png']);
     mean     = sum(I(:))/length(I(:));
     variance = sum((I(:) - mean).^2)/(length(I(:)) - 1);
     distortion = variance*(2^(-2*rate(i)));
@@ -58,7 +59,7 @@ for nSlots = 200:200:1500
     unSupCams(ismember(unSupCams,supCams))=[];
     %disp(['supCams: ' mat2str(supCams)]);
     %disp(['unSupCams: ' mat2str(unSupCams)]);
-    PSNR = CalPsnr(supCams,unSupCams,N,rate,res,reg);
+    PSNR = CalPsnr(inputPath,supCams,unSupCams,N,rate,res,reg);
     vecPSNR = [vecPSNR PSNR];
 end
 

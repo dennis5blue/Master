@@ -1,12 +1,13 @@
 clc;
 clear;
 addpath('./Utility');
+inputPath = '../SourceData/test2_png/';
 
 % Read files
-bits = 8.*dlmread('../SourceData/test_phase_0.txt');
-pos = dlmread('../SourceData/test_pos.txt');
+bits = 8.*dlmread([inputPath 'test_phase_0.txt']);
+pos = dlmread([inputPath 'test_pos.txt']);
 pos = 100.*pos(:,1:3);
-dir = dlmread('../SourceData/test_pos.txt');
+dir = dlmread([inputPath 'test_pos.txt']);
 dir = dir(:,6);
 
 % Parameters settings
@@ -19,14 +20,14 @@ N = 10; % number of total cameras
 res.X = 1280; res.Y = 720;
 reg.X = 16; reg.Y = 9;
 W = 180; % kHz
-nPath = 2; % number of survivor paths
+nPath = 1; % number of survivor paths
 
 rate = bits./(res.X*res.Y); % in bpp
 
 % Formula for calculating PSNR
 %{
 for i = 1:N
-    I = imread(['../SourceData/test2_png/camera_' num2str(i) '.png']);
+    I = imread([inputPath 'camera_' num2str(i) '.png']);
     mean     = sum(I(:))/length(I(:));
     variance = sum((I(:) - mean).^2)/(length(I(:)) - 1);
     distortion = variance*(2^(-2*rate(i)));
@@ -42,10 +43,9 @@ for i = 1:N
     reqSlots = ceil(bits(i)/capacity);
     vecC = [vecC capacity];
     vecTxTime = [vecTxTime reqSlots];
-    
 end
 
-% Greedy optimization
+% Trellis algorithm
 Schedule = [1:10]';
 for run = 1:N-1
     % Append the scheduling matrix for nPath times
@@ -56,7 +56,7 @@ for run = 1:N-1
             tempSchedule((i-1)*nPath+j,:) = Schedule(i,:);
         end
     end
-    Schedule = tempSchedule
+    Schedule = tempSchedule;
     
     nextSchedule = -1*ones(1,m_numSchedules)';
     % Find nPath cameras with the better profit
@@ -69,7 +69,7 @@ for run = 1:N-1
         for c = 1:length(unschedCams)
             cam = unschedCams(c);
             m_vecCandidates = [m_vecCandidates cam];
-            m_vecProfit = [m_vecProfit CalProfit(cam,schedCams,unschedCams,N,reg)];
+            m_vecProfit = [m_vecProfit CalProfit(inputPath,cam,schedCams,unschedCams,N,reg)];
         end
         [m_profit, m_idx] = sort(m_vecProfit,'descend');
         if length(m_idx) < nPath
@@ -107,7 +107,7 @@ for nSlots = 200:200:1500
         end
         unSupCams = [1:N];
         unSupCams(ismember(unSupCams,supCams))=[];
-        temp = CalPsnr(supCams,unSupCams,N,rate,res,reg);
+        temp = CalPsnr(inputPath,supCams,unSupCams,N,rate,res,reg);
         if temp > bestPsnr
             bestPsnr = temp;
             bestSche = i;

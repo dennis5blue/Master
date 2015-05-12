@@ -1,23 +1,19 @@
 #mcc -R -nojvm -R -nodisplay -R -nodesktop -R -nosplash -mv -I ../SubME_1.6/ GenerateCorrMatrixRegion.m
-for (( cc=1; cc<=1; cc=cc+1 ))
+for (( cam=1; cam<=10; cam=cam+1 ))
 do
-  for (( dd=1; dd<=10; dd=dd+1 ))
+  for (( ref=1; ref<=10; ref=ref+1 ))
   do
-    for (( xx=1; xx<=16; xx=xx+1 ))
-    do
-      for (( yy=1; yy<=9; yy=yy+1 ))
-      	do
     	echo "
     	### Job name
-    	#PBS -N Prediction_"$xx"_"$yy"_"$cc"_"$dd"
+    	#PBS -N Prediction_"$cam"_"$ref"
 
     	### out files
-    	#PBS -e ./log/Prediction_"$xx"_"$yy"_"$cc"_"$dd".err
-    	#PBS -o ./log/Prediction_"$xx"_"$yy"_"$cc"_"$dd".log
+    	#PBS -e ./log/Prediction_"$cam"_"$ref".err
+    	#PBS -o ./log/Prediction_"$cam"_"$ref".log
 
     	### put the job to which queue (qwork)
     	#PBS -q qwork
-    	" > ./temp/Prediction_"$xx"_"$yy"_"$cc"_"$dd".sh
+    	" > ./temp/Prediction_"$cam"_"$ref".sh
 
     	echo '
     	# show the time and information
@@ -27,25 +23,23 @@ do
     	echo Start time is `date`
     	time1=`date +%s`
     	echo Directory is `pwd`
-    	' >> ./temp/Prediction_"$xx"_"$yy"_"$cc"_"$dd".sh
+    	' >> ./temp/Prediction_"$cam"_"$ref".sh
 
     	echo "
     	# run the script
     	MCR_tmp=\"/tmp/mcr_\$RANDOM\"
     	mkdir \$MCR_tmp
     	export MCR_CACHE_ROOT=\$MCR_tmp
-    	./GenerateCorrMatrixRegion "$xx" "$yy" "$cc" "$dd"
+    	./GenerateCorrMatrixRegion "$cam" "$ref"
     	rm -rf \$MCR_tmp						
-    	" >>  ./temp/Prediction_"$xx"_"$yy"_"$cc"_"$dd".sh
+    	" >>  ./temp/Prediction_"$cam"_"$ref".sh
 
     	echo '
     	echo End time is `date`
     	time2=`date +%s`
     	echo Computing time is `echo $time2-$time1 | bc` sec
-    	' >>   ./temp/Prediction_"$xx"_"$yy"_"$cc"_"$dd".sh
+    	' >>   ./temp/Prediction_"$cam"_"$ref".sh
 
-    	qsub ./temp/Prediction_"$xx"_"$yy"_"$cc"_"$dd".sh
-      done
-    done
+    	qsub ./temp/Prediction_"$cam"_"$ref".sh
   done
 done

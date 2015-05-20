@@ -22,7 +22,7 @@ W = 180; % kHz
 nSamples = 50; % number of cross entropy samples
 nRemainSample = 10;
 alpha = 0.7;
-firstCam = 10;
+firstCam = 1;
 
 vecC = [];
 for i = 1:N
@@ -57,3 +57,72 @@ for i = 1:N
         end
     end
 end
+
+% Reduce cost matrix
+%{
+matCostOrigin = matCost;
+reducedCost = 0;
+for i = 1:N
+    reducedCost = reducedCost + min(matCost(i,:));
+    matCost(i,:) = matCost(i,:) - min(matCost(i,:))*ones(1,N);
+end
+for i = 1:N
+    reducedCost = reducedCost + min(matCost(:,i));
+    matCost(:,i) = matCost(:,i) - min(matCost(:,i))*ones(N,1);
+end
+%}
+
+BBqueue = [];
+for nextCam = 1:N
+    if nextCam ~= firstCam
+        route = [firstCam nextCam];
+        newNode = struct('depth',2,'cost',matCost(firstCam,nextCam), ...
+            'lb',CalBBLowerBound2(route,matCost),'route',route,'costMatrix', matCost);
+        BBqueue = [newNode BBqueue];
+    end
+end
+
+%{
+ub = 0;
+for i = 2:N
+    ub = ub + matCost(i-1,i);
+end
+%}
+
+ub = inf;
+while length(BBqueue) > 0
+    % sort BBqueue to get lowest lb and depthest node
+    BBqueue = sortStruct(BBqueue,'lb',-1); % -1 means sort descending
+    BBqueue = sortStruct(BBqueue,'depth',1); % 1 means sort ascending
+    
+    % pop the last element
+    BBnode = BBqueue(length(BBqueue));
+    BBqueue(length(BBqueue)) = [];
+    %BBnode
+    if BBnode.depth == N
+        if BBnode.cost < ub
+            ub = BBnode.cost;
+            bestSchedule = BBnode.route;
+        end
+    elseif BBnode.depth < N
+        for nextCam = 1:N
+            if ismember(nextCam, BBnode.route) == 0
+                m_prevCam = BBnode.route(length(BBnode.route));
+                m_route = [BBnode.route nextCam];
+                m_cost = BBnode.cost+matCost(m_prevCam,nextCam);
+                m_lb = CalBBLowerBound2(m_route,matCost);
+                % keep branching if lb <= ub
+                if m_cost <= ub && m_lb <= ub
+                    newNode = struct('depth',BBnode.depth+1,'cost',m_cost, ...
+                        'lb',m_lb,'route',m_route,'costMatrix', matCost);
+                    BBqueue = [newNode BBqueue];
+                end
+            end
+        end
+    end
+end
+
+bestSchedule
+finalTxBits = CalTxBits(inputPath, bestSchedule, matsBits, reg)
+
+% bestScehdule = [1 2 3 4 5 6 7 8 9 10] txBits = 5391381

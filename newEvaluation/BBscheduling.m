@@ -22,7 +22,7 @@ W = 180; % kHz
 nSamples = 50; % number of cross entropy samples
 nRemainSample = 10;
 alpha = 0.7;
-firstCam = 1;
+firstCam = 10;
 
 vecC = [];
 for i = 1:N
@@ -125,4 +125,5 @@ end
 bestSchedule
 finalTxBits = CalTxBits(inputPath, bestSchedule, matsBits, reg)
 
-% bestScehdule = [1 2 3 4 5 6 7 8 9 10] txBits = 5391381
+% bestScehdule = [3 4 5 6 7 8 9 10 2 1] txBits = 5324474
+% bestScehdule = [10 9 8 7 6 5 4 3 2 1] txBits = 5286224

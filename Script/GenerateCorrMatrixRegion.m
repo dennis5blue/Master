@@ -26,5 +26,5 @@ function GenerateCorrMatrixRegion( c0, c1 )
             eval(['corrMatrix_' num2str(xx) '_' num2str(yy) '= tempCorrMatrix;']);
         end
     end
-    save(['./mat4/corrMatrices_' num2str(c0) '_' num2str(c1) '.mat']);
+    save(['./mat7/corrMatrices_' num2str(c0) '_' num2str(c1) '.mat']);
 end

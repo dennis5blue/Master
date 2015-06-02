@@ -1,7 +1,7 @@
 #mcc -R -nojvm -R -nodisplay -R -nodesktop -R -nosplash -mv -I ../SubME_1.6/ GenerateCorrMatrixRegion.m
 for (( cam=1; cam<=10; cam=cam+1 ))
 do
-  for (( ref=1; ref<=10; ref=ref+1 ))
+  for (( ref=1; ref<=50; ref=ref+1 ))
   do
     	echo "
     	### Job name

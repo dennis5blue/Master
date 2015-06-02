@@ -71,7 +71,7 @@ def main(argv = None):
 			global saveFilePath
 			testSeqPath = "../SourceData/test_yuv/"
 			fileNamePrefix = "image"
-			saveFilePath = "../SourceData/test_correlation/"
+			saveFilePath = "../SourceData/test7_png/"
 		if option == "help":
 			print "Usage: --phase [0|1]: 0 for independent coding, 1 for correlation discovering"
 			print "Usage: --camera k: verify which camera we aim to encode (no need to use this command when indep coding)"

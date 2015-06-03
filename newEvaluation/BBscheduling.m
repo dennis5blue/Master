@@ -73,7 +73,7 @@ end
 %}
 
 BBqueue = [];
-for nextCam = 1:N
+for nextCam = 4:4
     if nextCam ~= firstCam
         route = [firstCam nextCam];
         newNode = struct('depth',2,'cost',matCost(firstCam,nextCam), ...
@@ -82,13 +82,16 @@ for nextCam = 1:N
     end
 end
 
+%BBqueue = [struct('depth',6,'cost',matCost(firstCam,nextCam), 'lb',CalBBLowerBound2([10 4 5 1 3 2],matCost),'route',[10 4 5 1 3 2],'txRegions',initTxRegs,'costMatrix', matCost)];
+
 %{
 ub = 0;
 for i = 2:N
     ub = ub + matCost(i-1,i);
 end
 %}
-
+recordUb = [];
+recordlb = [];
 ub = inf;
 while length(BBqueue) > 0
     % sort BBqueue to get lowest lb and depthest node
@@ -118,8 +121,11 @@ while length(BBqueue) > 0
                     m_thisCamTxRegions = min(m_thisCamTxRegions,tempTxRegs);
                 end
                 eval(['m_tempBits = matsBits.cam' num2str(nextCam) ';']);
-                m_cost = BBnode.cost+sum(sum(m_tempBits.*m_thisCamTxRegions));;
-                m_lb = CalBBLowerBound2(m_route,matCost)
+                m_cost = CalTxBits(inputPath, m_route, matsBits, reg);
+                %m_cost = BBnode.cost+sum(sum(m_tempBits.*m_thisCamTxRegions));
+                m_lb = CalBBLowerBound3( m_route, BBnode.costMatrix, inputPath, matsBits, reg, N );
+                %m_lb = CalBBLowerBound2(m_route,matCost);
+                
                 % keep branching if lb <= ub
                 if m_cost <= ub && m_lb <= ub
                     % Create new BB node
@@ -132,8 +138,13 @@ while length(BBqueue) > 0
             end
         end
     end
+    [BBnode.lb ub]
+    recordUb = [recordUb ub];
+    recordlb = [recordlb BBnode.lb];
 end
 
+recordlb
+recordUb
 bestSchedule
 finalTxBits = CalTxBits(inputPath, bestSchedule, matsBits, reg)
 

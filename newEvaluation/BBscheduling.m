@@ -110,21 +110,23 @@ while length(BBqueue) > 0
                 m_prevCam = BBnode.route(length(BBnode.route));
                 m_route = [BBnode.route nextCam];
                 % Check the required txRegions based on previous transmissions
-                m_txRegions = ones(reg.Y,reg.X);
+                m_thisCamTxRegions = ones(reg.Y,reg.X);
                 for ov = 1:length(m_route)-1
                     ovCam = m_route(ov);
                     eval(['tempRefCamTxRegs = BBnode.txRegions.cam' num2str(ovCam) ';']);                        
                     tempTxRegs = IfTxRequired(inputPath,nextCam,ovCam,tempRefCamTxRegs,reg);
-                    m_txRegions = min(m_txRegions,tempTxRegs);
+                    m_thisCamTxRegions = min(m_thisCamTxRegions,tempTxRegs);
                 end
                 eval(['m_tempBits = matsBits.cam' num2str(nextCam) ';']);
-                m_cost = BBnode.cost+sum(sum(m_tempBits.*m_txRegions));;
+                m_cost = BBnode.cost+sum(sum(m_tempBits.*m_thisCamTxRegions));;
                 m_lb = CalBBLowerBound2(m_route,matCost)
                 % keep branching if lb <= ub
                 if m_cost <= ub && m_lb <= ub
                     % Create new BB node
+                    newTxRegs = BBnode.txRegions;
+                    eval(['newTxRegs.cam' num2str(nextCam) ' = m_thisCamTxRegions;']);
                     newNode = struct('depth',BBnode.depth+1,'cost',m_cost, ...
-                        'lb',m_lb,'route',m_route,'txRegions',m_txRegions,'costMatrix', matCost);
+                        'lb',m_lb,'route',m_route,'txRegions',newTxRegs,'costMatrix', matCost);
                     BBqueue = [newNode BBqueue];
                 end
             end

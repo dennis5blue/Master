@@ -41,7 +41,7 @@ end
 
 % Initial txRegions
 for i = 1:N
-    eval(['txRegs.cam' num2str(i) '=ones(reg.Y,reg.X);']);
+    eval(['initTxRegs.cam' num2str(i) '=ones(reg.Y,reg.X);']);
 end
 
 % Initialize cost matrix
@@ -77,7 +77,7 @@ for nextCam = 1:N
     if nextCam ~= firstCam
         route = [firstCam nextCam];
         newNode = struct('depth',2,'cost',matCost(firstCam,nextCam), ...
-            'lb',CalBBLowerBound2(route,matCost),'route',route,'costMatrix', matCost);
+            'lb',CalBBLowerBound2(route,matCost),'route',route,'txRegions',initTxRegs,'costMatrix', matCost);
         BBqueue = [newNode BBqueue];
     end
 end
@@ -96,7 +96,7 @@ while length(BBqueue) > 0
     BBqueue = sortStruct(BBqueue,'depth',1); % 1 means sort ascending
     
     % pop the last element
-    BBnode = BBqueue(length(BBqueue));
+    BBnode = BBqueue(length(BBqueue))
     BBqueue(length(BBqueue)) = [];
     %BBnode
     if BBnode.depth == N
@@ -109,12 +109,22 @@ while length(BBqueue) > 0
             if ismember(nextCam, BBnode.route) == 0
                 m_prevCam = BBnode.route(length(BBnode.route));
                 m_route = [BBnode.route nextCam];
-                m_cost = BBnode.cost+matCost(m_prevCam,nextCam);
-                m_lb = CalBBLowerBound2(m_route,matCost);
+                % Check the required txRegions based on previous transmissions
+                m_txRegions = ones(reg.Y,reg.X);
+                for ov = 1:length(m_route)-1
+                    ovCam = m_route(ov);
+                    eval(['tempRefCamTxRegs = BBnode.txRegions.cam' num2str(ovCam) ';']);                        
+                    tempTxRegs = IfTxRequired(inputPath,nextCam,ovCam,tempRefCamTxRegs,reg);
+                    m_txRegions = min(m_txRegions,tempTxRegs);
+                end
+                eval(['m_tempBits = matsBits.cam' num2str(nextCam) ';']);
+                m_cost = BBnode.cost+sum(sum(m_tempBits.*m_txRegions));;
+                m_lb = CalBBLowerBound2(m_route,matCost)
                 % keep branching if lb <= ub
                 if m_cost <= ub && m_lb <= ub
+                    % Create new BB node
                     newNode = struct('depth',BBnode.depth+1,'cost',m_cost, ...
-                        'lb',m_lb,'route',m_route,'costMatrix', matCost);
+                        'lb',m_lb,'route',m_route,'txRegions',m_txRegions,'costMatrix', matCost);
                     BBqueue = [newNode BBqueue];
                 end
             end

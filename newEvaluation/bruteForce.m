@@ -39,14 +39,14 @@ for i = 1:N
     eval(['matsBits.cam' num2str(i) '=tmp(' num2str(i) ')*ones(reg.Y,reg.X);']);
 end
 
-candidate = perms([1 2 3 5 6 7 8 9]);
+candidate = perms([9 2 7 5 4 6 3 8 1]);
 ub = inf;
 bestSchedule = [];
 recordUb = [];
 for i = 1:length(candidate(:,1))
     [i ub]
     schedule = candidate(i,:);
-    txBits = CalTxBits(inputPath, [10 4 schedule], matsBits, reg);
+    txBits = CalTxBits(inputPath, [10 schedule], matsBits, reg);
     if txBits < ub
         ub = txBits;
         bestSchedule = schedule;

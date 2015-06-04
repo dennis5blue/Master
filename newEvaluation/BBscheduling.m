@@ -73,7 +73,7 @@ end
 %}
 
 BBqueue = [];
-for nextCam = 4:4
+for nextCam = 1:N
     if nextCam ~= firstCam
         route = [firstCam nextCam];
         newNode = struct('depth',2,'cost',matCost(firstCam,nextCam), ...
@@ -148,5 +148,4 @@ recordUb
 bestSchedule
 finalTxBits = CalTxBits(inputPath, bestSchedule, matsBits, reg)
 
-% bestScehdule = [3 4 5 6 7 8 9 10 2 1] txBits = 5324474
-% bestScehdule = [10 9 8 7 6 5 4 3 2 1] txBits = 5286224
+% bestScehdule = [10 6 7 8 9 2 3 4 5 1] txBits = 5219335

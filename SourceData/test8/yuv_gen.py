@@ -23,9 +23,8 @@ def main(argv=None):
 	for i in range(len(fileList)):
         	print pngSeqPath+processList[i]+".png"
         	print yuvSeqPath+processList[i]+".yuv"
-        	call(["../../../ffmpeg","-i", pngSeqPath+processList[i]+".png","temp.mp4"])
-        	call(["../../../ffmpeg","-i", "temp.mp4",yuvSeqPath+processList[i]+".yuv"])
-        	call(["rm","temp.mp4"])
+        	call(["/home/dennisyu/Documents/ffmpeg", "-s", "1280x720", "-pix_fmt", "yuv420p", "-i", pngSeqPath+processList[i]+".png", yuvSeqPath+processList[i]+".yuv"])
+        	#call(["/home/dennisyu/Documents/ffmpeg","-i", "temp.mp4",yuvSeqPath+processList[i]+".yuv"])
 
 if __name__ == "__main__":
 	sys.exit(main())

@@ -31,3 +31,7 @@ Execute from step1 to step7 and you can get the input data for our scheduling al
    Note that if indepByte.txt or corrMatrix.txt already exists, you may need to remove them first so that no dulpicate data will created
    $ python parse.py
 
+
+APPENDIX
+$ /home/dennisyu/Documents/ffmpeg -s 1280x720 -pix_fmt yuv420p -i rec_0.yuv test.png --> Can use for reconstrucing png image
+$ /home/dennisyu/Documents/JMVC/bin/PSNRStatic 1280 720 tmp_0.yuv rec_0.yuv --> Can use to get the PSNR of reconstructed image

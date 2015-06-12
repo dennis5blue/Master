@@ -4,6 +4,7 @@ Execute from step1 to step7 and you can get the input data for our scheduling al
 
 2. Make sure the following folders are existed in ./test8/
    (1) cfg:             Save the configure files of JMVC
+			(Note that you can use genCfg.sh to generate configure files)
    (2) jmvcTempFiles:   Save the temp files generated wile running JMVC
    (3) png:             Save the origin image data
 			Image must also contains in this folder (index starts with 1)
@@ -26,6 +27,10 @@ Execute from step1 to step7 and you can get the input data for our scheduling al
 6. Run encode_phase1.py to get dependet coding bits
    Note that you need to specify which camera is encoding, and step6 needs to run for N times (N is number of cameras)
    $ python encode_phase1.py --yuv camera_1.yuv --> which means that you encode camera 1 by referencing camera 1~N
+   
+   You can use encode_phase1_script.sh to throw job onto cluster
+   $ sh encode_phase1_script.sh
+   But before running encode_phase1_script.sh, you need to make sure two folders (./log and ./temp) are created 
 
 7. Run parse.py to get useful data (will generate indepByte.txt and corrMatrix.txt)
    Note that if indepByte.txt or corrMatrix.txt already exists, you may need to remove them first so that no dulpicate data will created

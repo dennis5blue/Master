@@ -1,5 +1,5 @@
 # To execute this script, paste the following two lines in the blender console
-# filename = "/home/dennisyu/Documents/Master/TopologyGen/cameraRandomPos.py"
+# filename = "/home/dennisyu/Documents/Master/TopologyGen/cam30Random.py"
 # exec(compile(open(filename).read(), filename, 'exec'))
 
 import bpy
@@ -7,9 +7,9 @@ import random
 import math
 
 ###City settings
-#city size 1000m^2, Seed = 520
-#Create terrain = 2, Create meterials (sampling size) = 2, (texture size) = 4096, maximum height = 300, water level = 0, random options = 0
-#Street texture size = 9999, slope limit = 5, Paris
+#city size 500m^2, Seed = 20
+#Create terrain = 10, Create meterials (sampling size) = 10, (texture size) = 4096, maximum height = 300, water level = 0, random options = 0
+#Street texture size = 9999, slope limit = 5, Manhattan
 #high poly models = 5, Total meterials = 10, texture size = 1024
 
 # way of remove object, we need to select the objects first
@@ -25,7 +25,7 @@ bpy.ops.object.delete()
 bpy.ops.object.select_all(action="SELECT")
 cityObjectList = [item.name for item in bpy.data.objects if item.select == True]
 for obj in cityObjectList:
-	bpy.data.objects[obj].location = [-5.0, -5.0, -3.0]
+	bpy.data.objects[obj].location = [-2.5, -2.5, -3.0]
 
 #bpy.ops.group.create(name="myCity")
 #bpy.ops.object.group_link(group="myCity")
@@ -44,7 +44,7 @@ lamp_object.location = (0.0, 0.0, 10.0)
 lamp_object.select = True
 
 lamp_data = bpy.data.lamps.new(name="sun2", type='HEMI')
-lamp_data.energy = 1.0
+lamp_data.energy = 0.5
 lamp_object = bpy.data.objects.new(name="sun2", object_data=lamp_data)
 scene.objects.link(lamp_object)
 lamp_object.location = (0.0, 0.0, 10.0)
@@ -54,22 +54,19 @@ scene.objects.active = lamp_object
 
 #add camera (random position and sensing direction)
 #city radius = 1000m
-for cam in range(10):
-	cameraPos = (random.uniform(0.0,5.0), random.uniform(0.0,5.0), 0.2)
-	cameraRotation = (math.pi*70.0/180, math.pi*0.0/180, -math.pi*random.randrange(0,360,10)/180)
-	bpy.ops.object.camera_add(view_align=False, enter_editmode=False, location=cameraPos, rotation=cameraRotation);
-for cam in range(10):
-	cameraPos = (random.uniform(-5.0,0.0), random.uniform(0.0,5.0), 0.2)
-	cameraRotation = (math.pi*70.0/180, math.pi*0.0/180, -math.pi*random.randrange(0,360,10)/180)
-	bpy.ops.object.camera_add(view_align=False, enter_editmode=False, location=cameraPos, rotation=cameraRotation);
-for cam in range(15):
-	cameraPos = (random.uniform(-5.0,0.0), random.uniform(-5.0,0.0), 0.2)
-	cameraRotation = (math.pi*70.0/180, math.pi*0.0/180, -math.pi*random.randrange(0,360,10)/180)
-	bpy.ops.object.camera_add(view_align=False, enter_editmode=False, location=cameraPos, rotation=cameraRotation);
-for cam in range(15):
-	cameraPos = (random.uniform(0.0,5.0), random.uniform(-5.0,0.0), 0.2)
-	cameraRotation = (math.pi*70.0/180, math.pi*0.0/180, -math.pi*random.randrange(0,360,10)/180)
-	bpy.ops.object.camera_add(view_align=False, enter_editmode=False, location=cameraPos, rotation=cameraRotation);
+N = 30
+counter = 1
+while counter <= N:
+	nCam = random.randint(1,3)
+	cameraPos = (random.uniform(-2.5,2.5), random.uniform(-2.5,2.5), 0.2)
+	angle = math.pi*random.randrange(0,360,10)/180
+	for cam in range(nCam):
+		angle += math.pi*10.0/180
+		cameraRotation = (math.pi*70.0/180, math.pi*0.0/180, angle)
+		if counter > N:
+			break
+		bpy.ops.object.camera_add(view_align=False, enter_editmode=False, location=cameraPos, rotation=cameraRotation);
+		counter += 1
 
 bpy.data.scenes["Scene"].render.resolution_x = 1280*2;
 bpy.data.scenes["Scene"].render.resolution_y = 720*2;
@@ -87,7 +84,7 @@ print('\nPrint Scenes...');
 sceneKey = bpy.data.scenes.keys()[0]; 
 print('Using Scene['  + sceneKey + ']');
 c=1;
-logFileName="/home/dennisyu/Documents/Master/SourceData/test7_png/log.txt"
+logFileName="/home/dennisyu/Documents/Master/SourceData/test9/log.txt"
 logFile=open(logFileName,"w+")
 for obj in bpy.data.objects: 
 # Find cameras that match cameraNames 
@@ -103,7 +100,7 @@ for obj in bpy.data.objects:
         # Render Scene and store the scene 
         bpy.ops.render.render( write_still=True ); 
         RR = "Render Result";
-        bpy.data.images[RR].save_render("/home/dennisyu/Documents/Master/SourceData/test7_png/camera_"+str(c)+".png");
+        bpy.data.images[RR].save_render("/home/dennisyu/Documents/Master/SourceData/test9/camera_"+str(c)+".png");
         c = c + 1; 
 
 logFile.close()

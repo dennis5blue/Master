@@ -1,4 +1,4 @@
-for (( cam=1; cam<=30; cam=cam+1 ))
+for (( cam=1; cam<=1; cam=cam+1 ))
 do
   echo "
   ### Job name

@@ -1,0 +1,96 @@
+\subsection{Network Model}
+\label{sec::dataModel}
+Note that we discussed our target network scenario in chapter~\ref{sec::networkScenario}, therefore, in this chapter, we further introduce some related models that are used in this thesis.
+%
+%\subsubsection{Data Transmission Model}
+%For each transmission link, to ensure the transmitted data $D$ can be successfully received, we require the allocated time $T$, bandwidth $W$, and link SINR $\gamma$ be sufficient as follows:
+%\begin{equation}
+%\label{eq::capaciy}
+%TW\log_2\left(1+\frac{1}{\Gamma}\gamma\right) \geq D,
+%\end{equation}
+%where $\Gamma$ is a constant to model the gap between the achievable data rate of the selected modulation/coding scheme and the theoretic Shannon channel capacity~\cite{MQAM}.
+%
+\subsubsection{Data Correlation Model}
+For the multi-camera networks, cameras are deployed for periodical collecting video streams around a neighboring area, and hence video streams produced by those cameras are often correlated due to the high deployment density.
+The characteristics of the data correlation in multi-camera networks can be summarized as the following two phases:
+\begin{itemize}
+\item Temporal correlation: The video stream for the multi-camera networks is formed by taking a rectangular ``snapshot'' of the frames of each camera at periodic time intervals.
+Therefore, successive frames may be correlated with each other in nature, and hence many existing video codec exploit the temporal correlation between frames to improve the coding efficiency.
+The idea is to compensate the differences between frames by inter or motion compensated prediction.
+A practical and widely used method of motion compensated prediction is to divide the current frame into rectangular sections or blocks and compensate the movement of those blocks.
+The characteristic of temporal correlation for the multi-camera networks is well developed in the research area of video coding, therefore, we focus on leveraging the advantages of spatial correlation in this thesis.
+\item Spatial correlation: Note that different cameras observing the same scene from different viewpoints will eventually produce correlated video streams.
+Therefore, performing the spatial inter-view prediction is an important issue to be considered for the multi-camera networks especially when the cameras are densely deployed.
+That is, under the multiview video coding scheme~\cite{MVCoverview}, a camera can not only reference from its previous frames but also can reference from the frames of nearby cameras as illustrated in figure~\ref{fig::MVC}.
+We thus consider the spatial correlation between cameras in this thesis for the sake of improving the coding efficiency as well as reducing the amount of bits that are required to be transmitted.  
+\end{itemize}
+%
+\begin{figure}
+\centering
+\includegraphics[width=0.95\columnwidth]{Figures/MVC}
+\caption{Temporal and spatial prediction of multiview video coding\label{fig::MVC}}
+\end{figure}
+%
+
+We now describe how we define the correlation between multiple cameras, which can be further exploited to leverage spatial correlation while delivering data.
+As shown in Figure~\ref{fig::multiCam}, suppose that camera $i$ and camera $j$ are both observing the same object but from different positions and having different sensing directions, there will cause some overlapped regions between the collected views from the two cameras.
+We thus divide the view of camera $i$ and $j$ into regions and experimentally estimate if two regions from camera $i$ and $j$ are correlated.
+This spatial correlation from neighboring cameras can help to reduce the amount of data needed to be delivered to the base station.
+That is, if a region is not delivered to the base station, we can reconstruct it with the help of images from neighboring cameras that are correlated to this missing region.
+%
+For example, in Figure~\ref{fig::multiCam}, images of the two cameras are divided into $36$ regions, while some regions of camera $i$ only contain a white background, which is similar to some regions of camera $j$.
+Therefore, as long as one of those regions is transmitted, the remaining regions are no longer necessary to be delivered to the base station.
+However, some regions of camera $i$ and camera $j$ are unique so that those part must be delivered to the aggregator for reconstructing images.
+Therefore, in our work, we will determine a portion of regions of those cameras that are required to be transmitted for the sake of reducing the amount of transmission bits.
+%
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{./Figures/multiCam}
+\caption{\label{fig::multiCam}Correlation between cameras}
+\end{center}
+\end{figure}
+%
+\subsubsection{Rate-Distortion Model}
+\label{sec::rateDistortion}
+In order to reduce the power consumption of cameras while keeping the quality of images,
+we refer to the rate-distortion model proposed in~\cite{CorrAwareScheduling} for
+reconstructing multiview images.
+Suppose that the $m^{th}$ camera acquires the image $F_{m}$ that is compressed at a
+rate of $R_{m}$ bits per pixel ($m=1,\cdots,|\mathcal{S}|$), and a subset of the compressed images
+captured by all cameras is received at the data aggregator, which targets the
+reconstruction of the full scene.
+If the frame $F_{m}$ is available at the decoder, the distortion is directly dependent on the compression or the source rate.
+However, if $F_{m}$ is missing at decoder, it is reconstructed from the available neighboring frames.
+The overall distortion of the scene is thus expressed as
+\begin{equation}
+D(\mathbf{R}) = \sum_{m=1}^{|\mathcal{S}|} \frac{1}{\omega_m} D_{m}(\mathbf{R}),
+\end{equation}
+where $\omega_m$ represents the relative importance of the view of the $m^{th}$ camera.
+The distortion $D_{m}(\mathbf{R})$ is the distortion of the $m^{th}$ view, which can be
+further estimated by decomposing the frame into regions $s_j$ and we denote by
+$\mathcal{S}_{m}$ as the set of such regions.
+For each $s_j \in \mathcal{S}_{m}$, we denote by $\alpha (s_j)$ the relative area of the
+frame dedicated to the region $s_j$, such that
+${\sum_{s_j \in \mathcal{S}_{m}} \alpha (s_j) = 1}$.
+
+Then, a mapping function $\mathbf{\Phi}_{j,m}$ describes which of the neighboring frames can contribute to the reconstruction of the region $s_j$ of the $m^{th}$ view.
+That is, ${\mathbf{\Phi}_{j,m} = [\Phi_{j,m}(1) \cdots \Phi_{j,m}(|\mathcal{S}|)]}$, where ${\Phi_{j,m}(k) = 1}$ if the $k^{th}$ camera is correlated with the region $s_j$ of the frame $F_{m}$ and ${\Phi_{j,m}(k) = 0}$ otherwise.
+Equipped $\mathbf{\Phi}_{j,m}$ with the above notation, the distortion becomes the sum of the distortion in each part $s_j$ of the frame:
+\begin{equation}
+D_{m}(\mathbf{R}) = \sum_{s_j \in \mathcal{S}_{m}} \alpha (s_j) d[\mathbf{\Phi}_{j,m} \cdot \mathbf{R}],
+\label{eq::rateDis}
+\end{equation}
+if the view is not received, $d[R_{m}]$ otherwise.
+Finally, the distortion functions in~\eqref{eq::rateDis} can be evaluated from the general expression of the R-D function of an intra-coded frame with high rate assumption:
+\begin{equation}
+d[R_I] = \mu_I \sigma_I^2 2^{-2R_I},
+\end{equation}
+where $R_I$ is the number of bits per pixels and is equal to the sum of the rates that contribute to the current region, $\sigma_I^2$ is the spatial variance of the frame and $\mu_I$ is a constant depending on the source distribution.
+
+\begin{equation}
+D_i (\mathbf{R}_1,\mathbf{R}_2,\cdots,\mathbf{R}_N) = \sum_{m=1}^{M} \alpha(f_{i,m}) d[ \sum_{j=1}^N \mathbf{\Phi}_{i,j,m}\cdot \mathbf{R}_j ]
+\end{equation}
+
+\begin{equation}
+\mathbf{\Phi}_{i,j,m} = [\phi_{i,j,m}(1),\cdots,\phi_{i,j,m}(M)]
+\end{equation}

@@ -1,0 +1,52 @@
+\subsection{Multi-Camera Network Scenario}
+\label{sec::clusterStructure}
+We consider a scenario with a set of cameras ${\mathcal{S} = \{1,2,\cdots,|\mathcal{S}|\}}$
+deployed over a city for gathering multimedia data from intersections.
+A base station with limited radio resource (e.g. time slots in TDMA or resource
+block in OFDMA) is then deployed in the city for collecting data from those cameras
+through wireless communication links.
+Data collected from individual cameras is to be periodically transmitted back to the
+base station for forwarding to a back-end server.
+Since the base station has limited radio resource allocated for multi-camera
+networks, effective resource allocation scheme might be considered to support
+transmission from cameras.
+%
+Therefore, we consider a \emph{two-hop relay} communication model for uplink
+transmission for the sake of exploiting spatial reuse as shown in
+Figure~\ref{fig::sysModel}.
+That is, cameras are divided into several clusters and each cluster will select
+one camera to act as cluster head for relaying data of its member to the base
+station.
+In such a two-tier cluster communication model, cluster heads are allocated
+\emph{orthogonal radio resource} (tier-1 radio resource) for direct communicating
+with the base station.
+However, cameras belong to different clusters can share the same resource (tier-2
+radio resource) for concurrently forwarding their data to its serving cluster head,
+and hence inter-cluster interference must be properly controlled to ensure
+successfully data reception by all cluster heads. 
+Within each cluster, in order to prevent from intra-cluster interference, only one
+transmission is active at one time instant.
+%
+
+For each transmission link, to ensure the transmitted data $D$ can be successfully
+received, we require the allocated time $T$, bandwidth $W$, and link SINR $\gamma$
+be sufficient as follows:
+\begin{equation}
+\label{eq::capaciy}
+D \leq TW\log_2\left(1+\frac{1}{\Gamma}\gamma\right),
+\end{equation}
+where $\Gamma$ is a constant to model the gap between the achievable data rate
+of the selected modulation/coding scheme and the theoretic Shannon channel
+capacity~\cite{MQAM}.
+To ensure energy-efficient yet reliable correlation-aware communications, therefore,
+the number of clusters and the subset of machines to schedule in the same slot and
+their transmission powers need to be optimally determined for the given amount of
+radio resource.
+We describe in the following the proposed formulation for joint optimization of
+{\em cluster formation, transmission scheduling, and power control.}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.9\columnwidth]{Figures/model}
+\caption{\label{fig::sysModel}System model for clustered communication}
+\end{figure}

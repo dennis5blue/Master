@@ -1,0 +1,150 @@
+\section{Proposed Cross Entropy Scheduling Algorithm}
+\label{sec::ceAlgorithm}
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/TSP.pdf}
+\caption{\label{fig::TSP}Find the schedule with the minimum cost}
+\end{center}
+\end{figure}
+The objective of problem~\eqref{eq::formulation} is to minimize the amount of bits required to be transmitted based on the idea that correlated regions are not necessary to be delivered.
+Since our target problem is  $\mathcal{NP}$-hard, in this section we present a randomized search algorithm based on the cross entropy method for the determination of transmission schedule.
+We first model the scheduling problem into a direct graph, where edge from vertex $i$ to vertex $j$ has cost $l_{ij}$, which is equalled to the amount of bits needed to be transmitted if camera $i$ overhears the transmission of all the cameras scheduled before camera $j$.
+For example, as figure~\ref{fig::TSP} shows, if the schedule is shown as solid arrows, the cost $l_{25}$ would be the amount of bits that camera $5$ needs to transmit if it overhears camera $2$ and camera $1$.
+Note that the goal of problem~\eqref{eq::formulation} is now equalled to the minimization of sum of link cost after we transform the problem into the direct graph.
+That is, if we denote $\mathcal{X}$ as the set of all possible schedules (each camera is scheduled once), and $\mathcal{L}$ as a real-valued function on $\mathcal{X}$ returning the cost of each schedule, the objective of problem~\eqref{eq::formulation} now becomes
+\begin{equation}
+\mathcal{L}(\mathbf{X}^*) = \underset{\mathbf{X} \in \mathcal{X}}{\min} \mathcal{L}(\mathbf{X}).
+\label{eq::CEobjective}
+\end{equation}
+In order to solve problem~\eqref{eq::CEobjective}, we refer to the cross entropy method for transforming problem~\eqref{eq::CEobjective} into an estimation problem.
+We thus discuss the main concepts of the cross entropy method and how we apply this algorithm to our problem in the followings.
+%
+\subsection{The Cross Entropy Method}
+In this section, we introduce some main ideas of the cross entropy (CE) method~\cite{CE}.
+The CE algorithm has been considered as an efficient algorithm for finding an optimal object from a finite set of objects.
+Therefore, it can be applied to solve some $\mathcal{NP}$-hard problems by translating the ``deterministic'' optimization problem into a ``stochastic'' one, where the optimal solution of this stochastic optimization problem is regarded as a rare event.
+The main idea of CE algorithm is to iteratively find a (near) optimal solution, which includes the following two phases:
+\begin{enumerate}
+\item Use a specified mechanism to generate random samples according to some probability distribution.
+\item Update the probability distribution based on the sampled data for producing ``better'' samples in the next iteration.
+\end{enumerate}
+Therefore, in order to design the CE method, we describe in the followings how the above two phases are done in our work.
+%
+\subsection{Generation of Random Schedules}
+For generating random schedules, one simple method is through a Markov chain~\cite{MarkovRandomSchedule}, starting at node $i$, and ending up after $N-1$ steps.
+Denote $\mathbf{P} = [p_{ij}]_{N \times N}$ as the one step transition matrix of this Markov chain, where all the diagonal elements ${p_{ii}, \forall i = 1, \cdots, N}$ equal to $0$ and all other elements ${p_{ij}, \forall i,j = 1,\cdots,N, i \neq j}$ are positive real numbers smaller than $1$.
+Note that one vertex can only be passed once for any feasible schedules, therefore, we could not directly generate random schedule samples through $\mathbf{P}$.
+In order to prevent from obtaining irrelevant schedules, we refer to the following algorithm for random schedules generation.
+%
+\IncMargin{1em}
+\begin{algorithm}[]
+ \SetAlgoLined
+ \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
+ \Input{Markov transition matrix $\mathbf{P}$ and the first scheduled camera $\tilde{x_1} = i$}
+ \Output{random schedule vector $\tilde{\mathbf{X}}$}
+ \BlankLine
+ Initialize $\mathbf{P}^{(1)} = \mathbf{P}$ and $\tilde{x_1}=i$ and $k=1$ \\
+ \While{$k < N$}{
+ 	$\mathbf{P}^{(k+1)} \gets \mathbf{P}^{(k)}$ \\
+  	Set the $\tilde{x_k}^{th}$ column of $\mathbf{P}^{(k+1)}$ to $0$ \\
+  	Normalize all the rows of $\mathbf{P}^{(k+1)}$ so that the summation of each row equals to $1$ \\
+  	Generate $\tilde{x_{k+1}}$ from the distribution of the $\tilde{x_k}^{th}$ row of $\mathbf{P}^{(k+1)}$ \\
+  	$k \gets k+1$ \\
+ }
+ \caption{\label{alg::generateSchedule}Generation for random schedules}
+\end{algorithm}
+\DecMargin{1em}
+
+Without loss of generality, we assume in algorithm~\ref{alg::generateSchedule} that the first scheduled camera is $i$, and the overall cross entropy algorithm will run for $N$ times ${i=1,\cdots,N}$ to get the best starting camera as introduced in section~\ref{sec::overallCE}.
+With the help of algorithm~\ref{alg::generateSchedule}, feasible schedule samples can be obtained according to the transition probability at this iteration.
+This is because the transition probability matrix is updated each time we determine the next scheduled camera.
+For example, suppose that camera $4$ is decided to be scheduled at slot $1$ and the other cameras scheduled from slot $2$ to slot $N$ are not yet determined, which means that ${\tilde{x_1} = 4}$ and ${k=1}$.
+Under this assumption, the $4^{th}$ column of $\mathbf{P}^{(2)}$ will become a zero column so that camera $4$ will not be scheduled again.
+After that, each row of $\mathbf{P}^{(2)}$ will be normalized to sum up equals to $1$, and hence the next camera scheduled after camera $4$ can be obtained though the $4^{th}$ row of $\mathbf{P}^{(2)}$.
+More specifically, $p_{4j}^{(2)}$ denotes the probability that camera $j$ is scheduled after camera $4$.
+Algorithm~\ref{alg::generateSchedule} then goes iteratively until all cameras have been scheduled so that one schedule sample is obtained.
+%
+\subsection{Update for Transition Probability}
+Recall that our goal in problem~\eqref{eq::CEobjective} is to find the minimum cost over a finite set of states.
+In order to guide the searching direction for minimizing the total cost, we update the transition probability matrix $\mathbf{P}$ during each iterations.
+The policy for updating $\mathbf{P}$ based on the cost of random scheduling samples generated.
+That is, if we define $I_{\{\mathcal{L}(\tilde{\mathbf{X}}) \leq \gamma \}}$ as an indicator function where ${I_{\{\mathcal{L}(\tilde{\mathbf{X}}) \leq \gamma \}} = 1}$ if ${\mathcal{L}(\tilde{\mathbf{X}}) \leq \gamma}$, otherwise, ${I_{\{\mathcal{L}(\tilde{\mathbf{X}}) \leq \gamma \}} = 0}$, then problem~\eqref{eq::CEobjective} can be associated with the following estimation problem with estimator:
+\begin{equation}
+\hat{p}_{ij} = \frac{ \overset{K}{\underset{k=1}{\sum}} I_{\{ \mathcal{L}( \tilde{\mathbf{X}_k} )\leq\gamma \}}
+                                 \overset{N}{\underset{r=1}{\sum}} I_{\{ \tilde{\mathbf{X}_k}\in \mathcal{X}_{ij}(r)\}} }
+                               { \overset{K}{\underset{k=1}{\sum}} I_{\{ \mathcal{L}(\tilde{\mathbf{X}_k})\leq\gamma \}}
+                                  \overset{N}{\underset{r=1}{\sum}} I_{\{ \tilde{\mathbf{X}_k}\in \mathcal{X}_{i}(r)\}} },
+\label{eq::estimator}
+\end{equation}
+where ${\mathcal{X}_{ij}(r) \in \mathcal{X}}$ is the set of all paths that the $r^{th}$ step is from vertex $i$ to vertex $j$, and ${\mathcal{X}_{i}(r) \in \mathcal{X}}$ is the set of all paths that the $r^{th}$ step start from vertex $i$.
+The interpretation of~\eqref{eq::estimator} is that we only consider the sampled schedules that the total cost is less than or equal to $\gamma$, and we calculate the portion of times that the transition $i \to j$ occurs.
+The parameters in $\mathbf{P}$ are thus updated through~\eqref{eq::estimator}.
+However, instead of updating the transition matrix $\mathbf{P}$ directly through~\eqref{eq::estimator}, we use a smoothed updating policy such that the transition matrix at the $t^{th}$ iteration $\mathbf{P}_t$ can be written as:
+\begin{equation}
+\mathbf{P}_t = \alpha\hat{\mathbf{P}}_t + (1-\alpha)\mathbf{P}_{t-1},
+\label{eq::smoothedUpdating}
+\end{equation}
+where $\hat{\mathbf{P}}_t$ is the transition matrix estimated by~\eqref{eq::estimator}.
+The reason why we update the transition matrix through~\eqref{eq::smoothedUpdating} instead of letting ${\mathbf{P}_t = \alpha\hat{\mathbf{P}}_t}$ is to avoid causing to many $0$s and $1$s for the transition matrix.
+As long as some elements in $\mathbf{P}_t$ becomes $0$ or $1$, their value will no longer be changed, which might lead to finding a local optimal solution.
+Therefore, a smoothing variable ${0 \leq \alpha \leq 1}$ is introduced while updating the transition matrix.
+%
+\subsection{Overall Algorithm}
+\label{sec::overallCE}
+The overall CE algorithm is now presented as follows.
+Start with the transition matrix
+\begin{equation}
+\mathbf{P}_1 = \left[ \begin{array}{cccc}
+0 &\frac{1}{N-1} &\cdots &\frac{1}{N-1} \\
+\frac{1}{N-1} &0 &\cdots &\frac{1}{N-1} \\
+\vdots &\vdots &\vdots &\vdots \\
+\frac{1}{N-1} &\frac{1}{N-1} &\cdots &0
+\end{array} \right]_{N \times N},
+\label{eq::initTransitionMatrix}
+\end{equation}
+we generate $K$ sample schedules ${\tilde{\mathbf{X}_1},\cdots,\tilde{\mathbf{X}_K}}$ through algorithm~\ref{alg::generateSchedule}, and the cost of can be calculated accurately.
+We then use~\eqref{eq::estimator} to obtain the fraction of samples such that their relative cost is smaller than or equal to the threshold $\gamma$, where $\gamma$ is the $\rho$-quantile of $\mathcal{L}(\mathbf{X})$ such that
+\begin{equation}
+\mathbb{P}(\mathcal{L}(\mathbf{X}) \leq \gamma) = \rho,
+\label{eq::quantile}
+\end{equation}
+and $0 \leq \rho \leq 1$.
+Finally, the transition matrix can be updated through~\eqref{eq::smoothedUpdating} until the elements in $\mathbf{P}$ converge to $0$ or $1$.
+The CE scheduling algorithm can now be summarized in algorithm~\ref{alg::CE}.
+%
+\IncMargin{1em}
+\begin{algorithm}[]
+ \SetAlgoLined
+ \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
+ \Input{$N$ cameras and the mapping of cost function $\mathcal{L}(\cdot)$}
+ \Output{An optimal schedule $\mathbf{X}^*$}
+ \BlankLine
+ Initialize $\gamma^* \gets \infty$ \\
+ \For{$i \gets 1$ \textbf{to} $N$}
+ {
+ 	Initialize ${\mathbf{P}_1}$ by~\eqref{eq::initTransitionMatrix} and $t=1$\\
+ 	$\tilde{x_1} \gets i$\\
+ 	\While{There exists some elements in $\mathbf{P}_t$ that do not converge to $0$ or $1$}
+ 	{
+ 		\For{$k \gets 1$ \textbf{to} $K$}
+ 		{
+ 		Use algorithm~\ref{alg::generateSchedule} to generate a random schedule $\tilde{\mathbf{X}_k}$, where the inputs of algorithm~\ref{alg::generateSchedule} are $\mathbf{P}_t$ and $\tilde{x_1}$ \\
+ 		Calculate the cost $\mathcal{L}(\tilde{\mathbf{X}_k})$ \\
+  		}
+  		Set $\gamma$ by~\eqref{eq::quantile} \\
+  		Calculate the estimator by~\eqref{eq::estimator} \\
+  		Update $\mathbf{P}_{t+1}$ by~\eqref{eq::smoothedUpdating} \\
+  		$t \gets t+1$ \\
+ 	}
+ 	Get $\mathbf{X}^*_{(i)}$ through $\mathbf{P}_t$ \\
+ 	\If{$\mathcal{L}(\mathbf{X}^*_{(i)}) \leq \gamma^*$}
+ 	{
+ 		$\gamma^* \gets \mathcal{L}(\mathbf{X}^*_{(i)})$ \\
+ 		$\mathbf{X}^* \gets \mathbf{X}^*_{(i)}$ \\
+ 	}
+ }
+ \caption{\label{alg::CE}Cross entropy scheduling algorithm}
+\end{algorithm}
+\DecMargin{1em}
+%
+\subsection{Complexity Analysis}

@@ -1,0 +1,67 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage{textcomp}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{cite}
+\usepackage{amsfonts}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\newtheorem{mydef}{Definition}
+\newtheorem{mythm}{Theorem}
+\newtheorem{myCor}{Corollary}
+\newtheorem{mylem}{Lemma}
+
+\usepackage{epstopdf}
+\usepackage{enumerate}
+\usepackage{units}
+\usepackage{color}
+\usepackage[T1]{fontenc}
+\usepackage{subfigure}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{bm}
+
+%\usepackage{algorithm}
+%\usepackage{algorithmic}
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\newcommand{\ignore}[1]{}
+
+\begin{document}
+%\bstctlcite{IEEEtran:noReplace}
+
+\title{Data-Centric Resource Allocation for Correlated Data Gathering in Wireless Multi-Camera Networks}
+%
+\author{
+\IEEEauthorblockN{Chang-Yu Song\IEEEauthorrefmark{1}
+}
+\IEEEauthorblockA{
+\IEEEauthorrefmark{1}Graduate Institute of Communication Engineering\\
+National Taiwan University \\
+Taipei, Taiwan 106 \\
+Email: r02942122@ntu.edu.tw}
+}
+
+\maketitle
+
+\begin{abstract}
+\input{abstract.tex}
+\end{abstract}
+
+\input{introduction.tex}
+\input{background.tex}
+\input{scenarioAndModel.tex}
+%\input{systemFramework.tex}
+\input{formulation.tex}
+\input{crossEntropy.tex}
+\input{branchAndBound.tex}
+\input{evaluation.tex}
+\input{conclusion.tex}
+
+\bibliography{reference}
+\bibliographystyle{IEEEtran}
+
+\end{document} 

@@ -42,6 +42,11 @@ Since we do not consider B-frame encoding in this thesis, which means that each 
 \label{eq::referenceConstraint}
 \end{equation}
 which means that the frame captured by each camera can reference from only one frame or encode independently.
+Also note that we assume every cameras encoded its image as a P-frame should reference from an overheard I-frame, therefore
+\begin{equation}
+x_{ij} \leq x_{jj}, \forall i,j \in V.
+\label{eq::referenceOnlyIframe}
+\end{equation}
 
 To proceed, since whether a camera $i$ can overhear the transmission of camera $j$ or not depends on the transmission schedule (can only overhear previous transmissions).
 For this reason, it is necessary for us to define the transmission order, and hence we denote the scheduling vector ${\mathbf{Z} = [z_1, z_2, \cdots, z_{|V|}]}$, ${1 \leq z_i \leq N}$, ${i=1,\cdots,|V|}$ such that ${z_i = n}$, ${1 \leq n \leq N}$, ${n \in \mathbb{Z}}$ if camera $i$ is scheduled at the $n^{th}$ time slot.
@@ -78,9 +83,10 @@ subject to
 \begin{align}
 &W_i = \{ j \in V | z_j < z_i \}, &\forall i \in V, \nonumber \\
 &U_i = \{ j \in W_i | \tau C_{ji} \geq \sum_{k=1}^{|V|}x_{jk}H(F_j|F_k) \}, &\forall i \in V, \nonumber \\
-&|z_i - z_j| > 0, &\forall i,j \in V, i \neq j, \nonumber \\
 &\sum_{j=1}^{|V|} x_{ij} = 1, &\forall i \in V, \nonumber \\
+&x_{ij} \leq x_{jj}, &\forall i,j \in V, \nonumber \\
 &x_{ij} = \{0,1\}, &\forall i,j \in V, \nonumber \\
+&|z_i - z_j| > 0, &\forall i,j \in V, i \neq j, \nonumber \\
 &1 \leq z_i \leq N, &\forall i \in V, z_i \in \mathbb{Z}.
 \label{eq::formulation}
 \end{align}

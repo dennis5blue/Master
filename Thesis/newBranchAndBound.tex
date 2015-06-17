@@ -1,45 +1,75 @@
-\section{Proposed Branch and Bound Scheduling Algorithm}
-\label{sec::bbAlgorithm}
-\begin{figure*}
+\section{Proposed Scheduling Algorithm}
+\label{sec::schedulingAlgorithm}
+%\begin{figure*}
+\begin{figure}
 \begin{center}
-\includegraphics[width=0.95\textwidth]{Figures/BBdesign.pdf}
+\includegraphics[width=0.95\columnwidth]{Figures/BBdesignIframeSelection.pdf}
 \caption{\label{fig::BBdesgin}Enumeration tree of branch-and-bound algorithm}
 \end{center}
-\end{figure*}
-As we mentioned before, problem~\eqref{eq::formulation} is $\mathcal{NP}$-hard, and hence we simply problem~\eqref{eq::formulation} into an I-frame selection problem and solve it through a branch-and-bound approach in this chapter.
-Instead of transforming problem~\eqref{eq::formulation} into a stochastic estimation problem and solving it through the CE method, we also refer to the branch-and-bound method for finding the optimal transmission schedule.
-Note that all the decision variables $\mathbf{X}, \mathbf{Y}$ in problem~\eqref{eq::formulation} belongs to a positive integer; therefore, it is clearly that the optimal solution can be found if we search through the feasible set.
-That is, the solution set of problem~\eqref{eq::formulation} can be modelled as an enumeration tree.
-However, directly traversing the whole tree would lead to very high complexity, and hence some policy must be included for reducing the complexity.
-One possible method without losing the optimality is through the branch-and-bound (BB) algorithm~\cite{BB} as presented in this section.
-The main idea of BB algorithm is that if one sub-tree has no possibility to include the optimal solution, then it is not required to be traverse any more.
-Therefore, a proper policy to ``bound'' branches must be well designed for the efficiency of BB algorithm, and we introduce the ``branching'' and ``bounding'' policy in the followings.
+\end{figure}
+%\end{figure*}
 %
-\subsection{Branching Policy}
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/referenceStructure.pdf}
+\caption{\label{fig::encodeOrder}Coding structure of a group of pictures}
+\end{center}
+\end{figure}
+As we mentioned before, problem~\eqref{eq::formulation} is a $\mathcal{NP}$-hard problem, therefore, we show how to simplify and solve this problem in this chapter.
+Note that we assume a P-frame can only reference from one I-frame as illustrated in equation~\eqref{eq::referenceOnlyIframe}.
+According to equation~\eqref{eq::referenceOnlyIframe}, the coding structure of a group of pictures can be shown in figure~\ref{fig::encodeOrder}, where every P-frames will reference from the closest previous I-frame to reduce its encoded bits.
+Consequently, problem~\eqref{eq::formulation} can be decomposed into two sub-problems, including (a) the I-frame selection sub-problem and (b) the P-frame scheduling sub-problem.
+We show in the followings how we solve these two sub-problems.
+
+\subsection{I-frame Selection Sub-Problem}
+Note that the decision variables of the I-frame selection sub-problem are the diagonal elements of $\mathbf{X}$.
+We aim to figure out whether ${x_{ii},i \in V}$ equals to $0$ or $1$ so that the total amount of encoded bits can be minimized, where the other scheduling and overhearing constraints are ignore during the selection of I-frames.
+Suppose that camera $i$ is encoded as an I-frame, it is clearly that it requires $H(F_i)$ to encode its image.
+However, if camera $i$ is encoded as a P-frame, the amount of encoded bits should depend on which I-frame it references from.
+An intuitive method to determine the reference frame is to select the most correlated I-frame and the amount of encoded bits can be written as $\underset{j \in V, x_{jj}=1}{\min} H(F_i|F_j)$.
+Therefore, the I-frame selection sub-problem can be written as
+\begin{equation*}
+\min \left(
+\sum_{i=1}^{|V|} x_{ii}H(F_i) +
+\sum_{i=1}^{|V|} (1-x_{ii}) \underset{j \in V, x_{jj}=1}{\min} H(F_i|F_j) \right),
+\end{equation*}
+subject to
+\begin{align}
+&x_{ii} = \{0,1\}, &\forall i \in V.
+\label{eq::IframeSelectionSubProblem}
+\end{align}
+
+Since all the decision variables ${x_{ii},i \in V}$ belong to a binary integer, it is clearly that the optimal solution can be found if we search through the feasible set.
+That is, the solution set of problem~\eqref{eq::IframeSelectionSubProblem} can be modeled as an enumeration tree.
+However, directly traversing the whole tree would lead to very high computational complexity, and hence some policy must be included for reducing the complexity.
+One possible method without losing the optimality is through the branch-and-bound (BB) algorithm~\cite{BB} as presented in this chapter.
+The main idea of the BB algorithm is that if one sub-tree has no possibility to include the optimal solution, then it is not required to be traversed any more.
+Therefore, a proper policy to ``bound'' branches must be well designed for the efficiency of the BB algorithm, and we introduce the ``branching'' and ``bounding'' policy in the followings.
+%
+\subsubsection{Branching Policy}
 The reason why BB algorithm can be applied to solve discrete and combination optimization problems is that the candidate solutions of these problems can be thought of as a rooted tree where the full solutions set is the root of this tree.
 The branching phase is thus designed for separating the solution set into several subsets.
-For example, as shown in figure~\ref{fig::BBdesgin}, we divide the solution set by fixing some elements in $\mathbf{X}$.
-That is, the left part of figure~\ref{fig::BBdesgin} (rooted at $x_1=1$) denotes the solution set with the first scheduled camera being camera $1$.
-Note that the sub-tree of $x_1=1, x_2=1$ is drawn by dash lines, since this sub-tree is not a feasible solution set (multiple cameras scheduled in the same time slot) so that it is not required to be traversed.
+For example, as shown in figure~\ref{fig::BBdesgin}, we divide the solution set by fixing some elements of ${x_{ii},i \in V}$.
+That is, the right hand side of figure~\ref{fig::BBdesgin} (rooted at $x_{11}=1$) denotes the solution set with camera $1$ is encoded as an I-frame.
+Note that the sub-tree of $x_{11}=1, x_{22}=1$ is drawn by dash lines if the optimal solution of problem~\eqref{eq::IframeSelectionSubProblem} cannot be found in this sub-tree (determined by the estimation of lower bound) so that it is not required to be traversed.
 The branching phase will keep working until leaf (all variables in $\mathbf{X}$ are determined) or being bounded, where the bounding policy is described in the following subsection.
-\begin{equation}
-\frac{1}{|V|-|\tilde{X}^t|+1}+\frac{1}{lb(\tilde{X}^t)}.
-\end{equation}
+%\begin{equation}
+%\frac{1}{|V|-|\tilde{X}^t|+1}+\frac{1}{lb(\tilde{X}^t)}.
+%\end{equation}
 %
-\subsection{Bounding Policy}
+\subsubsection{Bounding Policy}
 Before introducing the bounding policy, we first propose an algorithm to estimate the lower bound of cost at each sub-tree.
-To proceed, suppose we are now at the $t^{th}$ iteration of BB algorithm, for which the cost matrix of this iteration is defined as:
+To proceed, we first denote the cost matrix for the I-frame selection sub-problem as:
 \begin{equation}
-\mathbf{H}^t = \left[ \begin{array}{cccc}
-\infty &h_{12}^t &\cdots &h_{1N}^t \\
-h_{21}^t &\infty &\cdots &h_{2N}^t \\
+\mathbf{H} = \left[ \begin{array}{cccc}
+H(F_1) &H(F_1|F_2) &\cdots &H(F_1|F_{|V|}) \\
+H(F_2|F_1) &H(F_2) &\cdots &H(F_2|F_{|V|}) \\
 \vdots &\vdots &\vdots &\vdots \\
-h_{N1}^t &h_{N2}^t &\cdots &\infty
-\end{array} \right],
+H(F_{|V|}|F_1) &H(F_{|V|}|F_2) &\cdots &H(F_{|V|})
+\end{array} \right].
 \label{eq::bbCostMatrix}
 \end{equation}
-where $h_{ij}^t$ denotes the amount of bits that is required to be transmitted if camera $i$ overhears all the cameras scheduled before camera $j$.
-The lower bound of cost below this branch can now be calculated through $\mathbf{H}^t$ as presented in algorithm~\ref{alg::lbEstimation}.
+The lower bound of cost below a branch can now be calculated through $\mathbf{H}$ as presented in algorithm~\ref{alg::lbEstimation}.
 %
 \IncMargin{1em}
 \begin{algorithm}[]
@@ -66,7 +96,7 @@ The reason why we need to set some rows and columns to infinity is that as long 
 \underset{i\in V\setminus \tilde{X}^t}{\max} \text{ } \underset{j \in V\setminus \tilde{X}^t}{\min}\text{ }h_{ij}^{t}.
 \end{equation}
 %
-\subsection{Overall Algorithm}
+\subsubsection{Overall Algorithm}
 Based on the ideas described in the previous subsections, we can now present how the overall BB algorithm works.
 To start, we first define an initial cost matrix $\mathbf{H}^0$ to measure the cost (amount of bits needed to be transmitted) for scheduling camera $j$ after camera $i$ for all $i,j \in V$ as:
 \begin{equation}
@@ -121,4 +151,6 @@ The overall algorithm is now shown in algorithm~\ref{alg::bbAlgorithm}.
 \end{algorithm}
 \DecMargin{1em}
 %
-\subsection{Complexity Analysis}
+\subsubsection{Complexity Analysis}
+%
+\subsection{P-frame Scheduling Sub-Problem}

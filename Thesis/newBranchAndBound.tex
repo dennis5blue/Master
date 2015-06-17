@@ -1,0 +1,124 @@
+\section{Proposed Branch and Bound Scheduling Algorithm}
+\label{sec::bbAlgorithm}
+\begin{figure*}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{Figures/BBdesign.pdf}
+\caption{\label{fig::BBdesgin}Enumeration tree of branch-and-bound algorithm}
+\end{center}
+\end{figure*}
+As we mentioned before, problem~\eqref{eq::formulation} is $\mathcal{NP}$-hard, and hence we simply problem~\eqref{eq::formulation} into an I-frame selection problem and solve it through a branch-and-bound approach in this chapter.
+Instead of transforming problem~\eqref{eq::formulation} into a stochastic estimation problem and solving it through the CE method, we also refer to the branch-and-bound method for finding the optimal transmission schedule.
+Note that all the decision variables $\mathbf{X}, \mathbf{Y}$ in problem~\eqref{eq::formulation} belongs to a positive integer; therefore, it is clearly that the optimal solution can be found if we search through the feasible set.
+That is, the solution set of problem~\eqref{eq::formulation} can be modelled as an enumeration tree.
+However, directly traversing the whole tree would lead to very high complexity, and hence some policy must be included for reducing the complexity.
+One possible method without losing the optimality is through the branch-and-bound (BB) algorithm~\cite{BB} as presented in this section.
+The main idea of BB algorithm is that if one sub-tree has no possibility to include the optimal solution, then it is not required to be traverse any more.
+Therefore, a proper policy to ``bound'' branches must be well designed for the efficiency of BB algorithm, and we introduce the ``branching'' and ``bounding'' policy in the followings.
+%
+\subsection{Branching Policy}
+The reason why BB algorithm can be applied to solve discrete and combination optimization problems is that the candidate solutions of these problems can be thought of as a rooted tree where the full solutions set is the root of this tree.
+The branching phase is thus designed for separating the solution set into several subsets.
+For example, as shown in figure~\ref{fig::BBdesgin}, we divide the solution set by fixing some elements in $\mathbf{X}$.
+That is, the left part of figure~\ref{fig::BBdesgin} (rooted at $x_1=1$) denotes the solution set with the first scheduled camera being camera $1$.
+Note that the sub-tree of $x_1=1, x_2=1$ is drawn by dash lines, since this sub-tree is not a feasible solution set (multiple cameras scheduled in the same time slot) so that it is not required to be traversed.
+The branching phase will keep working until leaf (all variables in $\mathbf{X}$ are determined) or being bounded, where the bounding policy is described in the following subsection.
+\begin{equation}
+\frac{1}{|V|-|\tilde{X}^t|+1}+\frac{1}{lb(\tilde{X}^t)}.
+\end{equation}
+%
+\subsection{Bounding Policy}
+Before introducing the bounding policy, we first propose an algorithm to estimate the lower bound of cost at each sub-tree.
+To proceed, suppose we are now at the $t^{th}$ iteration of BB algorithm, for which the cost matrix of this iteration is defined as:
+\begin{equation}
+\mathbf{H}^t = \left[ \begin{array}{cccc}
+\infty &h_{12}^t &\cdots &h_{1N}^t \\
+h_{21}^t &\infty &\cdots &h_{2N}^t \\
+\vdots &\vdots &\vdots &\vdots \\
+h_{N1}^t &h_{N2}^t &\cdots &\infty
+\end{array} \right],
+\label{eq::bbCostMatrix}
+\end{equation}
+where $h_{ij}^t$ denotes the amount of bits that is required to be transmitted if camera $i$ overhears all the cameras scheduled before camera $j$.
+The lower bound of cost below this branch can now be calculated through $\mathbf{H}^t$ as presented in algorithm~\ref{alg::lbEstimation}.
+%
+\IncMargin{1em}
+\begin{algorithm}[]
+ \SetAlgoLined
+ \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
+ \Input{Cost matrix $\mathbf{H}^t$ and the determined partial schedule $\tilde{X}^t$}
+ \Output{Estimated lower bound $LB(\mathbf{H}^t,\tilde{X}^t)$}
+ \BlankLine
+ $LB(\mathbf{H}^t,\tilde{X}^t)$ $\gets$ the exact cost for the determined partial schedule $\tilde{X}^t$ \\
+ \For{$i \in \tilde{X}^t$}
+ {
+ 	Set the $i^{th}$ column of $\mathbf{H}^t$ to $\infty$ \\
+ 	Set the $i^{th}$ row of $\mathbf{H}^t$ to $\infty$ \\
+ }
+ Sort all elements in $\mathbf{H}^t$ as ascending order \\
+ $LB(\mathbf{H}^t,\tilde{X}^t)$ $\gets$ $LB(\mathbf{H}^t,\tilde{X}^t)+$smallest $N-|\tilde{X}^t|$ elements of $\mathbf{H}^t$ \\
+ \caption{\label{alg::lbEstimation}Estimation for lower bound}
+\end{algorithm}
+\DecMargin{1em}
+%
+The reason why we need to set some rows and columns to infinity is that as long as a camera is scheduled, it cannot be scheduled again.
+\begin{equation}
+\sum_{i\in V\setminus \tilde{X}^t} \underset{j \in V\setminus \tilde{X}^t}{\min}\text{ }h_{ij}^{t} - 
+\underset{i\in V\setminus \tilde{X}^t}{\max} \text{ } \underset{j \in V\setminus \tilde{X}^t}{\min}\text{ }h_{ij}^{t}.
+\end{equation}
+%
+\subsection{Overall Algorithm}
+Based on the ideas described in the previous subsections, we can now present how the overall BB algorithm works.
+To start, we first define an initial cost matrix $\mathbf{H}^0$ to measure the cost (amount of bits needed to be transmitted) for scheduling camera $j$ after camera $i$ for all $i,j \in V$ as:
+\begin{equation}
+\mathbf{H}^0 = \left[ \begin{array}{cccc}
+\infty &h_{12}^0 &\cdots &h_{1N}^0 \\
+h_{21}^0 &\infty &\cdots &h_{2N}^0 \\
+\vdots &\vdots &\vdots &\vdots \\
+h_{N1}^0 &h_{N2}^0 &\cdots &\infty
+\end{array} \right],
+\label{eq::initCostMatrix}
+\end{equation}
+where $h_{ij}^0$ is the amount of bits that is needed to be transmitted if camera $i$ overhears all the regions ${s_{jm}, m=1,2,\cdots,M}$ of camera $j$.
+Therefore, $h_{ij}^0$ can be obtained by letting ${U_i^0=\{ j|\tau C_{ji} \geq H(F_j)\}}$, and $D_i^0 = \{s_{km}\in \mathcal{S}_k | k \in U_i^0\}$.
+In this way,
+\begin{align}
+h_{ij}^0 &= H(F_i|D_i^0) \nonumber \\
+         &= \sum_{m=1}^M \alpha_{im}\Delta r_{im} (1-\beta_{im}^0), \forall i,j \in V, i \neq j.
+\end{align}
+Note that we set the diagonal element of $\mathbf{H}^0$ to infinity due to the reason that all cameras only transmit their data once.
+The overall algorithm is now shown in algorithm~\ref{alg::bbAlgorithm}.
+\IncMargin{1em}
+\begin{algorithm}[]
+ \SetAlgoLined
+ \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
+ \Input{Relative area vector $A_i$ and rate vector $R_i$ of each camera $i \in V$}
+ \Output{Optimal transmission schedule}
+ \BlankLine
+ Initialize cost matrix $\mathbf{H}^0$ by~\eqref{eq::initCostMatrix}\\
+ Initialize best cost = $\infty$, $t \gets 0$\\
+ Put $x_1 = 1$, $x_2 = 1$, $\cdots$, $x_N=1$ into branch queue\\
+ \While{Branch queue $\neq$ NULL}
+ {
+ 	$t \gets t+1$ \\
+ 	Update cost matrix $\mathbf{H}^t$ for this branch\\
+  	\eIf{is leaf}
+  	{
+  		\If{cost<best cost}
+  			{best cost = cost\\}
+ 	}
+ 	{
+ 		Estimate lower bound through algorithm~\ref{alg::lbEstimation} \\
+		\eIf{estimated lower bound > best cost}
+		{
+  			prune this branch\\
+ 		}
+ 		{
+ 			keep branching\\
+ 		} 	
+ 	}
+ }
+ \caption{\label{alg::bbAlgorithm}Branch-and-bound scheduling algorithm}
+\end{algorithm}
+\DecMargin{1em}
+%
+\subsection{Complexity Analysis}

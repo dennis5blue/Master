@@ -1,0 +1,89 @@
+\section{Transmission Scheduling under Overhearing Source Coding}
+\label{sec::OSC}
+Denote ${V=\{ 1,2,\cdots,|V| \}}$ as the set of cameras deployed for data gathering in a city, where camera $i$ will produce image $F_i$.
+To process and transmit the image observed by each camera, we assume that $F_i$ can be encoded as an I-frame or a P-frame, where we denote the amount of bits needed to encode $F_i$ as $H(F_i)$ (if $F_i$ is encoded as an I-frame) or $H(F_i|F_j)$ (if $F_i$ is encoded as a P-frame with the reference frame $F_j$).
+Based on the above assumptions, we are now aimed to minimize the total amount of bits required to be transmitted to the data aggregator, and we show in the followings our motivation and how the resource allocation solution can be obtained through overhearing source coding.
+%
+\subsection{Motivation}
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/motivation.pdf}
+\caption{\label{fig::motivation}Motivation of data-centric data gathering}
+\end{center}
+\end{figure}
+In multi-camera networks, image collected from different cameras might eventually produce correlated data streams.
+It is clearly that the amount of data gathered from all cameras within the network is increased together with the number of cameras.
+However, as shown in figure~\ref{fig::motivation}, useful data does not increased as much as the data quantity, which means that there exists a portion of data which is not required to be transmitted, and hence motivates us to investigate the idea of correlated data gathering through overhearing source coding.
+%
+\subsection{Problem Formulation}
+Since the performance of overhearing source coding depends a lot on the sequence of transmission schedule, the goal of our problem formulation is to determine the best schedule so that the later scheduled camera can leverage the image collected by the set of previous scheduled cameras for reducing its amount of data.
+To start, assume that every cameras need to deliver its image to the aggregator once, and the number of available time slots $N$ is equivalent to number of cameras, that is ${N=|V|}$.
+We first 
+%denote the vector ${\mathbf{X} = [x_1, x_2, \cdots, x_{|V|}]}$, ${x_i = \{0,1\}}$, ${\forall i \in V}$ as the I-frame indicator variable such that
+%\begin{equation*}
+%\left\{ \begin{array}{ll}
+%x_i = 1, &\text{if camera $i$ is encoded as an I-frame}, \\
+%x_i = 0, &\text{if camera $i$ is encoded as a P-frame}.
+%\end{array} \right.
+%\end{equation*}
+%For some cameras, it is possible for them to encode its image as a P-frame by overhearing nearby transmissions, therefore, we further
+define the referencing matrix ${\mathbf{X} = [x_{ij}]_{|V| \times |V|}}$ as
+\begin{equation*}
+\left\{ \begin{array}{ll}
+x_{ij} = 1, &\text{ if image $F_i$ produced by camera $i$ is} \\
+                   &\text{ referenced from frame $F_j$,} \\
+x_{ij} = 0, &\text{ if image $F_i$ does not reference from $F_j$.}
+\end{array} \right.
+\end{equation*}
+Not that we assume $x_{ii}=1$ if camera $i$ is encoded as an I-frame for the sake of notation simplicity.
+Since we do not consider B-frame encoding in this thesis, which means that each camera must encode its image either as an I-frame or a P-frame, therefore, we require
+\begin{equation}
+\sum_{j=1}^{|V|} x_{ij} = 1, \forall i \in V,
+\label{eq::referenceConstraint}
+\end{equation}
+which means that the frame captured by each camera can reference from only one frame or encode independently.
+
+To proceed, since whether a camera $i$ can overhear the transmission of camera $j$ or not depends on the transmission schedule (can only overhear previous transmissions).
+For this reason, it is necessary for us to define the transmission order, and hence we denote the scheduling vector ${\mathbf{Z} = [z_1, z_2, \cdots, z_{|V|}]}$, ${1 \leq z_i \leq N}$, ${i=1,\cdots,|V|}$ such that ${z_i = n}$, ${1 \leq n \leq N}$, ${n \in \mathbb{Z}}$ if camera $i$ is scheduled at the $n^{th}$ time slot.
+Note that we require ${|z_i - z_j| > 0}$, ${\forall i,j \in V, i \neq j }$ since only one camera can transmit its data within the same time slot.
+Based on the scheduling vector $\mathbf{Z}$, we can define the subset of cameras that transmit before camera $i$ as
+\begin{equation}
+W_i = \{ j \in V | z_j < z_i \}.
+\label{eq::prevSet}
+\end{equation}
+In order to determine the set of overhearing cameras, we do not assume a constant, given overhearing distance for all machines.
+Instead, we take a general approach by assuming the set of cameras that can overhear a transmission to be determined based on the amount of transmitted data and the channel capacity.
+Specifically, for camera $i$ to overhear transmission from previous scheduled camera $j \in W_i$, the amount of data to overhear cannot be larger than the maximum channel capacity $C_{ji}$ multiplied by the time slot duration $\tau$.
+In this way, the set of cameras $U_i$ that camera $i$ can overhear can be expressed as follows:
+\begin{equation}
+U_i = \{ j \in W_i | \tau C_{ji} \geq \sum_{k=1}^{|V|}x_{jk}H(F_j|F_k) \},
+\label{eq::overSet}
+\end{equation}
+where we assume $H(F_j|F_j) = H(F_j)$ for the sake of notation simplicity, and $\tau$ is the duration of time slot and $C_{ji}$ is the achievable rate from camera $j$ to camera $i$ defined as:
+\begin{equation}
+C_{ji} = W \log_2 \left( 1+\frac{1}{\Gamma} \frac{p_j G_{ji}}{WN_0} \right),
+\label{eq::capacity}
+\end{equation}
+with $p_j$ being the transmission power, $G_{ji}$ being the channel gain, $W$ begin the channel bandwidth, $N_0$ being the background noise, and $\Gamma$ being the Shannon gap as introduced in~\cite{MQAM}.
+Note that for the special case when the channel gain $G_{ji}$ between camera $j$ and camera $i$ is uniquely determined by the distance $d_{ji}$ between them (e.g. no fading), transmission of camera $j$ can be overheard by cameras that are inside the circle of radius $d_{j0}$ around camera $j$.
+After overhearing transmissions from the set $U_i$, camera $i$ can perform dependent source coding for removing redundant information from its data.
+
+Recall that the objective for the scheduling problem is to minimize the total amount of bits that needed to be delivered.
+The overall problem formulation can now be written as follows:
+\begin{equation*}
+\underset{\mathbf{X} \mathbf{Z}}{\min}
+\sum_{i=1}^{|V|} \sum_{j=1}^{|V|}  x_{ij} H(F_i|F_j),
+\end{equation*}
+subject to
+\begin{align}
+&W_i = \{ j \in V | z_j < z_i \}, &\forall i \in V, \nonumber \\
+&U_i = \{ j \in W_i | \tau C_{ji} \geq \sum_{k=1}^{|V|}x_{jk}H(F_j|F_k) \}, &\forall i \in V, \nonumber \\
+&|z_i - z_j| > 0, &\forall i,j \in V, i \neq j, \nonumber \\
+&\sum_{j=1}^{|V|} x_{ij} = 1, &\forall i \in V, \nonumber \\
+&x_{ij} = \{0,1\}, &\forall i,j \in V, \nonumber \\
+&1 \leq z_i \leq N, &\forall i \in V, z_i \in \mathbb{Z}.
+\label{eq::formulation}
+\end{align}
+Since the determination of $\mathbf{X}$ and $\mathbf{Z}$ in problem~\eqref{eq::formulation} is $\mathcal{NP}$-hard, we describe in the following how we solve this problem through the branch-and-bound approach.
+%
+\subsection{Complexity Analysis}

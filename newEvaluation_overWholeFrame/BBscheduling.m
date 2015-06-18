@@ -127,7 +127,7 @@ axis([-inf inf -inf inf]);
 set(gca,'XTick',[]);
 %set(gca,'YTick',[]);
 %set(gca,'YColor','w');
-set(gca,'XColor','w');
+%set(gca,'XColor','w');
 set(gca,'XTickLabel',['']);
 %set(gca,'YTickLabel',['']);
 ylabel('Transmission bytes (kB)');

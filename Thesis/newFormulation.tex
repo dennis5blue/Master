@@ -65,7 +65,7 @@ x_{ij} = 1, &\text{ if image $F_i$ produced by camera $i$ is} \\
 x_{ij} = 0, &\text{ if image $F_i$ does not reference from $F_j$.}
 \end{array} \right.
 \end{equation*}
-Not that we assume $x_{ii}=1$ if camera $i$ is encoded as an I-frame for the sake of notation simplicity.
+Note that we assume $x_{ii}=1$ if camera $i$ is encoded as an I-frame for the sake of notation simplicity.
 Since we do not consider B-frame encoding in this thesis, which means that each camera must encode its image either as an I-frame or a P-frame, therefore, we require
 \begin{equation}
 \sum_{j \in U_i} x_{ij} = 1, \forall i \in V,

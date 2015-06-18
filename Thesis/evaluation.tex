@@ -23,6 +23,28 @@ We then deployed 30 cameras with different view angles in the ``virtual'' city t
 Each camera deployed is configured to take the city snapshot as a $1280 \times 720$ HD image.
 To find the amount of encoded bits $H(F_i)$ of each camera, we use a multi-view video coding reference software~\cite{JMVC} to process those regions (treated as an I-frame) of each camera's view.
 Afterwards, we perform the multi-view encoding for each pair of cameras and experimentally create the cost matrix $\mathbf{H}$~\eqref{eq::bbCostMatrix}.
+The parameters for our simulation is listed in table~\ref{tab::evaParameters}.
+%
+\begin{table}[htb]
+\footnotesize
+\centering
+\begin{tabular}{c||c}
+  \hline
+  City size & $500m \times 500m$ \\ \\
+  Number of cameras & $30$ \\ \\
+  Overhearing gap $\rho$ & $1$ \\ \\
+  Image resolution & $1280 \times 720$ (HD $720p$) \\ \\
+  Focal Length & $35$ ($mm$) \\ \\
+  Multiview search range & $32,64,128,256,512$ \\ \\
+  Image quantization parameter & $31$ \\ \\
+  Coding technique & Context adaptive arithmetic \\
+                                  & binary coding (CABAC) \\
+  \hline
+\end{tabular}
+\\
+\caption{\label{tab::evaParameters}Parameters for evaluation}
+\end{table}
+
 %
 \subsection{Evaluation of Different Scheduling Algorithms}
 \begin{figure}

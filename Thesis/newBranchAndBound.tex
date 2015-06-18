@@ -50,8 +50,8 @@ Therefore, a proper policy to ``bound'' branches must be well designed for the e
 The reason why BB algorithm can be applied to solve discrete and combination optimization problems is that the candidate solutions of these problems can be thought of as a rooted tree where the full solutions set is the root of this tree.
 The branching phase is thus designed for separating the solution set into several subsets.
 For example, as shown in figure~\ref{fig::BBdesgin}, we divide the solution set by fixing some elements of ${x_{ii},i \in V}$.
-That is, the right hand side of figure~\ref{fig::BBdesgin} (rooted at $x_{11}=1$) denotes the solution set with camera $1$ is encoded as an I-frame.
-Note that the sub-tree of $x_{11}=1, x_{22}=1$ is drawn by dash lines if the optimal solution of problem~\eqref{eq::IframeSelectionSubProblem} cannot be found in this sub-tree (determined by the estimation of lower bound) so that it is not required to be traversed.
+That is, the left hand side of figure~\ref{fig::BBdesgin} (rooted at $x_{11}=1$) denotes the solution set with camera $1$ is encoded as an I-frame.
+Note that the sub-tree of $x_{11}=0, x_{22}=0$ is drawn by dash lines if the optimal solution of problem~\eqref{eq::IframeSelectionSubProblem} cannot be found in this sub-tree (determined by the estimation of lower bound) so that it is not required to be traversed.
 The branching phase will keep working until leaf (all variables in $\mathbf{X}$ are determined) or being bounded, where the bounding policy is described in the following subsection.
 %\begin{equation}
 %\frac{1}{|V|-|\tilde{X}^t|+1}+\frac{1}{lb(\tilde{X}^t)}.
@@ -59,92 +59,71 @@ The branching phase will keep working until leaf (all variables in $\mathbf{X}$ 
 %
 \subsubsection{Bounding Policy}
 Before introducing the bounding policy, we first propose an algorithm to estimate the lower bound of cost at each sub-tree.
-To proceed, we first denote the cost matrix for the I-frame selection sub-problem as:
+To proceed, we denote the cost matrix for the I-frame selection sub-problem as:
 \begin{equation}
 \mathbf{H} = \left[ \begin{array}{cccc}
-H(F_1) &H(F_1|F_2) &\cdots &H(F_1|F_{|V|}) \\
-H(F_2|F_1) &H(F_2) &\cdots &H(F_2|F_{|V|}) \\
+h_{11} &h_{12} &\cdots &h_{1|V|} \\
+h_{21} &h_{21} &\cdots &h_{2|V|} \\
 \vdots &\vdots &\vdots &\vdots \\
-H(F_{|V|}|F_1) &H(F_{|V|}|F_2) &\cdots &H(F_{|V|})
-\end{array} \right].
+h_{|V|1} &h_{|V|2} &\cdots &h_{|V||V|}
+\end{array} \right],
 \label{eq::bbCostMatrix}
 \end{equation}
-The lower bound of cost below a branch can now be calculated through $\mathbf{H}$ as presented in algorithm~\ref{alg::lbEstimation}.
+where ${h_{ij} = H(F_i|F_j)}$ if ${i \neq j}$ and ${h_{ii}=H(F_i)}$.
+The cost matrix in~\eqref{eq::bbCostMatrix} will be calculated as a beforehand information so that the lower bound of cost below a branch can be estimated through $\mathbf{H}$.
+
+For an arbitrary branch $t$, suppose that we have a partial determined vector ${\mathbf{X}^t= \{ x_{11}^t,\cdots,x_{|V||V|}^t \} }$, where some ${x_{ii}^t \in \mathbf{X}^t}$ are fixed to either $1$ or $0$ and some ${x_{ii}^t \in \mathbf{X}^t}$ are still undetermined.
+We then denote the determined I-frame set at branch $t$ as $\mathcal{I}^t$:
+\begin{equation}
+\mathcal{I}^t = \{ i \in V | x_{ii}^t = 1 \},
+\label{eq::IframeSet}
+\end{equation}
+where the set of undetermined encoded style cameras at branch $t$ is $V \setminus \mathcal{I}^t$.
+Note that ${x_{ii}^t=1}$ means that camera $i$ should be encoded as an I-frame, therefore, it is clearly that the amount of bits required to encoded the image of this camera equals $H(F_i)$.
+On the other hand, if ${x_{kk}^t=0}$ or $x_{kk}^t$ has not been determined, camera $k$ has the possibility to encode its image as a P-frame.
+As a consequence, the amount of bits required to encode camera $k$'s frame must be smaller than $H(F_k)$.
+Since our goal is to find the \emph{lower bound} of required bits, we can thus relaxed the constraints of P-frame reference from an I-frame so that the obtained result will become a weak lower bound.
+That is, the cost of P-frame $\underset{j \in V, x_{jj}=1}{\min} H(F_k|F_j)$ now becomes $\underset{j \in V}{\min} H(F_k|F_j)$.
+In short, the lower bound estimation procedure of an arbitrary branch $t$  is summarized in algorithm~\ref{alg::lbEstimation}.
 %
 \IncMargin{1em}
 \begin{algorithm}[]
  \SetAlgoLined
  \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
- \Input{Cost matrix $\mathbf{H}^t$ and the determined partial schedule $\tilde{X}^t$}
- \Output{Estimated lower bound $LB(\mathbf{H}^t,\tilde{X}^t)$}
+ \Input{Cameras set $V$ and partial determined I-frame set $\mathcal{I}^t$~\eqref{eq::IframeSet} and cost matrix $\mathbf{H}$~\eqref{eq::bbCostMatrix}}
+ \Output{Lower bound $lb^t$ of total amount of encoded bits below branch $t$}
  \BlankLine
- $LB(\mathbf{H}^t,\tilde{X}^t)$ $\gets$ the exact cost for the determined partial schedule $\tilde{X}^t$ \\
- \For{$i \in \tilde{X}^t$}
+ Initialize $lb^t \gets 0$\\
+ \For{$i \in \mathcal{I}^t$}
  {
- 	Set the $i^{th}$ column of $\mathbf{H}^t$ to $\infty$ \\
- 	Set the $i^{th}$ row of $\mathbf{H}^t$ to $\infty$ \\
+ 	$lb^t \gets lb^t + H(F_i)$ \\
  }
- Sort all elements in $\mathbf{H}^t$ as ascending order \\
- $LB(\mathbf{H}^t,\tilde{X}^t)$ $\gets$ $LB(\mathbf{H}^t,\tilde{X}^t)+$smallest $N-|\tilde{X}^t|$ elements of $\mathbf{H}^t$ \\
- \caption{\label{alg::lbEstimation}Estimation for lower bound}
+ \For{$k \in V \setminus \mathcal{I}^t$}
+ {
+ 	$lb^t \gets lb^t + \underset{j \in V}{\min} H(F_k|F_j)$ \\
+ }
+ \caption{\label{alg::lbEstimation}Lower bound estimation}
 \end{algorithm}
 \DecMargin{1em}
 %
-The reason why we need to set some rows and columns to infinity is that as long as a camera is scheduled, it cannot be scheduled again.
-\begin{equation}
-\sum_{i\in V\setminus \tilde{X}^t} \underset{j \in V\setminus \tilde{X}^t}{\min}\text{ }h_{ij}^{t} - 
-\underset{i\in V\setminus \tilde{X}^t}{\max} \text{ } \underset{j \in V\setminus \tilde{X}^t}{\min}\text{ }h_{ij}^{t}.
-\end{equation}
-%
 \subsubsection{Overall Algorithm}
 Based on the ideas described in the previous subsections, we can now present how the overall BB algorithm works.
-To start, we first define an initial cost matrix $\mathbf{H}^0$ to measure the cost (amount of bits needed to be transmitted) for scheduling camera $j$ after camera $i$ for all $i,j \in V$ as:
-\begin{equation}
-\mathbf{H}^0 = \left[ \begin{array}{cccc}
-\infty &h_{12}^0 &\cdots &h_{1N}^0 \\
-h_{21}^0 &\infty &\cdots &h_{2N}^0 \\
-\vdots &\vdots &\vdots &\vdots \\
-h_{N1}^0 &h_{N2}^0 &\cdots &\infty
-\end{array} \right],
-\label{eq::initCostMatrix}
-\end{equation}
-where $h_{ij}^0$ is the amount of bits that is needed to be transmitted if camera $i$ overhears all the regions ${s_{jm}, m=1,2,\cdots,M}$ of camera $j$.
-Therefore, $h_{ij}^0$ can be obtained by letting ${U_i^0=\{ j|\tau C_{ji} \geq H(F_j)\}}$, and $D_i^0 = \{s_{km}\in \mathcal{S}_k | k \in U_i^0\}$.
-In this way,
-\begin{align}
-h_{ij}^0 &= H(F_i|D_i^0) \nonumber \\
-         &= \sum_{m=1}^M \alpha_{im}\Delta r_{im} (1-\beta_{im}^0), \forall i,j \in V, i \neq j.
-\end{align}
-Note that we set the diagonal element of $\mathbf{H}^0$ to infinity due to the reason that all cameras only transmit their data once.
 The overall algorithm is now shown in algorithm~\ref{alg::bbAlgorithm}.
 \IncMargin{1em}
 \begin{algorithm}[]
  \SetAlgoLined
  \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
- \Input{Relative area vector $A_i$ and rate vector $R_i$ of each camera $i \in V$}
- \Output{Optimal transmission schedule}
+ \Input{Cameras set $V$ and cost matrix $\mathbf{H}$~\eqref{eq::bbCostMatrix}}
+ \Output{Optimal I-frame cameras set}
  \BlankLine
- Initialize cost matrix $\mathbf{H}^0$ by~\eqref{eq::initCostMatrix}\\
  Initialize best cost = $\infty$, $t \gets 0$\\
- Put $x_1 = 1$, $x_2 = 1$, $\cdots$, $x_N=1$ into branch queue\\
- \While{Branch queue $\neq$ NULL}
+ \While{}
  {
  	$t \gets t+1$ \\
- 	Update cost matrix $\mathbf{H}^t$ for this branch\\
-  	\eIf{is leaf}
+  	\eIf{}
   	{
-  		\If{cost<best cost}
-  			{best cost = cost\\}
  	}
- 	{
- 		Estimate lower bound through algorithm~\ref{alg::lbEstimation} \\
-		\eIf{estimated lower bound > best cost}
-		{
-  			prune this branch\\
- 		}
- 		{
- 			keep branching\\
- 		} 	
+ 	{	
  	}
  }
  \caption{\label{alg::bbAlgorithm}Branch-and-bound scheduling algorithm}

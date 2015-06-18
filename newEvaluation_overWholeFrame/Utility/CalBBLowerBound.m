@@ -1,40 +1,19 @@
-function [ lb ] = CalBBLowerBound( matRoute, matCost )
-    % matRoute(i,j) = 1 means path i->j must be selected
-    % matRoute(i,j) = -1 means path i->j cannot be selected
-    % matRoute(i,j) = 0 means whether path i->j is selected or not is possible
+function [ lb ] = CalBBLowerBound( vecX, matCost )
+    % vecX(i) = 1 means camera i is encoded as an I-frame
+    % vecX(i) = 0 means camera i is encoded as a P-frame
+    % vecX(i) = -1 means camera i has not determined yet
     lb = 0;
-    N = length(matCost(1,:));
-    rowRemove = [];
-    colRemove = [];
-    for i = 1:N
-        camUnSelect = find(matRoute(i,:) == -1);
-        matCost(camUnSelect) = inf;
-        camSelect = find(matRoute(i,:) == 1);
-        if length(camSelect)>1
-            disp('Error!! Pass a node multiple times!!');
-        elseif length(camSelect) == 1
-            lb = lb + matCost(i,camSelect);
-            rowRemove = [rowRemove i];
-            colRemove = [colRemove camSelect];
-        end
+    N = length(vecX);
+    iFrame = find(vecX == 1);
+    for i = 1:length(iFrame)
+        cam = iFrame(i);
+        lb = lb + matCost(cam,cam);
     end
-
-    % reduce cost matrix
-    matCost(rowRemove,:) = [];
-    matCost(:,colRemove) = [];
-
-    % check if matCost is still a square matrix 
-    if length(matCost(1,:)) ~= length(matCost(:,1))
-        disp('Error!! matCost is not a square matrix');
-    end
-
-    for i = 1:length(matCost(1,:))
-        lb = lb + min(matCost(i,:));
-        matCost(i,:) = matCost(i,:) - min(matCost(i,:))*ones(1,length(matCost(1,:)));
-    end
-    for i = 1:length(matCost(1,:))
-        lb = lb + min(matCost(:,i));
-        matCost(:,i) = matCost(:,i) - min(matCost(:,i))*ones(length(matCost(1,:)),1);
+    pFrameCandidate = [1:N];
+    pFrameCandidate(iFrame) = [];
+    for i = 1:length(pFrameCandidate)
+        cam = pFrameCandidate(i);
+        lb = lb + min(matCost(cam,:));
     end
 end
 

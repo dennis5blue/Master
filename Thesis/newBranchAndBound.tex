@@ -51,14 +51,20 @@ The reason why BB algorithm can be applied to solve discrete and combination opt
 The branching phase is thus designed for separating the solution set into several subsets.
 For example, as shown in figure~\ref{fig::BBdesgin}, we divide the solution set by fixing some elements of ${x_{ii},i \in V}$.
 That is, the left hand side of figure~\ref{fig::BBdesgin} (rooted at $x_{11}=1$) denotes the solution set with camera $1$ is encoded as an I-frame.
-Note that the sub-tree of $x_{11}=0, x_{22}=0$ is drawn by dash lines if the optimal solution of problem~\eqref{eq::IframeSelectionSubProblem} cannot be found in this sub-tree (determined by the estimation of lower bound) so that it is not required to be traversed.
+The sub-tree of $x_{11}=0, x_{22}=0$ is drawn by dash lines if the optimal solution of problem~\eqref{eq::IframeSelectionSubProblem} cannot be found in this sub-tree (determined by the estimation of lower bound) so that it is not required to be traversed.
 The branching phase will keep working until leaf (all variables in $\mathbf{X}$ are determined) or being bounded, where the bounding policy is described in the following subsection.
+
+Although the branching scheme seems trivial (traverse through all the combinations of ${x_{ii},i \in V}$), different branching policy will lead to different converge speed.
+For example, if camera $i$ and camera $j$ are high correlated with each other, it is clearly that letting both $x_{ii}$ and $x_{jj}$ equal to $1$ is not a good choice.
+Therefore, the branch with $x_{ii}=1$ and $x_{jj}=1$ should have less priority to be traversed.
+Due to this reason, we proposed a heuristic approach to determine which branch has the highest priority to be traverse for the sake of getting the optimal solution within few iterations.
+The branching metric is thus defined as:
 %\begin{equation}
 %\frac{1}{|V|-|\tilde{X}^t|+1}+\frac{1}{lb(\tilde{X}^t)}.
 %\end{equation}
 %
-\subsubsection{Bounding Policy}
-Before introducing the bounding policy, we first propose an algorithm to estimate the lower bound of cost at each sub-tree.
+\subsubsection{Lower Bound Estimation}
+Before introducing the bounding policy, we first propose an algorithm to estimate the lower bound of total cost at each sub-tree.
 To proceed, we denote the cost matrix for the I-frame selection sub-problem as:
 \begin{equation}
 \mathbf{H} = \left[ \begin{array}{cccc}

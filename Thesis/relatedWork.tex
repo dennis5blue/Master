@@ -27,6 +27,7 @@ Although the streaming protocol in~\cite{P2Pstreaming} is less affected by the p
 Besides, some researches focus on selective streaming for the sake of reducing bandwidth requirement during data transmission.
 The work in~\cite{ClientDrivenStreaming} introduced a client-driven multiview streaming system that allows users to interactively watch 3D video.
 The idea is that only the views which are required to display at the user's side are transmitted through the internet.
+Our work, on the other hand, does not incur information loss at the receiver side since we assume all cameras are required to deliver its data.
 
 For exploiting redundancy among multiple surveillance cameras, the authors in~\cite{ClusteredSynopsis} propose to cluster similar activities from different cameras into a shorter video summary to improve the efficiency of browsing and searching the video.
 The work, however, leaves open how such huge amount of videos can be collected through wireless communication links.
@@ -36,6 +37,13 @@ The authors in~\cite{CorrAwareScheduling} further proposed a scheduling algorith
 Such a selective report mechanism is different from our work, where the information from all cameras are retained without loss in the overall quality of the data collected at the aggregator.
 %
 \subsubsection{Resource Allocation}
+In this paper, we focus on determining whether the resource allocation for wireless video surveillance systems should be performed based on steady-state or worst-case operating conditions, or whether perpetual adaptation to the dynamically changing source and network conditions is desirable~\cite{MWSNresourceAllocation}.
+
+When multiple video streams are present in an ad hoc network, they share and compete for the common network resources. A rate allocation algorithm must balance the available resources among the video streams in a fair and efficient manner~\cite{rateAllocationForVideo}.
+
+We present a high-level framework for resource-distortion optimization. The framework can be used for jointly considering factors across network layers, including source coding, channel resource allocation, and error concealment. For example, resources can take the form of transmission energy in a wireless channel, and transmission cost in a DiffServ-based Internet channel. This framework can be used to optimally trade off resource consumption with end-to-end video quality in packet-based video transmission~\cite{efficientRAforVideo}.
+
+
 Problem of resource allocation for correlated network is also investigated in many literatures.
 The authors in~\cite{CorrelationAwareRA} considered the problem of resource allocation (channel allocation) for correlated data sources in multi-channel multicell FDMA networks, where each source decides the uplink power to use in each channel for communicating with the base station that it belongs to.
 Under the assumption of the Gaussian source and exponential correlation model, the authors allowed data sources to form source groups for joint decoding and aim to minimize the maximum distortion of all source groups through optimal power allocation and channel assignment.

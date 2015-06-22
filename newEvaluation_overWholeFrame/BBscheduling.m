@@ -87,6 +87,7 @@ end
 
 bestSelection
 finalTxBits = CalExactCost(bestSelection,matCost)
+save('IframeStructure.mat');
 
 % Start plotting figures
 figure(1);

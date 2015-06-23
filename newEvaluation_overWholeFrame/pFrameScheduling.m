@@ -4,18 +4,20 @@ addpath('./Utility');
 inputPath = '../SourceData/test9/';
 
 % load the output of I-frame selection problem
+N = cell2mat(struct2cell(load('IframeStructure.mat', 'N')));
 pos = cell2mat(struct2cell(load('IframeStructure.mat', 'pos')));
 dir = cell2mat(struct2cell(load('IframeStructure.mat', 'dir')));
+vecBits = cell2mat(struct2cell(load('IframeStructure.mat', 'vecBits')));
 matCost = cell2mat(struct2cell(load('IframeStructure.mat', 'matCost')));
 temp = cell2mat(struct2cell(load('IframeStructure.mat', 'bestSelection')));
 iFrames = find(temp==1);
+vecBits = vecBits(1:N);
 
 % Parameters settings (must be the same with BBscheduling.m)
 bsX = 0; bsY = 0; % position of base station
 tau = 1; % ms
 txPower = 0.1; % transmission power (watt)
 n0 = 1e-16; % cannot change this value (hard code in CalChannelGain)
-N = 15; % number of total cameras
 W = 180; % kHz
 rho = 1;
 
@@ -126,3 +128,4 @@ for gg = 1:length(vecGOP)
         end
     end
 end
+save('PframeScheduling.mat');

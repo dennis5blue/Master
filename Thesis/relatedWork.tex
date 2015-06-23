@@ -37,20 +37,24 @@ The authors in~\cite{CorrAwareScheduling} further proposed a scheduling algorith
 Such a selective report mechanism is different from our work, where the information from all cameras are retained without loss in the overall quality of the data collected at the aggregator.
 %
 \subsubsection{Resource Allocation}
-In this paper, we focus on determining whether the resource allocation for wireless video surveillance systems should be performed based on steady-state or worst-case operating conditions, or whether perpetual adaptation to the dynamically changing source and network conditions is desirable~\cite{MWSNresourceAllocation}.
+Problem of resource allocation for multi-camera networks is also investigated in many literatures.
+%
+In~\cite{MWSNresourceAllocation}, the authors considered the problem of capturing and transmitting the video streams of several distributed cameras to an aggregator  over a wireless network.
+Since the multimedia data needs to be delivered in real-time under limited network resources, they claimed that the resource allocation solutions for multi-camera networks need to consider both the dynamic source characteristics and network conditions, rather than always relying on steady-state conditions.
+%
+The authors in~\cite{rateAllocationForVideo} also focus on the resource allocation scheme of multiple cameras under ad-hoc networks.
+In ad-hoc networks, different cameras share and compete for the same network resources (e.g. frequency band).
+Therefore, a rate allocation algorithm is required to balance the available resources among multiple cameras in a fair and efficient manner.
+Besides, the authors also claimed that it is desirable to have a distributed resource allocation scheme such that the overhead of control messages can be reduced since cameras do not require to collect global information of the network under the distributed resource allocation scheme.
+%
 
-When multiple video streams are present in an ad hoc network, they share and compete for the common network resources. A rate allocation algorithm must balance the available resources among the video streams in a fair and efficient manner~\cite{rateAllocationForVideo}.
-
-We present a high-level framework for resource-distortion optimization. The framework can be used for jointly considering factors across network layers, including source coding, channel resource allocation, and error concealment. For example, resources can take the form of transmission energy in a wireless channel, and transmission cost in a DiffServ-based Internet channel. This framework can be used to optimally trade off resource consumption with end-to-end video quality in packet-based video transmission~\cite{efficientRAforVideo}.
-
-
-Problem of resource allocation for correlated network is also investigated in many literatures.
-The authors in~\cite{CorrelationAwareRA} considered the problem of resource allocation (channel allocation) for correlated data sources in multi-channel multicell FDMA networks, where each source decides the uplink power to use in each channel for communicating with the base station that it belongs to.
-Under the assumption of the Gaussian source and exponential correlation model, the authors allowed data sources to form source groups for joint decoding and aim to minimize the maximum distortion of all source groups through optimal power allocation and channel assignment.
-It proposed a three-step method to separate the problem into inter-cell resource management, grouping of sources for joint decoding, and intra-cell channel assignment.
-In~\cite{AdaptiveCrossLayerRA}, the authors considered the resource allocation problem for uplink transmission of correlated video sources, where multiple sources stream live video to the base station on a shared channel.
-It aims to maximize the weighted sum of qualities of all received videos, and consists of finding optimal code choice, power assignment and packet selection.
-By relating the quality of decoded video to quality-rate characteristic functions of videos, it formulates a convex optimization problem with linear constraint for solving.
+For correlated multimedia networks, the authors in~\cite{AdaptiveCrossLayerRA} considered the resource allocation problem for uplink transmission of correlated video sources, where multiple sources stream live video to the base station over a shared wireless channel.
+They proposed a solution for an optimization problem such that the weighted sum of
+received quality of all videos can be maximized by exploiting source correlation at the decoder in case of missing data.
+The goal of their problem is to find the optimal coding choice, power assignment and packet selection.
+By modelling the quality of a decoded video as a piecewise linear function of qualities of the most correlated views, their problem can be simplified to a convex from with linear constraint, therefore, it can be solved in an efficient way.
+Our work, on the other hand, does not focus on the distortion of videos, since we aim to deliver all video streams and hence our proposed methods will not cause so much distortion at the decoder.
+%We present a high-level framework for resource-distortion optimization. The framework can be used for jointly considering factors across network layers, including source coding, channel resource allocation, and error concealment. For example, resources can take the form of transmission energy in a wireless channel, and transmission cost in a DiffServ-based Internet channel. This framework can be used to optimally trade off resource consumption with end-to-end video quality in packet-based video transmission~\cite{efficientRAforVideo}.
 %
 \subsubsection{Visual Correlation Model}
 The authors in~\cite{SpatialCorrelationModel} propose a spatial correlation model for cameras deployed in a neighborhood area.

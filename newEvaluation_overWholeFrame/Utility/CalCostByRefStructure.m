@@ -14,8 +14,13 @@ function [ costRefI, costRefP ] = CalCostByRefStructure( matCost, vecIndepBits, 
         for i = 1:length(refStr)
             pCam = pCamSet(i);
             refCam = refStr(i);
-            costRefP = costRefP + matCost(pCam,refCam);
-            costRefI = costRefI + matCost(pCam,iCam);
+            if matCost(pCam,refCam) < matCost(pCam,iCam)
+                costRefP = costRefP + matCost(pCam,refCam);
+                costRefI = costRefI + matCost(pCam,iCam);
+            else
+                costRefP = costRefP + matCost(pCam,iCam);
+                costRefI = costRefI + matCost(pCam,iCam);
+            end
         end
     end
 end

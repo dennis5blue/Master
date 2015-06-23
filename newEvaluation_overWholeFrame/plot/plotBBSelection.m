@@ -1,7 +1,7 @@
 clc;
 clear;
 addpath('../Utility');
-load('../IframeStructure.mat');
+load('../mat/IframeStructure_cam20.mat');
 inputPath = ['../' inputPath];
 
 % Figure 1 is for BB convergence
@@ -75,7 +75,7 @@ bar([1:length(sg)], sg512, 'FaceColor', [0 0.5 1], 'DisplayName','Search range =
 
 leg = legend('show','location','NorthEast');
 set(leg,'FontSize',11);
-axis([-inf inf 400 950]);
+axis([-inf inf -inf inf]);
 set(gca,'XTick',[]);
 %set(gca,'YTick',[]);
 %set(gca,'YColor','w');

@@ -4,12 +4,14 @@ addpath('./Utility');
 inputPath = '../SourceData/test9/';
 
 % load the output of I-frame selection problem
-N = cell2mat(struct2cell(load('IframeStructure.mat', 'N')));
-pos = cell2mat(struct2cell(load('IframeStructure.mat', 'pos')));
-dir = cell2mat(struct2cell(load('IframeStructure.mat', 'dir')));
-vecBits = cell2mat(struct2cell(load('IframeStructure.mat', 'vecBits')));
-matCost = cell2mat(struct2cell(load('IframeStructure.mat', 'matCost')));
-temp = cell2mat(struct2cell(load('IframeStructure.mat', 'bestSelection')));
+numOfCams = 20;
+inputFileName = ['./mat/IframeStructure_cam' num2str(numOfCams) '.mat'];
+N = cell2mat(struct2cell(load(inputFileName, 'N')));
+pos = cell2mat(struct2cell(load(inputFileName, 'pos')));
+dir = cell2mat(struct2cell(load(inputFileName, 'dir')));
+vecBits = cell2mat(struct2cell(load(inputFileName, 'vecBits')));
+matCost = cell2mat(struct2cell(load(inputFileName, 'matCost')));
+temp = cell2mat(struct2cell(load(inputFileName, 'bestSelection')));
 iFrames = find(temp==1);
 vecBits = vecBits(1:N);
 
@@ -19,9 +21,9 @@ tau = 1; % ms
 txPower = 0.1; % transmission power (watt)
 n0 = 1e-16; % cannot change this value (hard code in CalChannelGain)
 W = 180; % kHz
-rho = 1;
+rho = 1.5;
 
-algVersion = 0; % larger metric scheudle first
+algVersion = 3; % larger metric scheudle first
 
 for i = 1:N
     for j = 1:N
@@ -49,7 +51,7 @@ for i = 1:N
         tempCost = matCost(i,iFrames);
         for j = 1:length(iFrames)
             if IfCanOverhear(pos(i,1),pos(i,2),pos(iFrames(j),1),pos(iFrames(j),2),bsX,bsY,rho) == 0
-                tempCost(j) = inf;
+                tempCost(j) = vecBits(i);
             end
         end
         [val idx] = sort(tempCost,'ascend');
@@ -114,7 +116,7 @@ for gg = 1:length(vecGOP)
                 nextCam = nextCam(1);
             end
             vecGOP(gg).schedule = [vecGOP(gg).schedule nextCam];
-            pCamSet(find(pCamSet==nextCam)) = [];
+            %pCamSet(find(pCamSet==nextCam)) = [];
             
             % Update refCams
             for jj = 1:length(pCamSet)
@@ -130,8 +132,10 @@ for gg = 1:length(vecGOP)
                 vecRefCam(find(vecGOP(gg).pFrames==pCam)) = newRef;
             end
             vecGOP(gg).refStructure = vecRefCam;
+            pCamSet(find(pCamSet==nextCam)) = [];
         end
     end
 end
-saveFileName = ['mat/PframeScheduling_cam' num2str(N) '_alg' num2str(algVersion) '.mat'];
+
+saveFileName = ['mat/PframeScheduling_cam' num2str(N) '_rho' num2str(rho) '_alg' num2str(algVersion) '.mat'];
 save(saveFileName);

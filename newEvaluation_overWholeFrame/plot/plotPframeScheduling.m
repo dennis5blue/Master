@@ -3,7 +3,7 @@ clear;
 addpath('../Utility');
 
 % load data for proposed p-frame scheduling metric
-load('../PframeScheduling.mat');
+load('../mat/PframeScheduling_cam20_alg3.mat');
 inputPath = ['../' inputPath];
 indepBits = 0;
 for i = 1:N
@@ -22,7 +22,7 @@ for i = 1:length(plotSg)
 end
 
 % load data for brute force p-frame scheduling
-load('../PframeScheduling_alg0.mat');
+load('../mat/PframeScheduling_cam20_alg0.mat');
 inputPath = ['../' inputPath];
 indepBits = 0;
 for i = 1:N
@@ -39,18 +39,21 @@ end
 
 % Start plotting figures
 figure(1);
-plot(log2(plotSg),plotImproveRefPBruteForce,'*-','LineWidth',2,'DisplayName', ...
-    'Reference from I-frames or P-frames (brute force)','Color','g','MarkerSize',10); hold on;
-plot(log2(plotSg),plotImproveRefP,'*-','LineWidth',2,'DisplayName', ...
-    'Reference from I-frames or P-frames','Color','r','MarkerSize',10); hold on;
-plot(log2(plotSg),plotImproveRefI,'*-','LineWidth',2,'DisplayName', ...
-    'Reference only from I-frames','Color','b','MarkerSize',10);
-set (gca, 'XTick',[5:1:9]);
-xt = get(gca, 'XTick');
-set (gca, 'XTickLabel', 2.^xt);
-leg = legend('show','location','SouthEast');
-set(leg,'FontSize',12);
-axis([-inf inf -inf inf]);
+ploty = [];
+for i = 3:length(plotSg)
+    sg = plotSg(i);
+    ploty=[ploty;plotImproveRefI(i) plotImproveRefP(i) plotImproveRefPBruteForce(i)];
+end
+bar(ploty,'group');
+legend('Reference only from I-frame', ...
+    'Reference from I-frame or P-frame (scheduling metric)', ...
+    'Reference from I-frame or P-frame (brute force)');
+%set (gca, 'XTick',[5:1:9]);
+%xt = get(gca, 'XTick');
+set (gca, 'XTickLabel', [128 256 512]);
+leg = legend('show','location','SouthWest');
+set(leg,'FontSize',11);
+axis([-inf inf 29 31]);
 ylabel('Improve ratio (%)','FontSize',11);
 xlabel('Search range','FontSize',11);
 grid on;

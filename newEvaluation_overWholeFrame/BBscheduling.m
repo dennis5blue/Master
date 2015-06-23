@@ -58,8 +58,8 @@ while length(BBqueue) > 0
     if BBnode.depth == N
         m_cost = CalExactCost(BBnode.selection,matCost);
         if m_cost < ub
-            ub = m_cost
-            bestSelection = BBnode.selection
+            ub = m_cost;
+            bestSelection = BBnode.selection;
         end
     elseif BBnode.depth < N
         nextCam = RandomSelectNextBranch( BBnode.selection );
@@ -86,6 +86,7 @@ while length(BBqueue) > 0
     recordLb = [recordLb BBnode.lb];
 end
 
-bestSelection
-finalTxBits = CalExactCost(bestSelection,matCost)
-save('IframeStructure.mat');
+%bestSelection
+finalTxBits = CalExactCost(bestSelection,matCost);
+saveFileName = ['mat/IframeStructure_cam' num2str(N) '.mat'];
+save(saveFileName);

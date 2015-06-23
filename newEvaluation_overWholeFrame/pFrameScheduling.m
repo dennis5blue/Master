@@ -21,7 +21,7 @@ n0 = 1e-16; % cannot change this value (hard code in CalChannelGain)
 W = 180; % kHz
 rho = 1;
 
-algVersion = 3; % larger metric scheudle first
+algVersion = 0; % larger metric scheudle first
 
 for i = 1:N
     for j = 1:N
@@ -95,7 +95,12 @@ for gg = 1:length(vecGOP)
         elseif length(pCamSet) > 1
             
             % Different version of scheduling metric
-            if algVersion == 1 % consdier schedule now and later
+            if algVersion == 0 % 0 is for brute force
+                [m_bestSche m_bestRefStruc] = BruteForcePFrameScheduling( vecGOP(gg), matCost, pos, bsX, bsY, rho );
+                vecGOP(gg).schedule = m_bestSche;
+                vecGOP(gg).refStructure = m_bestRefStruc;
+                break;
+            elseif algVersion == 1 % consdier schedule now and later
                 vecMetric = CalPFrameSchedulingMetric1( pCamSet, vecRefCam, vecGOP(gg), matCost );
             elseif algVersion == 2 % consider the benefit to others
                 vecMetric = CalPFrameSchedulingMetric2( pCamSet, vecRefCam, vecGOP(gg), matCost );
@@ -128,4 +133,5 @@ for gg = 1:length(vecGOP)
         end
     end
 end
-save('PframeScheduling.mat');
+saveFileName = ['mat/PframeScheduling_cam' num2str(N) '_alg' num2str(algVersion) '.mat'];
+save(saveFileName);

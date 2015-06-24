@@ -158,19 +158,3 @@ That is, a P-frame camera can now reference from a previous scheduled I-frame ca
 However, if a P-frame camera $i$ aims to reference from another P-frame camera $j$, camera $i$ must be able to reconstruct the image of camera $j$, which means that camera $i$ also needs to overhear the transmission of the reference frame of camera $j$.
 For example, suppose that the coding structure is shown in figure~\ref{fig::encodeOrder2}, camera $4$ must both overhear the transmission of camera $1$ and $3$ if it aims to reference from the image of camera $3$.
 %
-\begin{equation*}
-\underset{\mathbf{X}, \mathbf{Z}}{\min}
-\sum_{i=1}^{|V|} \sum_{j \in U_i}  x_{ij} H(F_i|F_j),
-\end{equation*}
-subject to
-\begin{align}
-&W_i = \{ j \in V | z_j \leq z_i \}, &\forall i \in V, \nonumber \\
-&U_i = \{ j \in W_i | \tau C_{ji} \geq H(F_j) \}, &\forall i \in V, \nonumber \\
-&\sum_{j \in U_i} x_{ij} = 1, &\forall i \in V, \nonumber \\
-&x_{ii} \text{solved by problem~\eqref{eq::IframeSelectionSubProblem}}, &\forall i \in V, \nonumber \\
-&x_{ij} \leq x_{jj}, &\forall i \in V, \forall j \in U_i, \nonumber \\
-&x_{ij} = \{0,1\}, &\forall i,j \in V, \nonumber \\
-&|z_i - z_j| > 0, &\forall i,j \in V, i \neq j, \nonumber \\
-&1 \leq z_i \leq N, &\forall i \in V, z_i \in \mathbb{Z}.
-\label{eq::PframeSchedulingSubProblem}
-\end{align}

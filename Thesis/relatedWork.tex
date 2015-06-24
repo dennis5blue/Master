@@ -37,7 +37,7 @@ The authors in~\cite{CorrAwareScheduling} further proposed a scheduling algorith
 Such a selective report mechanism is different from our work, where the information from all cameras are retained without loss in the overall quality of the data collected at the aggregator.
 %
 \subsubsection{Resource Allocation}
-Problem of resource allocation for multi-camera networks is also investigated in many literatures.
+Problem of resource allocation for multi-camera networks is also investigated in literature.
 %
 In~\cite{MWSNresourceAllocation}, the authors considered the problem of capturing and transmitting the video streams of several distributed cameras to an aggregator  over a wireless network.
 Since the multimedia data needs to be delivered in real-time under limited network resources, they claimed that the resource allocation solutions for multi-camera networks need to consider both the dynamic source characteristics and network conditions, rather than always relying on steady-state conditions.
@@ -71,19 +71,31 @@ Since our work is based on real H.264 multiview coding, we do not suffer from th
 Instead, the image correlation model used in our work is based on actual coding of images and hence might lead to more realistic results.
 %
 \subsubsection{Overhearing Source Coding}
-Exploiting the possibility of overhearing for data reduction is investigated in literatures, and the optimal selection and cooperation for joint encoding is considered.
+Exploiting the possibility of overhearing for data reduction is investigated in literature, and the overhearing source coding scheme can be applied in many different areas by the cooperation of jointly encoding distributed source nodes.
+%
+For instance, the authors in~\cite{BodyAreaSensorNetwork} considered the capability of overhearing in the body-area sensor networks.
+On the one hand, the wearable sensors deployed on a human body are responsible for tracking human motions, and hence the captured data for those sensors usually exists very high levels of redundancy and even strong temporal and spatial correlations~\cite{SpatialCorrInBodySensorNetwork}.
+On the other hand, sensor nodes in the body-sensor networks are likely fully connected and hence it is possible for nodes to overhear each other.
+The idea is that each sensor node is conducted in advance to learn the temporal and spatial correlations of sensing data.
+After that, a schedule of sensor nodes is determined to represent the transmission order of each node so that the later scheduled node can refer to the data of previous scheduled node during data compression.
+Based on the proposed algorithm in~\cite{BodyAreaSensorNetwork}, the authors claimed that their overhearing source coding scheme can reduce more than 70 percent of redundant transmission.
+%
+Besides, the authors in~\cite{InterSessionCoding} also considered the problem of overhearing source coding for improving coding gains.
+They focus on the scenario of a inter-session network coding in wireless ad-hoc or mesh networks, where the relay nodes are able to combine overheard packets for increasing the network throughput.
+The transmission range of each node is also investigated in their work by adapting the transmission rate.
+That is, a node can increase the overhearing range for the sake of enabling additional opportunities for coding and increased the overall network throughput.
+For solving the target problem in~\cite{InterSessionCoding}, a joint optimization problem for determining the transmission rate and coding scheme is formulated and an algorithm for a simplified pairwise network coding problem is further proposed.
+%
+The considerable performance gain in~\cite{BodyAreaSensorNetwork}~and~\cite{InterSessionCoding} thus motivates us to investigate the overhearing source coding scheme for high correlated networks.
+%
+%The technique of controlling the transmission power for adjusting the number of nodes that can overhear transmission is further exploited in~\cite{BridgeMonitoring}.
+%In~\cite{SpatialCorrInBodySensorNetwork} discusses the application in Human body motions, which is an extension from\cite{BodyAreaSensorNetwork} to exploit more overhearing nodes. It considers node $v_i$ to compress motion data by allowing it to overhear a set $S_i$ containing most $\kappa$ others nodes, and sends averagely $c(v_i|S_i)$ size of data. It discusses the minimizing of transmission cost by taking use of the conditional entropy as an optimal rate, and propose a solution based on finding the minimum cost DAG for it. It shows finding the minimum cost DAG for $\kappa > 2$ is a NP-hard problem and proposes a heuristic greedy cycle breaker algorithm for solving the problem. Experimental results show that such approach is quite close to the optimum in the motion data application.
+%
+
+In addition to the scalar sensor networks, the overhearing source coding scheme can also be applied to the wireless multimedia sensor networks.
 The work in~\cite{imageModelCluster} exploits overhearing for visual correlation based image gathering.
-Each camera in the target scenario is allowed to overhear transmission from one camera to perform different coding of its image, and the goal is to determine for each camera the node to overhear such that the energy consumption is minimized.
-Similarly, the work in~\cite{BodyAreaSensorNetwork} also allows each node to overhear data from another node for data compression.
-An algorithm for determining the partial orderings of transmission priorities is proposed to facilitate data compression.
-The work in~\cite{InterSessionCoding} considers the problem of inter-session network coding in wireless mesh networks.
-It illustrates the opportunity for machines to reduce transmission rate from overhearing and increases the network throughput.
-To enable additional opportunities for packet combining and network coding, a node is allowed to increase the range over which its packets are overheard.
-A joint optimization problem for determining the transmission rate vector and coding scheme is formulated and an algorithm for a simplified pairwise network coding problem is proposed.
-The technique of controlling the transmission power for adjusting the number of nodes that can overhear transmission is further exploited in~\cite{BridgeMonitoring}.
-In~\cite{SpatialCorrInBodySensorNetwork} discusses the application in Human body motions, which is an extension from\cite{BodyAreaSensorNetwork} to exploit more overhearing nodes.
-It considers node $v_i$ to compress motion data by allowing it to overhear a set $S_i$ containing most $\kappa$ others nodes, and sends averagely $c(v_i|S_i)$ size of data.
-It discusses the minimizing of transmission cost by taking use of the conditional entropy as an optimal rate, and propose a solution based on finding the minimum cost DAG for it.
-It shows finding the minimum cost DAG for $\kappa > 2$ is a NP-hard problem and proposes a heuristic greedy cycle breaker algorithm for solving the problem.
-Experimental results show that such approach is quite close to the optimum in the motion data application.
+Each camera in their target scenario is allowed to overhear transmission from one camera and then reduce the power consumption for transmitting its image data.
+Their goal is to determine a transmission schedule for the cameras such that the energy consumption of those cameras is minimized by letting highly correlated cameras perform differential coding (e.g. P-frame encoding) to reduce the delivered data.
+For this purpose, an approximation and heuristic algorithm is proposed for solving the scheduling problem by taking the camera settings (e.g. position or sensing direction) as the inputs of algorithm.
+Our work, on the other hand, does not make approximations when determining the transmission schedule since we refer to a realistic video encoder when generating input information.
 %

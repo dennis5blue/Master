@@ -1,0 +1,116 @@
+I-frame 90447 bytes
+-------------------- Range = 256 --------------------
+** Fast search
+	1 frames encoded:  Y 35.3799 dB  U 36.8553 dB  V 35.9340 dB
+	average bit rate:  549.8160 kbit/s  [68727 byte for 1.000 sec]
+	real	1m14.872s
+	user	1m14.740s
+	sys	0m0.060s
+
+** Full search
+	1 frames encoded:  Y 35.3262 dB  U 36.7407 dB  V 35.8696 dB
+	average bit rate:  544.7760 kbit/s  [68097 byte for 1.000 sec]
+	real	49m51.357s
+	user	49m47.564s
+	sys	0m0.992s
+
+-------------------- Range = 128 --------------------
+** Fast search
+	1 frames encoded:  Y 37.6879 dB  U 37.2470 dB  V 36.1860 dB
+	average bit rate:  715.2720 kbit/s  [89409 byte for 1.000 sec]
+	real	1m5.290s
+	user	1m5.184s
+	sys	0m0.040s
+
+** Full search
+	1 frames encoded:  Y 35.8352 dB  U 36.9020 dB  V 36.0117 dB
+	average bit rate:  590.0960 kbit/s  [73762 byte for 1.000 sec]
+	real	14m43.922s
+	user	14m41.876s
+	sys	0m1.236s
+
+1. Search from (0-128) to (0+128)
+	1 frames encoded:  Y 35.9724 dB  U 36.9583 dB  V 35.9893 dB
+	average bit rate:  600.3040 kbit/s  [75038 byte for 1.000 sec]
+	real	4m12.097s
+	user	4m11.812s
+	sys	0m0.056s
+
+2. Search from (32-128) to (32+128)
+	1 frames encoded:  Y 35.8272 dB  U 36.8060 dB  V 35.9966 dB
+	average bit rate:  586.7680 kbit/s  [73346 byte for 1.000 sec]
+	real	4m10.334s
+	user	4m9.776s
+	sys	0m0.256s
+
+3. Search from (64-128) to (64+128)
+	1 frames encoded:  Y 35.5923 dB  U 36.8225 dB  V 35.9484 dB
+	average bit rate:  566.9280 kbit/s  [70866 byte for 1.000 sec]
+	real	4m5.228s
+	user	4m5.004s
+	sys	0m0.028s
+
+4. Search from (96-128) to (96+128)
+	1 frames encoded:  Y 35.5358 dB  U 36.8694 dB  V 35.8595 dB
+	average bit rate:  561.1840 kbit/s  [70148 byte for 1.000 sec]
+	real	4m5.642s
+	user	4m5.160s
+	sys	0m0.272s
+
+5. Search from (128-128) to (128+128)
+	1 frames encoded:  Y 35.4457 dB  U 36.8034 dB  V 35.9453 dB
+	average bit rate:  557.0880 kbit/s  [69636 byte for 1.000 sec]
+	real	4m9.019s
+	user	4m8.532s
+	sys	0m0.280s
+
+6. Search from (160-128) to (160+128)
+     1 frames encoded:  Y 36.8374 dB  U 37.0263 dB  V 36.0240 dB
+
+     average bit rate:  676.1200 kbit/s  [84515 byte for 1.000 sec]
+
+
+real	4m17.762s
+user	4m17.300s
+sys	0m0.216s
+
+
+7. Search from (192-128) to (192+128)
+	1 frames encoded:  Y 37.0443 dB  U 37.1141 dB  V 36.0352 dB
+	average bit rate:  687.0320 kbit/s  [85879 byte for 1.000 sec]
+	real	4m9.235s
+	user	4m8.896s
+	sys	0m0.096s
+
+
+
+-------------------- Range = 64 --------------------
+1. Search from (0-64) to (0+64)
+	1 frames encoded:  Y 37.7835 dB  U 37.3234 dB  V 36.1638 dB
+	average bit rate:  719.0160 kbit/s  [89877 byte for 1.000 sec]
+	real	2m4.921s
+	user	2m4.732s
+	sys	0m0.088s
+
+2. Search from (32-64) to (32+64)
+
+3. Search from (64-64) to (64+64)
+	1 frames encoded:  Y 36.8018 dB  U 37.0469 dB  V 36.0654 dB
+	average bit rate:  664.0400 kbit/s  [83005 byte for 1.000 sec]
+	real	2m2.814s
+	user	2m2.700s
+	sys	0m0.016s
+
+4. Search from (96-64) to (96+64)
+	1 frames encoded:  Y 37.6799 dB  U 37.1883 dB  V 36.1410 dB
+	average bit rate:  713.2400 kbit/s  [89155 byte for 1.000 sec]
+	real	2m3.368s
+	user	2m3.240s
+	sys	0m0.028s
+
+5. Search from (128-64) to (128+64)
+	1 frames encoded:  Y 37.6756 dB  U 37.2674 dB  V 36.0810 dB
+	average bit rate:  713.3040 kbit/s  [89163 byte for 1.000 sec]
+	real	2m3.205s
+	user	2m3.068s
+	sys	0m0.036s

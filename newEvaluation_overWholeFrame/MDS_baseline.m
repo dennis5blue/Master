@@ -1,10 +1,10 @@
-%function MDS_baseline (in_numCams,in_testVersion,in_searchRange,in_overRange)
-    clc;
-    clear;
-    in_numCams = '30';
-    in_testVersion = '10';
-    in_searchRange = '512';
-    in_overRange = '1';
+function MDS_baseline (in_numCams,in_testVersion,in_searchRange,in_overRange)
+    %clc;
+    %clear;
+    %in_numCams = '30';
+    %in_testVersion = '10';
+    %in_searchRange = '512';
+    %in_overRange = '1';
     addpath('./Utility');
     inputPath = ['../SourceData/test' in_testVersion '/'];
     searchRange = str2num(in_searchRange);
@@ -104,15 +104,94 @@
         end
     end
     
-    % For remaining cameras, if all its neighbors is not I-frame, it becomes an I-frame
     
+    while(1)
+        % attach P-cam to new generated I-cam
+        % For remaining cameras, join a head if this head is its smallest weight neighbor (outEdges)
+        for cam = 1:N
+            m_node = vecAdjGraph(cam);
+            if m_node.ifIFrame == -1
+                m_outEdge = m_node.outEdge;
+                m_candidateI = []; % best vertex among outEdges
+                m_cost = inf; % weight of best vertex among outEdges
+                for i = 1:length(m_outEdge)
+                    refcam = m_outEdge(i);
+                    if vecAdjGraph(refcam).ifIFrame == 1 && vecAdjGraph(refcam).weight < m_cost
+                        m_candidateI = refcam;
+                        m_cost = vecAdjGraph(refcam).weight;
+                    end
+                end
+            
+                pFlag = 1;
+                for i = 1:length(m_outEdge)
+                    refcam = m_outEdge(i);
+                    if vecAdjGraph(refcam).weight < m_cost
+                        pFlag = 0;
+                    end
+                end
+            
+                if pFlag == 1
+                    m_node.ifIFrame = 0;
+                    m_node.cost = matCost(cam,m_candidateI);
+                    %m_node.outEdge = m_candidateI;
+                    vecAdjGraph(cam) = m_node;
+                end
+            end
+        end
+        
+        % For remaining cameras, if all its neighbors is determined as P-frame, it becomes an I-frame
+        for cam = 1:N
+            m_node = vecAdjGraph(cam);
+            if m_node.ifIFrame == -1
+                m_outEdge = m_node.outEdge;
+                iFlag = 1;
+                for i = 1:length(m_outEdge)
+                    refcam = m_outEdge(i);
+                    % if neighbor is determined as P-frame, becomes I-frame
+                    if vecAdjGraph(refcam).ifIFrame == 1  
+                        iFlag = 0;
+                    end
+                    if vecAdjGraph(refcam).ifIFrame == -1 && m_node.weight > vecBits(refcam)
+                        iFlag = 0;
+                    end
+                end
+
+                if iFlag == 1
+                    m_node.ifIFrame = 1;
+                    m_node.cost = vecBits(cam);
+                    %m_node.outEdge = m_candidateI;
+                    vecAdjGraph(cam) = m_node;
+                end
+            end
+        end
+        
+        % check if all cameras are determined
+        ifbreak = 1;
+        for i = 1:N
+            m_node = vecAdjGraph(i); 
+            if m_node.ifIFrame == -1
+                ifbreak = 0;
+            end
+        end
+        if ifbreak == 1
+            break;
+        end
+    end
     
+    totalCost = 0;
+    bestSelection = [];
     for i = 1:N
-        vecAdjGraph(i)
+        %vecAdjGraph(i)
+        m_node = vecAdjGraph(i);
+        totalCost = totalCost + m_node.cost;
+        if m_node.ifIFrame == 1
+            bestSelection = [bestSelection i];
+        end
     end
 
-    %bestSelection
+    bestSelection
+    totalCost
     %finalTxBits = CalExactCost(bestSelection,matCost);
     %saveFileName = ['mat/MDSoutput_test' testVersion '_cam' num2str(N) '_rng' searchRg '.mat'];
     %save(saveFileName);
-%end
+end

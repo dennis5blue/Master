@@ -3,15 +3,16 @@ clear;
 addpath('../Utility');
 
 % load data for proposed p-frame scheduling metric
-load('../mat/PframeScheduling_cam20_alg3.mat');
+load('../mat/PframeScheduling_test10_cam15_rho1.5_alg3.mat');
 inputPath = ['../' inputPath];
 indepBits = 0;
 for i = 1:N
     indepBits = indepBits + matCost(i,i);
 end
+%indepBits
 plotImproveRefI = [];
 plotImproveRefP= [];
-plotSg = [32 64 128 256 512];
+plotSg = [128 256 512];
 for i = 1:length(plotSg)
     sg = plotSg(i);
     m_newMatCost = 8.*dlmread([inputPath 'outFiles/rng' num2str(sg) '/corrMatrix.txt']);
@@ -22,7 +23,7 @@ for i = 1:length(plotSg)
 end
 
 % load data for brute force p-frame scheduling
-load('../mat/PframeScheduling_cam20_alg0.mat');
+load('../mat/PframeScheduling_test10_cam15_rho1.5_alg0.mat');
 inputPath = ['../' inputPath];
 indepBits = 0;
 for i = 1:N
@@ -40,7 +41,7 @@ end
 % Start plotting figures
 figure(1);
 ploty = [];
-for i = 3:length(plotSg)
+for i = 1:length(plotSg)
     sg = plotSg(i);
     ploty=[ploty;plotImproveRefI(i) plotImproveRefP(i) plotImproveRefPBruteForce(i)];
 end
@@ -53,7 +54,7 @@ legend('Reference only from I-frame', ...
 set (gca, 'XTickLabel', [128 256 512]);
 leg = legend('show','location','SouthWest');
 set(leg,'FontSize',11);
-axis([-inf inf 29 31]);
+axis([-inf inf -inf inf]);
 ylabel('Improve ratio (%)','FontSize',11);
 xlabel('Search range','FontSize',11);
 grid on;

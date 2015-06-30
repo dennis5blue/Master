@@ -1,14 +1,14 @@
-function BBselection (numCams)
+function BBselection (numCams,testVersion,searchRg)
     %clc;
     %clear;
-    %addpath('./Utility');
-    inputPath = '../SourceData/test9/';
-    searchRange = 512;
+    addpath('./Utility');
+    inputPath = ['../SourceData/test' testVersion '/'];
+    searchRange = str2num(searchRg);
 
     % Read files
-    vecBits = 8.*dlmread([inputPath 'outFiles/indepByte.txt']); % bits
-    pos = dlmread([inputPath 'pos.txt']);
-    dir = dlmread([inputPath 'dir.txt']);
+    vecBits = 8.*dlmread([inputPath 'outFiles/rng' num2str(searchRange) '/indepByte.txt']); % bits
+    pos = dlmread([inputPath 'plotTopo/pos.txt']);
+    dir = dlmread([inputPath 'plotTopo/dir.txt']);
     matCost = 8.*dlmread([inputPath 'outFiles/rng' num2str(searchRange) '/corrMatrix.txt']);
 
     % Parameters settings
@@ -89,6 +89,6 @@ function BBselection (numCams)
 
     %bestSelection
     finalTxBits = CalExactCost(bestSelection,matCost);
-    saveFileName = ['mat/IframeStructure_cam' num2str(N) '.mat'];
+    saveFileName = ['mat/BBoutput_test' testVersion '_cam' num2str(N) '_rng' searchRg '.mat'];
     save(saveFileName);
 end

@@ -1,7 +1,7 @@
 clc;
 clear;
 addpath('../Utility');
-load('../mat/IframeStructure_cam20.mat');
+load('../mat/BBoutput_test10_cam15_rng512.mat');
 inputPath = ['../' inputPath];
 
 % Figure 1 is for BB convergence
@@ -57,18 +57,18 @@ for i = 1:length(iFrames)
     vecGOP = [vecGOP GOP];
 end
 
-sg = [0 32 64 128 256 512];
-indep = [CalExactCost(ones(1,N),matCost)/(8*1024) 0 0 0 0 0];
+sg = [0 128 256 512];
+indep = [CalExactCost(ones(1,N),matCost)/(8*1024) 0 0 0];
 for i = 2:length(sg)
     m_matCost = 8.*dlmread([inputPath 'outFiles/rng' num2str(sg(i)) '/corrMatrix.txt']);
     m_matCost = m_matCost(1:N,1:N);
     [ costRefI, costRefP ] = CalCostByRefStructure( m_matCost, vecBits, vecGOP );
-    eval(['sg' num2str(sg(i)) ' = [0 0 0 0 0 0];']);
+    eval(['sg' num2str(sg(i)) ' = [0 0 0 0];']);
     eval(['sg' num2str(sg(i)) '(' num2str(i) ') = costRefI/(8*1024);']);
 end
 bar([1:length(sg)], indep, 'FaceColor', [1 0 0], 'DisplayName','Independent transmission'); hold on;
-bar([1:length(sg)], sg32, 'FaceColor', [0 0.5 0.2], 'DisplayName','Search range = 32'); hold on;
-bar([1:length(sg)], sg64, 'FaceColor', [0 0.5 0.4], 'DisplayName','Search range = 64'); hold on;
+%bar([1:length(sg)], sg32, 'FaceColor', [0 0.5 0.2], 'DisplayName','Search range = 32'); hold on;
+%bar([1:length(sg)], sg64, 'FaceColor', [0 0.5 0.4], 'DisplayName','Search range = 64'); hold on;
 bar([1:length(sg)], sg128, 'FaceColor', [0 0.5 0.6], 'DisplayName','Search range = 128'); hold on;
 bar([1:length(sg)], sg256, 'FaceColor', [0 0.5 0.8], 'DisplayName','Search range = 256'); hold on;
 bar([1:length(sg)], sg512, 'FaceColor', [0 0.5 1], 'DisplayName','Search range = 512');

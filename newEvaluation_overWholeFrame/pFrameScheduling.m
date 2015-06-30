@@ -1,11 +1,11 @@
 clc;
 clear;
 addpath('./Utility');
-inputPath = '../SourceData/test9/';
+inputPath = '../SourceData/test10/';
 
 % load the output of I-frame selection problem
-numOfCams = 20;
-inputFileName = ['./mat/IframeStructure_cam' num2str(numOfCams) '.mat'];
+numOfCams = 15;
+inputFileName = ['./mat/BBoutput_test10_cam' num2str(numOfCams) '_rng512.mat'];
 N = cell2mat(struct2cell(load(inputFileName, 'N')));
 pos = cell2mat(struct2cell(load(inputFileName, 'pos')));
 dir = cell2mat(struct2cell(load(inputFileName, 'dir')));
@@ -23,7 +23,7 @@ n0 = 1e-16; % cannot change this value (hard code in CalChannelGain)
 W = 180; % kHz
 rho = 1.5;
 
-algVersion = 3; % larger metric scheudle first
+algVersion = 0; % larger metric scheudle first
 
 for i = 1:N
     for j = 1:N
@@ -137,5 +137,5 @@ for gg = 1:length(vecGOP)
     end
 end
 
-saveFileName = ['mat/PframeScheduling_cam' num2str(N) '_rho' num2str(rho) '_alg' num2str(algVersion) '.mat'];
+saveFileName = ['mat/PframeScheduling_test10_cam' num2str(N) '_rho' num2str(rho) '_alg' num2str(algVersion) '.mat'];
 save(saveFileName);

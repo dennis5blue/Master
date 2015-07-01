@@ -1,4 +1,4 @@
-\section{Proposed Scheduling Algorithm}
+\section{Proposed I-frame selection Algorithm}
 \label{sec::schedulingAlgorithm}
 %\begin{figure*}
 \begin{figure}
@@ -47,6 +47,8 @@ One possible method without losing the optimality is through the branch-and-boun
 The main idea of the BB algorithm is that if one sub-tree has no possibility to include the optimal solution, then it is not required to be traversed any more.
 Therefore, a proper policy to ``bound'' branches must be well designed for the efficiency of the BB algorithm, and we introduce the ``branching'' and ``bounding'' policy in the followings.
 %
+\subsection{Branch-and-Bound Selection Algorithm}
+{\color{red}Describe the proposed branch-and-bound algorithm for I-frame selection}
 \subsubsection{Branching Policy}
 The reason why BB algorithm can be applied to solve discrete and combination optimization problems is that the candidate solutions of these problems can be thought of as a rooted tree where the full solutions set is the root of this tree.
 The branching phase is thus designed for separating the solution set into several subsets.
@@ -138,10 +140,16 @@ The overall algorithm is now shown in algorithm~\ref{alg::bbAlgorithm}.
 \DecMargin{1em}
 %
 \subsubsection{Complexity Analysis}
+
+{\color{red}Try to analyze the time complexity of BB algorithm. }
+%
+\subsection{Graph Approximation}
+{\color{red}Describe our proposed heuristic I-frame selection algorithm based on minimum weight dominating set.}
 %
 %
 %
-\subsection{P-frame Cameras Scheduling Sub-Problem}
+\section{Proposed P-frame Scheduling Algorithm}
+{\color{red}Describe our proposed P-frame scheduling algorithm based on a scheduling metric.}
 %
 \begin{figure}
 \begin{center}

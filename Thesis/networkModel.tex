@@ -105,7 +105,7 @@ and the value of $\kappa$ can be used when performing the motion estimation proc
 \begin{subfigure}[b]{\columnwidth}
 \begin{center}
 \includegraphics[width=0.95\columnwidth]{Figures/motionEstimation.pdf}
-\caption{\label{fig::modifiedME}Demonstration of conventional motion estimation technique}
+\caption{\label{fig::originalME}Demonstration of conventional motion estimation technique}
 \end{center}
 \end{subfigure}
 %
@@ -116,6 +116,15 @@ and the value of $\kappa$ can be used when performing the motion estimation proc
 \end{center}
 \end{subfigure}
 \end{figure}
+%
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/biased.pdf}
+\caption{\label{fig::biased}Experiment result of different biased pixels}
+\end{center}
+\end{figure}
+{\color{red} Explain conventional motion estimation technique and our modified motion estimation in JMVC.}
 As we mentioned in the previous chapter, when two cameras are observing the same area but having different sensing direction, then the collected image might just be a shifted image from the other one.
 Therefore, it motivates us to modify the conventional motion estimation technique so that we can have a larger possibility to find a correlated macroblock under a given search range.
 The idea of our modified motion estimation technique is shown in figure~\ref{fig::modifiedME}, where we shift the search region by the value $\kappa$ estimated from equation~\eqref{eq::biasedPixels}.
+Figure~\ref{fig::biased}

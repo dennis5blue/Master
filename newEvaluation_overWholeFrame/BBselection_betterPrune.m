@@ -1,7 +1,7 @@
 %function BBselection (in_numCams,in_testVersion,in_searchRange,in_overRange)
     clc;
     clear;
-    in_numCams = '15';
+    in_numCams = '25';
     in_testVersion = '10';
     in_searchRange = '512';
     in_overRange = '1';

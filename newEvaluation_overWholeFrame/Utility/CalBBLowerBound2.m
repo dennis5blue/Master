@@ -1,4 +1,5 @@
 function [ lb ] = CalBBLowerBound2( vecX, matCost )
+    % tighter lower bound (avoid deadlock)
     % vecX(i) = 1 means camera i is encoded as an I-frame
     % vecX(i) = 0 means camera i is encoded as a P-frame
     % vecX(i) = -1 means camera i has not determined yet
@@ -32,8 +33,9 @@ function [ lb ] = CalBBLowerBound2( vecX, matCost )
     vecCams = [pFrame unDetermined];
     for i = 1:length(vecCams)
         cam = vecCams(i);
-        vecCandidateRef(cam) = find( mod_matCost(cam,:) == min(mod_matCost(cam,:)) );
-        vecCandidateCost = min(mod_matCost(cam,:));
+        [val idx] = sort(mod_matCost(cam,:),'ascend');
+        vecCandidateRef(cam) = idx(1);
+        vecCandidateCost(cam) = val(1);
     end
     
     % If deadlock exists, change reference with the lower increment cost
@@ -45,14 +47,21 @@ function [ lb ] = CalBBLowerBound2( vecX, matCost )
         for i = 1:length(matDeadlockPair(:,1))
             cam1 = matDeadlockPair(i,1);
             cam2 = matDeadlockPair(i,2);
-            
+            [val1 idx1] = sort(mod_matCost(cam1,:),'ascend');
+            [val2 idx2] = sort(mod_matCost(cam2,:),'ascend');
+            if val1(2) - vecCandidateCost(cam1) < val2(2) - vecCandidateCost(cam2)
+                vecCandidateRef(cam1) = idx1(2);
+                vecCandidateCost(cam1) = val1(2);
+                mod_matCost(cam1,idx1(1)) = inf;
+            else
+                vecCandidateRef(cam2) = idx2(2);
+                vecCandidateCost(cam2) = val2(2);
+                mod_matCost(cam2,idx2(1)) = inf;
+            end
         end
     end
     
     % Cost lb for undetermined frames and p-frames
-    for i = 1:length(unDetermined)
-        cam = unDetermined(i);
-        lb = lb + min(matCost(cam,:));
-    end
+    lb = lb + sum(vecCandidateCost);
 end
 

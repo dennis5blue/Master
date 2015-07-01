@@ -1,24 +1,24 @@
-function BBselection (numCams,testVersion,searchRg)
+function BBselection (in_numCams,in_testVersion,in_searchRange,in_overRange)
     %clc;
     %clear;
     addpath('./Utility');
-    inputPath = ['../SourceData/test' testVersion '/'];
-    searchRange = str2num(searchRg);
+    inputPath = ['../SourceData/test' in_testVersion '/'];
+    searchRange = str2num(in_searchRange);
 
     % Read files
-    vecBits = 8.*dlmread([inputPath 'outFiles/rng' num2str(searchRange) '/indepByte.txt']); % bits
+    vecBits = 8.*dlmread([inputPath 'outFiles/rng' in_searchRange '/indepByte.txt']); % bits
     pos = dlmread([inputPath 'plotTopo/pos.txt']);
     dir = dlmread([inputPath 'plotTopo/dir.txt']);
-    matCost = 8.*dlmread([inputPath 'outFiles/rng' num2str(searchRange) '/corrMatrix.txt']);
+    matCost = 8.*dlmread([inputPath 'outFiles/rng' in_searchRange '/corrMatrix.txt']);
 
     % Parameters settings
     bsX = 0; bsY = 0; % position of base station
     tau = 1; % ms
     txPower = 0.1; % transmission power (watt)
     n0 = 1e-16; % cannot change this value (hard code in CalChannelGain)
-    N = str2num(numCams); % number of total cameras
+    N = str2num(in_numCams); % number of total cameras
     W = 180; % kHz
-    rho = 1;
+    rho = str2num(in_overRange);
     firstCam = 1;
     for i = 1:N
         matCost(i,i) = vecBits(i);
@@ -87,8 +87,10 @@ function BBselection (numCams,testVersion,searchRg)
         recordLb = [recordLb BBnode.lb];
     end
 
-    %bestSelection
-    finalTxBits = CalExactCost(bestSelection,matCost);
-    saveFileName = ['mat/BBoutput_test' testVersion '_cam' num2str(N) '_rng' searchRg '.mat'];
-    save(saveFileName);
+    bestSelection
+    finalTxBits = CalExactCost(bestSelection,matCost)
+    improveRatio = (sum(vecBits(1:N))-finalTxBits)/sum(vecBits(1:N))
+    reducedIter = (2^N - length(recordLb))/(2^N)
+    %saveFileName = ['mat/BBoutput_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '.mat'];
+    %save(saveFileName);
 end

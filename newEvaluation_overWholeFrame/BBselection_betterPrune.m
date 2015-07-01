@@ -1,10 +1,10 @@
-%function BBselection (in_numCams,in_testVersion,in_searchRange,in_overRange)
-    clc;
-    clear;
-    in_numCams = '25';
-    in_testVersion = '10';
-    in_searchRange = '512';
-    in_overRange = '1';
+function BBselection_betterPrune (in_numCams,in_testVersion,in_searchRange,in_overRange)
+    %clc;
+    %clear;
+    %in_numCams = '25';
+    %in_testVersion = '10';
+    %in_searchRange = '512';
+    %in_overRange = '1';
     addpath('./Utility');
     inputPath = ['../SourceData/test' in_testVersion '/'];
     searchRange = str2num(in_searchRange);
@@ -93,6 +93,8 @@
 
     bestSelection
     finalTxBits = CalExactCost(bestSelection,matCost)
-    %saveFileName = ['mat/BBoutput_test' testVersion '_cam' num2str(N) '_rng' searchRg '.mat'];
+    improveRatio = (sum(vecBits(1:N))-finalTxBits)/sum(vecBits(1:N))
+    reducedIter = (2^N - length(recordLb))/(2^N)
+    %saveFileName = ['mat/BBBetterPruneOutput_test' testVersion '_cam' num2str(N) '_rng' searchRg '.mat'];
     %save(saveFileName);
-%end
+end

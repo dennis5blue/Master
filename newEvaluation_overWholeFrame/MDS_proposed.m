@@ -1,4 +1,4 @@
-function MDS_baseline (in_numCams,in_testVersion,in_searchRange,in_overRange)
+function MDS_proposed (in_numCams,in_testVersion,in_searchRange,in_overRange)
     %clc;
     %clear;
     %in_numCams = '30';
@@ -49,65 +49,40 @@ function MDS_baseline (in_numCams,in_testVersion,in_searchRange,in_overRange)
                 m_inEdge = [m_inEdge j];
             end
         end
-        newNode = struct('idx',i,'weight',vecBits(i),'outEdge',m_outEdge,'inEdge',m_inEdge,'ifIFrame',-1,'cost',inf);
+        newNode = struct('idx',i,'weight',vecBits(i),'outEdge',m_outEdge,'ifIFrame',-1,'cost',inf);
         vecAdjGraph = [vecAdjGraph newNode];
     end
     
-    % Initialize cluster heads (become head if it is the smallest vertex weight among all inEdge nodes)
-    for i = 1:N
-        m_node = vecAdjGraph(i);
-        iFlag = 1;
-        for j = 1:length(m_node.inEdge)
-            cam = m_node.inEdge(j);
-            if vecBits(cam) < m_node.weight
-                iFlag = 0;
-            end
-        end
-        
-        if iFlag == 1
-            m_node.ifIFrame = 1;
-            m_node.cost = vecBits(i);
-            %m_node.outEdge = [];
-            vecAdjGraph(i) = m_node;
-        end
-    end
-    
-    % For remaining cameras, join a head if this head is its smallest weight neighbor (outEdges)
-    for cam = 1:N
-        m_node = vecAdjGraph(cam);
-        if m_node.ifIFrame == -1
-            m_outEdge = m_node.outEdge;
-            m_candidateI = []; % best vertex among outEdges
-            m_cost = inf; % weight of best vertex among outEdges
-            for i = 1:length(m_outEdge)
-                refcam = m_outEdge(i);
-                if vecAdjGraph(refcam).ifIFrame == 1 && vecAdjGraph(refcam).weight < m_cost
-                    m_candidateI = refcam;
-                    m_cost = vecAdjGraph(refcam).weight;
-                end
-            end
-            
-            pFlag = 1;
-            for i = 1:length(m_outEdge)
-                refcam = m_outEdge(i);
-                if vecAdjGraph(refcam).weight < m_cost
-                    pFlag = 0;
-                end
-            end
-            
-            if pFlag == 1
-                m_node.ifIFrame = 0;
-                m_node.cost = matCost(cam,m_candidateI);
-                %m_node.outEdge = m_candidateI;
-                vecAdjGraph(cam) = m_node;
-            end
-        end
-    end
-    
-    
     while(1)
-        % attach P-cam to new generated I-cam
-        % For remaining cameras, join a head if this head is its smallest weight neighbor (outEdges)
+        % Cal the head metric by each camera's best out edge
+        vecBestOutEdge = FindBestOutEdge( vecAdjGraph,matCost );
+        vecHeadMetric = zeros(1,N);
+        for cam = 1:N
+            m_node = vecAdjGraph(cam);
+            if m_node.ifIFrame == -1
+                m_headMetric = - m_node.weight;
+                for i = 1:N
+                    if vecBestOutEdge(i) == cam
+                        m_headMetric = m_headMetric + ( vecBits(i) - matCost(i,cam) );
+                    end
+                end
+            elseif m_node.ifIFrame == 0 || m_node.ifIFrame == 1
+                m_headMetric = -inf; % already been determined
+            else
+                disp('Something wrong when assigning nwe I-frame');
+            end
+            vecHeadMetric(cam) = m_headMetric;
+        end
+        % Select one cluster head (become head if it has the largest head metric)
+        [val idx] = sort(vecHeadMetric,'descend');
+        newNode = vecAdjGraph(idx(1));
+        newNode.ifIFrame = 1;
+        newNode.cost = vecBits(idx(1));
+        newNode.outEdge = [];
+        vecAdjGraph(idx(1)) = newNode;
+    
+        % Attach P-cam to new generated I-cam
+        % Attach an I-cam if this edge is the best outEdge
         for cam = 1:N
             m_node = vecAdjGraph(cam);
             if m_node.ifIFrame == -1
@@ -116,16 +91,16 @@ function MDS_baseline (in_numCams,in_testVersion,in_searchRange,in_overRange)
                 m_cost = inf; % weight of best vertex among outEdges
                 for i = 1:length(m_outEdge)
                     refcam = m_outEdge(i);
-                    if vecAdjGraph(refcam).ifIFrame == 1 && vecAdjGraph(refcam).weight < m_cost
+                    if vecAdjGraph(refcam).ifIFrame == 1 && matCost(cam,refcam) < m_cost
                         m_candidateI = refcam;
-                        m_cost = vecAdjGraph(refcam).weight;
+                        m_cost = matCost(cam,refcam);
                     end
                 end
             
                 pFlag = 1;
                 for i = 1:length(m_outEdge)
                     refcam = m_outEdge(i);
-                    if vecAdjGraph(refcam).weight < m_cost
+                    if matCost(cam,refcam) < m_cost && vecAdjGraph(refcam).ifIFrame ~= 0
                         pFlag = 0;
                     end
                 end
@@ -133,12 +108,13 @@ function MDS_baseline (in_numCams,in_testVersion,in_searchRange,in_overRange)
                 if pFlag == 1
                     m_node.ifIFrame = 0;
                     m_node.cost = matCost(cam,m_candidateI);
-                    %m_node.outEdge = m_candidateI;
+                    m_node.outEdge = m_candidateI;
                     vecAdjGraph(cam) = m_node;
                 end
             end
         end
         
+        %{
         % For remaining cameras, if all its neighbors is determined as P-frame, it becomes an I-frame
         for cam = 1:N
             m_node = vecAdjGraph(cam);
@@ -164,6 +140,7 @@ function MDS_baseline (in_numCams,in_testVersion,in_searchRange,in_overRange)
                 end
             end
         end
+        %}
         
         % check if all cameras are determined
         ifbreak = 1;

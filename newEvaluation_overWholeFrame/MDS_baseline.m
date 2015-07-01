@@ -193,6 +193,6 @@ function MDS_baseline (in_numCams,in_testVersion,in_searchRange,in_overRange)
     totalCost
     improveRatio = (sum(vecBits(1:N))-totalCost)/sum(vecBits(1:N))
     %finalTxBits = CalExactCost(bestSelection,matCost);
-    %saveFileName = ['mat/MDSoutput_test' testVersion '_cam' num2str(N) '_rng' searchRg '.mat'];
-    %save(saveFileName);
+    saveFileName = ['mat/MDSoutput_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '.mat'];
+    save(saveFileName);
 end

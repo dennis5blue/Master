@@ -1,0 +1,19 @@
+\section{Proposed P-frame Scheduling Algorithm}
+\label{sec::PFrameScheduling}
+{\color{red}Describe our proposed P-frame scheduling algorithm based on a scheduling metric.}
+%
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/referenceStructure2.pdf}
+\caption{\label{fig::encodeOrder2}Extended Coding structure of a group of pictures}
+\end{center}
+\end{figure}
+%
+As we describe in chapter~\ref{sec::iFrameSelectionSubProb}, the set of cameras that encode their image as an I-frame can be determined through the proposed branch-and-bound algorithm.
+Therefore, it is clearly that all the remaining P-frame cameras can decide which camera in the I-frame cameras set is the best one to reference from while encoding their image.
+However, the schedule for those P-frame cameras is still undetermined yet, and hence we discuss in this chapter that how to determine the schedule of those P-frame cameras.
+For the P-frame cameras scheduling, we extend the coding structure of a group of pictures from figure~\ref{fig::encodeOrder} to figure~\ref{fig::encodeOrder2}.
+That is, a P-frame camera can now reference from a previous scheduled I-frame camera or P-frame camera, depends on which one is more correlated.
+However, if a P-frame camera $i$ aims to reference from another P-frame camera $j$, camera $i$ must be able to reconstruct the image of camera $j$, which means that camera $i$ also needs to overhear the transmission of the reference frame of camera $j$.
+For example, suppose that the coding structure is shown in figure~\ref{fig::encodeOrder2}, camera $4$ must both overhear the transmission of camera $1$ and $3$ if it aims to reference from the image of camera $3$.
+%

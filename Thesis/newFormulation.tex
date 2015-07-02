@@ -17,27 +17,17 @@ However, as shown in figure~\ref{fig::motivation}, useful data does not increase
 %
 \subsection{Problem Formulation}
 Since the performance of overhearing source coding depends a lot on the sequence of transmission schedule, the goal of our problem formulation is to determine the best schedule so that the later scheduled camera can leverage the image collected by the set of previous scheduled cameras for reducing its amount of data.
+Besides, communication constraints such as transmission range must also be taken into consideration to ensure a camera can successfully decode its overheard data.
+%
 To start, assume that every cameras need to deliver its image to the aggregator once (either encoded as an I-frame or a P-frame), and the number of available time slots $N$ is equivalent to number of cameras, that is ${N=|V|}$.
-Note that whether a camera $i$ can overhear the transmission of camera $j$ or not depends on the transmission schedule (can only overhear previous transmissions).
-For this reason, it is necessary for us to define the transmission order, and hence we denote the scheduling vector ${\mathbf{Z} = [z_1, z_2, \cdots, z_{|V|}]}$, ${1 \leq z_i \leq N}$, ${i=1,\cdots,|V|}$ such that ${z_i = n}$, ${1 \leq n \leq N}$, ${n \in \mathbb{Z}}$ if camera $i$ is scheduled at the $n^{th}$ time slot.
-Note that we require
-\begin{equation}
-|z_i - z_j| > 0, \forall i,j \in V, i \neq j,
-\label{eq::oneSlotOneCam}
-\end{equation}
-since only one camera can transmit its data within the same time slot.
-Based on the scheduling vector $\mathbf{Z}$, we can define the subset of cameras that transmit before camera $i$ (including camera $i$) as
-\begin{equation}
-W_i = \{ j \in V | z_j \leq z_i \}.
-\label{eq::prevSet}
-\end{equation}
-In order to determine the set of overhearing cameras, we do not assume a constant, given overhearing distance for all machines.
+Note that whether a camera $i$ can overhear the transmission of camera $j$ or not should depend on if camera $i$ falls in the transmission range of camera $j$.
+In this thesis, we do not assume a constant, given overhearing distance for all cameras when determining their overhearing range.
 Instead, we take a general approach by assuming the set of cameras that can overhear a transmission to be determined based on the amount of transmitted data and the channel capacity.
-Specifically, for camera $i$ to overhear transmission from previous scheduled camera $j \in W_i$, the amount of data to overhear cannot be larger than the maximum channel capacity $C_{ji}$ multiplied by the time slot duration $\tau$.
-In this way, the set of cameras $U_i$ that camera $i$ can overhear can be expressed as follows:
+Specifically, for camera $i$ to overhear transmission from camera $j \in V$, the amount of data to overhear cannot be larger than the maximum channel capacity $C_{ji}$ multiplied by the time slot duration $\tau$.
+In this way, the set of cameras $U_i$ that camera $i$ has the possibility to overhear can be expressed as follows:
 \begin{equation}
-U_i = \{ j \in W_i | \tau C_{ji} \geq H(F_j) \},
-\label{eq::overSet}
+U_i = \{ j \in V | \tau C_{ji} \geq H(F_j) \},
+\label{eq::inTransRange}
 \end{equation}
 where $\tau$ is the duration of time slot and $C_{ji}$ is the achievable rate from camera $j$ to camera $i$ defined as:
 \begin{equation}
@@ -45,8 +35,29 @@ C_{ji} = W \log_2 \left( 1+\frac{1}{\Gamma} \frac{p_j G_{ji}}{WN_0} \right),
 \label{eq::capacity}
 \end{equation}
 with $p_j$ being the transmission power, $G_{ji}$ being the channel gain, $W$ begin the channel bandwidth, $N_0$ being the background noise, and $\Gamma$ being the Shannon gap as introduced in~\cite{MQAM}.
-Note that for the special case when the channel gain $G_{ji}$ between camera $j$ and camera $i$ is uniquely determined by the distance $d_{ji}$ between them (e.g. no fading), transmission of camera $j$ can be overheard by cameras that are inside the circle of radius $d_{j0}$ around camera $j$.
-After overhearing transmissions from the set $U_i$, camera $i$ can perform dependent source coding for removing redundant information from its data.
+Note that for the special case when the channel gain $G_{ji}$ between camera $j$ and camera $i$ is uniquely determined by the distance $d_{ji}$ between them (e.g. no fading), transmission of camera $j$ can be overheard by cameras that are inside the circle of radius $d_{j0}$ (distance between camera $j$ and the aggregator) around camera $j$.
+For a more simple approach, we define the overhearing gap ${\rho, \rho \geq 0}$ such that all cameras fall in the range of $\rho d_{i0}$ are able to overhear the transmission of camera $i$.
+In this way, $U_i$ can be simplified as:
+\begin{equation}
+U_i = \{ j \in V | d_{ij} \leq \rho d_{j0} \}.
+\label{eq::inTransRangeSimple}
+\end{equation}
+In the followings of this thesis, we use equation~\eqref{eq::inTransRangeSimple} instead of equation~\eqref{eq::inTransRange} to define the set $U_i$.
+
+In addition to considering the transmission range of each cameras, we note that whether a camera $i$ can overhear the transmission of camera $j$ or not should also depend on the transmission schedule (can only overhear previous transmissions).
+For this reason, it is necessary for us to define the transmission order, and hence we denote the scheduling vector ${\mathbf{Z} = [z_1, z_2, \cdots, z_{|V|}]}$, ${1 \leq z_i \leq N}$, ${i=1,\cdots,|V|}$ such that ${z_i = n}$, ${1 \leq n \leq N}$, ${n \in \mathbb{Z}}$ if camera $i$ is scheduled at the $n^{th}$ time slot.
+Note that we require
+\begin{equation}
+|z_i - z_j| > 0, \forall i,j \in V, i \neq j,
+\label{eq::oneSlotOneCam}
+\end{equation}
+since only one camera can transmit its data within the same time slot.
+Based on the scheduling vector $\mathbf{Z}$, we can define the subset of cameras that transmit before camera $i$ (including camera $i$) and camera $i$ can overhear together with constraint~\eqref{eq::inTransRangeSimple} as: 
+\begin{equation}
+W_i = \{ j \in U_i | z_j \leq z_i \}.
+\label{eq::prevSet}
+\end{equation}
+After overhearing transmissions from the set $W_i$, camera $i$ can perform multi-view video encoding for removing redundant information from its data.
 
 To proceed, we further 
 %denote the vector ${\mathbf{X} = [x_1, x_2, \cdots, x_{|V|}]}$, ${x_i = \{0,1\}}$, ${\forall i \in V}$ as the I-frame indicator variable such that
@@ -68,13 +79,13 @@ x_{ij} = 0, &\text{ if image $F_i$ does not reference from $F_j$.}
 Note that we assume $x_{ii}=1$ if camera $i$ is encoded as an I-frame for the sake of notation simplicity.
 Since we do not consider B-frame encoding in this thesis, which means that each camera must encode its image either as an I-frame or a P-frame, therefore, we require
 \begin{equation}
-\sum_{j \in U_i} x_{ij} = 1, \forall i \in V,
+\sum_{j \in W_i} x_{ij} = 1, \forall i \in V,
 \label{eq::referenceConstraint}
 \end{equation}
 which means that the frame captured by each camera can either reference from one previous overheard frame or encode independently.
 Also note that we assume every cameras encoded its image as a P-frame should reference from an overheard I-frame, therefore
 \begin{equation}
-x_{ij} \leq x_{jj}, \forall i \in V, \forall j \in U_i.
+x_{ij} \leq x_{jj}, \forall i \in V, \forall j \in W_i.
 \label{eq::referenceOnlyIframe}
 \end{equation}
 
@@ -82,14 +93,14 @@ Recall that the objective for the scheduling problem is to minimize the total am
 If we assume $H(F_j|F_j) = H(F_j)$ for the sake of notation simplicity, the overall problem formulation can now be written as follows:
 \begin{equation*}
 \underset{\mathbf{X}, \mathbf{Z}}{\min}
-\sum_{i=1}^{|V|} \sum_{j \in U_i}  x_{ij} H(F_i|F_j),
+\sum_{i=1}^{|V|} \sum_{j \in W_i}  x_{ij} H(F_i|F_j),
 \end{equation*}
 subject to
 \begin{align}
-&W_i = \{ j \in V | z_j \leq z_i \}, &\forall i \in V, \nonumber \\
-&U_i = \{ j \in W_i | \tau C_{ji} \geq H(F_j) \}, &\forall i \in V, \nonumber \\
-&\sum_{j \in U_i} x_{ij} = 1, &\forall i \in V, \nonumber \\
-&x_{ij} \leq x_{jj}, &\forall i \in V, \forall j \in U_i, \nonumber \\
+&U_i = \{ j \in V | d_{ij} \leq \rho d_{j0} \}, &\forall i \in V, \nonumber \\
+&W_i = \{ j \in U_i | z_j \leq z_i \}, &\forall i \in V, \nonumber \\
+&\sum_{j \in W_i} x_{ij} = 1, &\forall i \in V, \nonumber \\
+&x_{ij} \leq x_{jj}, &\forall i \in V, \forall j \in W_i, \nonumber \\
 &x_{ij} = \{0,1\}, &\forall i,j \in V, \nonumber \\
 &|z_i - z_j| > 0, &\forall i,j \in V, i \neq j, \nonumber \\
 &1 \leq z_i \leq N, &\forall i \in V, z_i \in \mathbb{Z}.

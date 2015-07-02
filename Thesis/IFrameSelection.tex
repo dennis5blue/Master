@@ -74,7 +74,7 @@ where $\mathbf{h}_k$ is the $k^{th}$ column of $\mathbf{H}$ and ${h_{ij} = H(F_i
 The cost matrix in~\eqref{eq::bbCostMatrix} will be calculated as a beforehand information so that the lower bound of cost below a branch can be estimated directly through $\mathbf{H}$.
 
 For an arbitrary sub solution set $\mathcal{S}^t$, some decision variables are fixed to either $0$ or $1$ while the others are still undetermined.
-We thus denote the partial determined vector ${\tilde{\mathbf{X}^t} = \{ \tilde{x_{11}^t},\cdots, \tilde{x_{|V||V|}^t} \} }$ such that
+We thus denote the partial determined selection vector ${\tilde{\mathbf{X}^t} = \{ \tilde{x_{11}^t},\cdots, \tilde{x_{|V||V|}^t} \} }$ such that
 \begin{equation*}
 \left\{ \begin{array}{ll}
 \tilde{x_{ii}^t} = 1,  &\text{ if camera $i$ is determined to encode as an} \\
@@ -94,7 +94,7 @@ According to $\tilde{\mathbf{X}^t}$, we can further define the determined I-fram
 and the determined P-frame set can also be written as:
 \begin{equation}
 \mathcal{P}^t = \{ i \in V | \tilde{x_{ii}^t} = 0 \},
-\label{eq::IframeSet}
+\label{eq::PframeSet}
 \end{equation}
 where the set of undetermined encoded style cameras at $\mathcal{S}^t$ is $V \setminus \{ \mathcal{I}^t \cup \mathcal{P}^t \}$.
 
@@ -121,26 +121,77 @@ Q(i,j) =
 i,  &\text{ if $\Delta_i \leq \Delta_j$,} \\                  	   
 j,  &\text{ if $\Delta_i > \Delta_j$,} \\
 \end{array} \right.
+\label{eq::selectionFunctionQ}
 \end{equation}
-where $Q(i,j) = i$ means that the reference camera of camera $i$ is changed from camera $j$ to camera $\underset{k \in U_i, k \notin \{\mathcal{P}^t \cup j\}}{\arg \min} H(F_i|F_k)$ due to the reason that changing camera $i$'s reference camera has lower cost.
+where $Q(i,j) = i$ means that the reference camera of camera $i$ is changed from camera $j$ to camera $\underset{k \in U_i, k \notin \{\mathcal{P}^t \cup\{j\}\}}{\arg \min} H(F_i|F_k)$ due to the reason that changing camera $i$'s reference camera has lower cost.
 
-In short, the lower bound estimation procedure of an arbitrary branch $t$ is summarized in algorithm~\ref{alg::lbEstimation}.
+To start the lower bound estimation algorithm for sub solution set $\mathcal{S}^t$, we first initialize its cost matrix as
+\begin{align}
+\mathbf{H}^t
+&= \left[ \mathbf{h}_1^t \quad \mathbf{h}_2^t \quad \cdots \quad \mathbf{h}_{|V|}^t \right], \nonumber \\
+&= \left[ \begin{array}{cccc}
+h_{11}^t &h_{12}^t &\cdots &h_{1|V|}^t \\
+h_{21}^t &h_{22}^t &\cdots &h_{2|V|}^t \\
+\vdots &\vdots &\vdots &\vdots \\
+h_{|V|1}^t &h_{|V|2}^t &\cdots &h_{|V||V|}^t
+\end{array} \right]
+= \mathbf{H},
+\label{eq::modBBcostMatrix}
+\end{align}
+where the columns of P-frame cameras are set to infinity since we assume that P-frame cannot become a reference frame.
+That is,
+\begin{equation}
+\mathbf{h}^t_i = \left[ \begin{array}{c}
+\infty \\
+\infty \\
+\vdots \\
+\infty
+\end{array} \right],
+\quad \quad \forall i \in \mathcal{P}^t.
+\label{eq::infColumn}
+\end{equation}
+To proceed, we then define the reference vector ${\mathbf{R}^t = [r_1^t,r_2^t,\cdots,r_{|V|}^t]}$ such that $r_i^t = j$ if camera $i$ reference from camera $j$, where the elements of $\mathbf{R}^t$ can be initialized as:
+\begin{equation}
+r_i^t = 
+\left\{ \begin{array}{cc}
+i,  &\text{ if $i \in \mathcal{I}^t$,} \\                  	   
+\underset{k \in U_i, k \notin \mathcal{P}^t}{\arg\min} H(F_i|F_k),  &\text{ if $i \in V\setminus \mathcal{I}^t$.} \\
+\end{array} \right.
+\label{eq::initRefStructure}
+\end{equation}
+After the initialization of $\mathbf{R}$, we will traverse through all elements of $\mathbf{R}$ and check if there exists infeasible reference structure pair (e.g. $r_i^t = j$ together with $r_j^t=i$).
+In such infeasible case, we will refer to equation~\eqref{eq::selectionFunctionQ} for determining which one should change the reference camera until all reference structure pairs are feasible.
+As long as all reference structure pairs are feasible, we can directly sum up the cost of all cameras and the estimated lower bound is obtained.
+%
+In short, the lower bound estimation procedure of an arbitrary sub solution set $\mathcal{S}^t$ is summarized in algorithm~\ref{alg::lbEstimation}.
 %
 \IncMargin{1em}
 \begin{algorithm}[]
  \SetAlgoLined
  \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
- \Input{Cameras set $V$ and partial determined I-frame set $\mathcal{I}^t$~\eqref{eq::IframeSet} and cost matrix $\mathbf{H}$~\eqref{eq::bbCostMatrix}}
- \Output{Lower bound $lb^t$ of total amount of encoded bits below branch $t$}
+ \Input{Partial determined selection vector $\tilde{\mathbf{X}^t}$ of $\mathcal{S}^t$ and cost matrix $\mathbf{H}$~\eqref{eq::bbCostMatrix}}
+ \Output{Cost lower bound $lb(\mathcal{S}^t)$ among all sub solution set of $\mathcal{S}^t$}
  \BlankLine
- Initialize $lb^t \gets 0$\\
- \For{$i \in \mathcal{I}^t$}
+ Initialize $lb(\mathcal{S}^t) \gets 0$\\
+ Initialize $\mathcal{I}^t$ by~\eqref{eq::IframeSet}, $\mathcal{P}^t$ by~\eqref{eq::PframeSet}, $\mathbf{H}^t$ by~\eqref{eq::modBBcostMatrix}~\eqref{eq::infColumn} and $\mathbf{R}^t$ by~\eqref{eq::initRefStructure} \\
+ \While{$\forall i \in V, \exists j \in V, j \neq i$ such that $r_i^t=j$ and $r_j^t=i$}
  {
- 	$lb^t \gets lb^t + H(F_i)$ \\
+ 	$\Delta_i \gets \left( \underset{k \in U_i, k \notin \{\mathcal{P}^t \cup j\}}{\min} h_{ik}^t \right) - h_{ij}^t$ \\
+	$\Delta_j \gets \left( \underset{k \in U_j, k \notin \{\mathcal{P}^t \cup i\}}{\min} h_{jk}^t \right) - h_{ji}^t$ \\
+ 	$k \gets Q(i,j)$ \\
+ 	$r_k^t \gets \underset{m \in U_i, m \notin \{\mathcal{P}^t \cup \{j\}\}}{\arg \min} h_{im}^t$ \\
+ 	\eIf{$k = i$}
+ 	{
+ 		$h_{ij}^t \gets \inf$ \\
+ 	}
+ 	{
+ 		$h_{ji}^t \gets \inf$ \\
+ 	}
+ 	
  }
- \For{$k \in V \setminus \mathcal{I}^t$}
+ \For{$i \in V$}
  {
- 	$lb^t \gets lb^t + \underset{j \in V}{\min} H(F_k|F_j)$ \\
+ 	$lb(\mathcal{S}^t) \gets lb(\mathcal{S}^t) + \underset{j \in U_i}{\min} h_{ij}^t$ \\
  }
  \caption{\label{alg::lbEstimation}Lower bound estimation}
 \end{algorithm}

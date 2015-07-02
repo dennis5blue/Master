@@ -95,6 +95,6 @@ function BBselection_betterPrune (in_numCams,in_testVersion,in_searchRange,in_ov
     finalTxBits = CalExactCost(bestSelection,matCost)
     improveRatio = (sum(vecBits(1:N))-finalTxBits)/sum(vecBits(1:N))
     reducedIter = (2^N - length(recordLb))/(2^N)
-    saveFileName = ['mat/BBBetterPruneOutput_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '.mat'];
+    saveFileName = ['mat/BBBetterPruneOutput2_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '.mat'];
     save(saveFileName);
 end

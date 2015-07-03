@@ -41,10 +41,13 @@ function BBselection_betterPrune (in_numCams,in_testVersion,in_searchRange,in_ov
     vecX = -1*ones(1,N); % indicate if a camera is encoded as an I-frame
     BBqueue = [];
     vecX(firstCam) = 1;
-    newNode = struct('depth',1,'lb',CalBBLowerBound2(vecX,matCost),'selection',vecX);
+    %newNode = struct('depth',1,'lb',CalBBLowerBound2(vecX,matCost),'selection',vecX);
+    newNode = struct('depth',1,'lb',CalBBLowerBound2ConsiderOverRange(vecX,matCost,pos,bsX,bsY,rho),'selection',vecX);
+    
     BBqueue = [newNode BBqueue];
     vecX(firstCam) = 0;
-    newNode = struct('depth',1,'lb',CalBBLowerBound2(vecX,matCost),'selection',vecX);
+    %newNode = struct('depth',1,'lb',CalBBLowerBound2(vecX,matCost),'selection',vecX);
+    newNode = struct('depth',1,'lb',CalBBLowerBound2ConsiderOverRange(vecX,matCost,pos,bsX,bsY,rho),'selection',vecX);
     BBqueue = [newNode BBqueue];
 
     % Strat BB algorithm
@@ -73,7 +76,8 @@ function BBselection_betterPrune (in_numCams,in_testVersion,in_searchRange,in_ov
             % branch 1
             m_selec = BBnode.selection;
             m_selec(nextCam) = 1;
-            m_lb = CalBBLowerBound2(m_selec,matCost);
+            %m_lb = CalBBLowerBound2(m_selec,matCost);
+            m_lb = CalBBLowerBound2ConsiderOverRange(m_selec,matCost,pos,bsX,bsY,rho);
             if m_lb < ub
                 newNode = struct('depth',BBnode.depth+1,'lb',m_lb,'selection',m_selec);
                 BBqueue = [newNode BBqueue];
@@ -81,7 +85,8 @@ function BBselection_betterPrune (in_numCams,in_testVersion,in_searchRange,in_ov
 
             % branch 0
             m_selec(nextCam) = 0;
-            m_lb = CalBBLowerBound2(m_selec,matCost);
+            %m_lb = CalBBLowerBound2(m_selec,matCost);
+            m_lb = CalBBLowerBound2ConsiderOverRange(m_selec,matCost,pos,bsX,bsY,rho);
             if m_lb <= ub
                 newNode = struct('depth',BBnode.depth+1,'lb',m_lb,'selection',m_selec);
                 BBqueue = [newNode BBqueue];

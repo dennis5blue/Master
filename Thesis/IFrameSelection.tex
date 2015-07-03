@@ -273,10 +273,49 @@ We now summarize the overall proposed BB algorithm in algorithm~\ref{alg::bbAlgo
 \end{algorithm}
 \DecMargin{1em}
 %
-\subsubsection{Complexity Analysis}
-
-{\color{red}Try to analyze the time complexity of BB algorithm. }
 %
-\subsection{Graph Approximation}
-{\color{red}Describe our proposed heuristic I-frame selection algorithm based on minimum weight dominating set.}
+\begin{table*}[htb]
+\footnotesize
+\centering
+\begin{tabular}{c c c}
+  \hline
+  Type &Notation &Description \\
+  \hline
+  \hline
+  \multirow{8}{*}
+  {Sets} &$D_i$ & Set of I-frame cameras that camera $i$ can overhear \\
+  	&$\mathcal{S}$ & Whole solution set \\
+  	&$\mathcal{S}^t$ & An arbitrary sub solution set \\
+  	&$\mathcal{S}^{t_0}$ & Division of $\mathcal{S}^t$ by fixing one decision variable into $0$\\
+  	&$\mathcal{S}^{t_1}$ & Division of $\mathcal{S}^t$ by fixing one decision variable into $1$\\
+  	&$\mathcal{I}^t$ & I-frame cameras set of $\mathcal{S}^t$\\
+  	&$\mathcal{P}^t$ & P-frame cameras set of $\mathcal{S}^t$\\
+  	&$\Psi$ & Queue containing all sub solution sets\\
+  \hline
+  \multirow{1}{*}
+  {Decision variables} &$x_{ii} \in \{0,1\}$ &Binary variable indicates if camera $i$ is encoded as an I-frame \\
+  \hline
+  \multirow{8}{*}
+  {Parameters} &$\mathbf{H}$ & Initial cost matrix for amount of encoded bits\\
+  	&$\mathbf{h}_k$ & The $k^{th}$ column of $\mathbf{H}$\\
+  	&$\mathbf{H}^t$ & Modified cost matrix for $\mathcal{S}^t$\\
+  	&$\tilde{\mathbf{X}^t}$ & Vector for partial determined decision variable at $\mathcal{S}^t$\\
+  	&$\mathbf{R}^t$ & Vector for reference structure at $\mathcal{S}^t$\\
+  	&$\Delta_i$ & Incremental cost for changing reference camera of camera $i$\\
+  	&$\omega_t$ & Branching metric for $\mathcal{S}^t$\\
+  	&$\mathcal{S}^*$ & Optimal I-frame selection\\
+  \hline
+  \multirow{3}{*}
+  {Functions} &$lb(\cdot)$ & Return the estimated lower bound\\
+  	&$ub(\cdot)$ & Return the upper bound for objective value\\
+  	&$Q(\cdot,\cdot)$ & Return which camera should change its reference camera\\
+  \hline
+\end{tabular}
+\\
+\caption{\label{tab::BBSymbols}Additional notations introduced in proposed BB algorithm}
+\end{table*}
+%
+%
+\subsubsection{Complexity Analysis}
+{\color{red}Try to analyze the time complexity of BB algorithm. }
 %

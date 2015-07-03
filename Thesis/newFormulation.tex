@@ -88,6 +88,51 @@ Also note that we assume every cameras encoded its image as a P-frame should ref
 x_{ij} \leq x_{jj}, \forall i \in V, \forall j \in W_i.
 \label{eq::referenceOnlyIframe}
 \end{equation}
+%
+%
+\begin{table*}[htb]
+\footnotesize
+\centering
+\begin{tabular}{c c c}
+  \hline
+  Type &Notation &Description \\
+  \hline
+  \hline
+  \multirow{3}{*}
+  {Sets} &$V$ &Set of all cameras \\
+       &$U_i$ &Set of cameras whose transmission range cover camera $i$ \\
+       &$W_i$ &Set of cameras that camera $i$ is able to overhear \\
+       
+  \hline
+  \multirow{2}{*}
+  {Decision variables} &$x_{ij} \in \{0,1\}$ &Binary indicator for the reference camera of camera $i$ \\
+  	&$z_i \in \{1,\cdots,N\}$ &The scheduled slot for camera $i$ \\
+  \hline
+  \multirow{12}{*}
+  {Parameters} &$F_i$ &Image captured by camera $i$ \\ 
+   &$N$ &Number of total available time slots\\ 
+   &$C_{ij}$ &Channel capacity from camera $i$ to camera $j$ \\ 
+   &$G_{ij}$ &Channel gain from camera $i$ to camera $j$ \\
+   &$\tau$ &Duration for a time slot \\
+   &$d_{ij}$ &Distance between camera $i$ and camera $j$ \\
+   &$d_{i0}$ &Distance between camera $i$ and data aggregator \\
+   &$p_i$ &Transmission power of camera $i$ \\
+   &$W$ &Channel bandwidth \\
+   &$N_0$ &Spectral density of background noise \\
+   &$\Gamma$ &SINR gap between Shannon capacity \\
+   &$\rho$ &Overhearing gap \\
+  \hline
+  \multirow{3}{*}
+  {Functions} &$|\cdot|$ &Return the size of a set \\
+  	&$H(\cdot)$ &Return the amount of encoded bits for I-frame cameras\\
+  	&$H(\cdot|\cdot)$ &Return the amount of encoded bits for P-frame cameras \\
+  \hline
+\end{tabular}
+\\
+\caption{\label{tab::optSymbols}Notations used in problem formulation}
+\end{table*}
+%
+%
 
 Recall that the objective for the scheduling problem is to minimize the total amount of bits that needed to be delivered.
 If we assume $H(F_j|F_j) = H(F_j)$ for the sake of notation simplicity, the overall problem formulation can now be written as follows:

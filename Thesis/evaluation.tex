@@ -105,7 +105,29 @@ Figure~\ref{fig::converge_baseline}~\ref{fig::converge_proposed}~\ref{fig::compl
 \caption{\label{fig::txBytes_diffAlg} Comparison of different I-frame selection algorithms}
 \end{center}
 \end{figure}
-Figure~\ref{fig::txBytes_diffAlg}
+%
+\begin{figure}
+\begin{center}
+%
+\begin{subfigure}[b]{\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/refStructure_BB.pdf}
+\caption{\label{fig::refStructure_BB} Proposed BB algorithm}
+\end{subfigure}
+%
+\begin{subfigure}[b]{\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/refStructure_MDSbaseline.pdf}
+\caption{\label{fig::refStructure_MDSbaseline} Baseline MDS algorithm}
+\end{subfigure}
+%
+\begin{subfigure}[b]{\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/refStructure_MDSproposed.pdf}
+\caption{\label{fig::refStructure_MDSproposed} Proposed MDS algorithm}
+\end{subfigure}
+%
+\caption{\label{fig::refStructure_threeAlgs} Selected I-frame cameras and their member P-frame cameras}
+\end{center}
+\end{figure}
+Figure~\ref{fig::txBytes_diffAlg}~\ref{fig::refStructure_threeAlgs}
 
 %
 \subsection{Evaluation of Different P-frame Scheduling Algorithms}

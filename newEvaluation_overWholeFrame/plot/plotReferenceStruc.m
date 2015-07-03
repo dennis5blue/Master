@@ -5,6 +5,8 @@ figure;
 %% Parameters setting
 addpath('../Utility/');
 load('../mat/BBBetterPruneOutput2_test10_cam30_rng512.mat');
+%load('../mat/MDSoutput2_test10_cam30_rng512.mat');
+%load('../mat/MDSProposedOutput2_test10_cam30_rng512.mat');
 vecDirection = dlmread('../../SourceData/test10/plotTopo/dir.txt');
 vecPosition = dlmread('../../SourceData/test10/plotTopo/pos.txt');
 radius = 250;
@@ -12,6 +14,7 @@ r = 50; % parameter for arrow.m
 %pos = vecPosition;
 
 iFrames = find(bestSelection == 1);
+%iFrames = bestSelection; % use for MDS only
 numClusters = length(iFrames);
 vecRefStruc = zeros(1,N);
 for i = 1:N

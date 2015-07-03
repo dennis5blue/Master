@@ -55,6 +55,7 @@ function [ lb ] = CalBBLowerBound2ConsiderOverRange( vecX, matCost, pos, bsX, bs
         if ifDeadlock == 0
             break;
         end
+        %matDeadlockPair
         for i = 1:length(matDeadlockPair(:,1))
             cam1 = matDeadlockPair(i,1);
             cam2 = matDeadlockPair(i,2);

@@ -1,4 +1,4 @@
-function BBselection_betterPrune (in_numCams,in_testVersion,in_searchRange,in_overRange)
+function BBselection_betterPrune (in_numCams,in_testVersion,in_searchRange,in_overRange)`
     %clc;
     %clear;
     %in_numCams = '25';
@@ -102,6 +102,6 @@ function BBselection_betterPrune (in_numCams,in_testVersion,in_searchRange,in_ov
     finalTxBits = CalExactCostConsiderOverRange( bestSelection,matCost,pos,bsX,bsY,rho )
     improveRatio = (sum(vecBits(1:N))-finalTxBits)/sum(vecBits(1:N))
     reducedIter = (2^N - length(recordLb))/(2^N)
-    saveFileName = ['mat/BBBetterPruneOutput2_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '.mat'];
+    saveFileName = ['mat/BBBetterPruneOutput2_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' num2str(rho) '.mat'];
     save(saveFileName);
 end

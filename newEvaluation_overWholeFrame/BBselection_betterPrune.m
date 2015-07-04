@@ -1,4 +1,4 @@
-function BBselection_betterPrune (in_numCams,in_testVersion,in_searchRange,in_overRange)`
+function BBselection_betterPrune (in_numCams,in_testVersion,in_searchRange,in_overRange)
     %clc;
     %clear;
     %in_numCams = '25';

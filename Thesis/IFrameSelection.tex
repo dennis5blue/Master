@@ -209,7 +209,7 @@ Therefore, the sub solution set with $x_{ii}=1$ and $x_{jj}=1$ should have less 
 Due to this reason, we proposed a heuristic approach for the determination of which sub solution set has the highest priority to be traversed for the sake of getting the optimal solution within fewer iterations.
 Our proposed branching metric for $\mathcal{S}^t$ is thus defined as:
 \begin{equation}
-\omega_t = \frac{1}{|V|-|\mathcal{I}^t|-|\mathcal{P}^t|+1}+\frac{1}{lb(\mathcal{S}^t)},
+\lambda_t = \frac{1}{|V|-|\mathcal{I}^t|-|\mathcal{P}^t|+1}+\frac{1}{lb(\mathcal{S}^t)},
 \label{eq::branchingMetric}
 \end{equation}
 where the notation $|\cdot|$ returns the size of the set.
@@ -220,14 +220,14 @@ For a group of sub solution sets $\mathcal{S}^t, \mathcal{S}^{t+1}, \cdots$, we 
 \item  lower estimated lower bound
 \end{itemize}
 to be traversed first.
-Note that since $lb \gg |V|-|\mathcal{I}^t|-|\mathcal{P}^t|+1$, we will first check the depth of each sub solution sets, and if more than one sub solution sets have the same highest depth, and then the estimated lower bound will be taken into consideration; otherwise, $\frac{1}{|V|-|\mathcal{I}^t|-|\mathcal{P}^t|+1}$ will dominate the value of $\omega_t$.
-As a summary, among all un-traversed sub solution sets, our proposed branching policy algorithm will select the one with the largest branching metric $\omega_t$ to be traversed first, and the overall BB algorithm is then described in the following chapter.
+Note that since $lb \gg |V|-|\mathcal{I}^t|-|\mathcal{P}^t|+1$, we will first check the depth of each sub solution sets, and if more than one sub solution sets have the same highest depth, and then the estimated lower bound will be taken into consideration; otherwise, $\frac{1}{|V|-|\mathcal{I}^t|-|\mathcal{P}^t|+1}$ will dominate the value of $\lambda_t$.
+As a summary, among all un-traversed sub solution sets, our proposed branching policy algorithm will select the one with the largest branching metric $\lambda_t$ to be traversed first, and the overall BB algorithm is then described in the following chapter.
 %
 
 \subsubsection{Overall Algorithm}
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/flowChartBB.pdf}
+\includegraphics[width=0.95\columnwidth]{Figures/flowChartBB2.pdf}
 \caption{\label{fig::flowChartBB}Flow chart of proposed BB algorithm}
 \end{center}
 \end{figure}
@@ -251,7 +251,7 @@ We now summarize the overall proposed BB algorithm in algorithm~\ref{alg::bbAlgo
  Put the two sub solution sets into $\Psi$, i.e. $\Psi \gets \Psi \cup \{\mathcal{S}^1, \mathcal{S}^2\}$ \\
  \While{$\Psi \neq \emptyset$}
  {
- 	Select a sub solution set $\mathcal{S}^t$ from $\Psi$ based on branching metric~\eqref{eq::branchingMetric}, where $t \gets \underset{u \in \Psi}{\arg \min} \quad \omega_u$ \\
+ 	Select a sub solution set $\mathcal{S}^t$ from $\Psi$ based on branching metric~\eqref{eq::branchingMetric}, where $t \gets \underset{u \in \Psi}{\arg \min} \quad \lambda_u$ \\
  	Derive $\mathcal{I}^t$ and $\mathcal{P}^t$ by $\mathcal{S}^t$~\eqref{eq::IframeSet}~\eqref{eq::PframeSet} \\
   	\eIf{$|\mathcal{I}^t|+|\mathcal{P}^t| = |V|$}
   	{
@@ -303,7 +303,7 @@ We now summarize the overall proposed BB algorithm in algorithm~\ref{alg::bbAlgo
   	&$\tilde{\mathbf{X}^t}$ & Vector for partial determined decision variable at $\mathcal{S}^t$\\
   	&$\mathbf{R}^t$ & Vector for reference structure at $\mathcal{S}^t$\\
   	&$\Delta_i$ & Incremental cost for changing reference camera of camera $i$\\
-  	&$\omega_t$ & Branching metric for $\mathcal{S}^t$\\
+  	&$\lambda_t$ & Branching metric for $\mathcal{S}^t$\\
   	&$\mathcal{S}^*$ & Optimal I-frame selection\\
   \hline
   \multirow{3}{*}

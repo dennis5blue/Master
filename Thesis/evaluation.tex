@@ -73,7 +73,6 @@ Figure~\ref{fig::txBytes_diffRng}
 
 \subsection{Evaluation of Different Lower Bound Estimation Technique}
 {\color{red}Show the converged speed of different lower bound estimation for BB algorithm.}
-%
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.95\columnwidth]{Figures/converge_baseline.pdf}
@@ -90,18 +89,61 @@ Figure~\ref{fig::txBytes_diffRng}
 %
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/complexity.pdf}
+\includegraphics[width=0.95\columnwidth]{Figures/complexity2.pdf}
 \caption{\label{fig::complexity} Required iterations for convergence}
 \end{center}
 \end{figure}
-Figure~\ref{fig::converge_baseline}~\ref{fig::converge_proposed}~\ref{fig::complexity}
+%
+In this chapter, we compare the computational complexity of our proposed BB algorithm with a baseline BB approach.
+The pruning stage of the baseline BB approach is based on a greedy approach, and we briefly introduce how it works as follows.
+Suppose that we are now considering a sub solution set $\mathcal{S}^t$, cameras are separated into two categories by the baseline lower bound estimation method, including I-frame cameras $\mathcal{I}^t$ and ``not'' I-frame cameras $V \setminus \mathcal{I}^t$.
+For an I-frame camera, it is clearly that the encoding cost of this camera can be calculated exactly.
+However, for a ``not'' I-frame camera $j$, we consider it as a P-frame camera due to the reason that our goal is to find a lower bound and encoding its image as a P-frame has the possibility to reduce encoded bits compared to encoding its image as an I-frame.
+Therefore, the lower bound of encoded cost for camera $j$ can be obtained by a greedy approach, which can be written as:
+\begin{equation}
+\underset{k \in V \setminus \mathcal{P}^t}{\min} h_{jk}^t,
+\label{eq::lbGreedy}
+\end{equation}
+with $h_{jk}^t$ being an element of the cost matrix of $\mathcal{S}^t$.
+The reason why we take $k \in V \setminus \mathcal{P}^t$ instead of $k \in V$ is that a camera cannot be referenced as long as it decides to encode its image as a P-frame.
+As a summary, the baseline lower bound estimation method is shown in algorithm~\ref{alg::lbEstimation_baseline}.
+%
+\IncMargin{1em}
+\begin{algorithm}[]
+ \SetAlgoLined
+ \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
+ \Input{Partial determined selection vector $\tilde{\mathbf{X}^t}$ of $\mathcal{S}^t$ and cost matrix $\mathbf{H}$~\eqref{eq::bbCostMatrix}}
+ \Output{Cost lower bound $lb(\mathcal{S}^t)$ among all sub solution set of $\mathcal{S}^t$}
+ \BlankLine
+ Initialize $lb(\mathcal{S}^t) \gets 0$\\
+ Initialize $\mathcal{I}^t$ by~\eqref{eq::IframeSet}, $\mathcal{P}^t$ by~\eqref{eq::PframeSet} and $\mathbf{H}^t$ by~\eqref{eq::modBBcostMatrix}~\eqref{eq::infColumn} \\
+ \For{$i \in \mathcal{I}^t$}
+ {
+ 	Add the cost for I-frame cameras $lb(\mathcal{S}^t) \gets lb(\mathcal{S}^t) + h_{ii}^t$ \\
+ }
+ \For{$j \in V \setminus \mathcal{I}^t$}
+ {
+ 	Add the cost for candidate P-frame cameras $lb(\mathcal{S}^t) \gets lb(\mathcal{S}^t) + \underset{k \in V \setminus \mathcal{P}^t}{\min} h_{jk}^t$ \\
+ }
+ \caption{\label{alg::lbEstimation_baseline}Baseline lower bound estimation method}
+\end{algorithm}
+\DecMargin{1em}
+%
+
+Note that the lower bound obtained by algorithm~\ref{alg::lbEstimation_baseline} is a loose bound, since the obtained cost might refer to an infeasible reference structure (i.e. $i$ reference $j$ together with $j$ reference $i$).
+Therefore, we can claim that our proposed lower bound estimation method can reduce more computational complexity than the baseline approach.
+As shown in figure~\ref{fig::converge_baseline} and figure~\ref{fig::converge_proposed}, although the two algorithms converge to the same optimal objective value, the required iterations for convergence for those two approaches are definitely different.
+That is, more than $98\%$ of iterations can be further reduced if our proposed lower bound estimation technique is applied.
+The results thus confirm us that the lower bound estimated by algorithm~\ref{alg::lbEstimation} is a tighter bound so that the optimal solution can be found under lower computational complexity.
+
+Figure~\ref{fig::complexity} further shows that result for required
 
 \subsection{Evaluation of Different I-frame Selection Algorithms}
 {\color{red}Show the evaluation result of different I-frame selection algorithms (BB, proposed MDS, baseline MDS~\cite{MWDS_baseline}).}
 %
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/txBytes_diffAlg.pdf}
+\includegraphics[width=0.95\columnwidth]{Figures/txBytes_diffAlg2.pdf}
 \caption{\label{fig::txBytes_diffAlg} Comparison of different I-frame selection algorithms}
 \end{center}
 \end{figure}

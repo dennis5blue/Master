@@ -7,9 +7,9 @@ load('../mat/BBBetterPruneOutput_test10_cam30_rng512.mat');
 inputPath = ['../' inputPath];
 iFrames = find(bestSelection==1);
 indep = [sum(vecBits)/(8*1024) 0 0 0];
-load('../mat/MDSoutput_test10_cam30_rng512.mat');
+load('../mat/MDSoutput2_test10_cam30_rng512_rho1.mat');
 MDSbaseline = [0 totalCost/(8*1024) 0 0];
-load('../mat/MDSProposedOutput_test10_cam30_rng512.mat');
+load('../mat/MDSProposedOutput2_test10_cam30_rng512_rho5.mat');
 MDSproposed = [0 0 totalCost/(8*1024) 0];
 load('../mat/BBBetterPruneOutput_test10_cam30_rng512.mat');
 BB = [0 0 0 finalTxBits/(8*1024)];
@@ -21,7 +21,7 @@ bar([1:length(indep)], BB, 'FaceColor', [0 0.5 0.6], 'DisplayName','Branch-and-b
 
 leg = legend('show','location','NorthEast');
 set(leg,'FontSize',11);
-axis([-inf inf 1400 1950]);
+axis([-inf inf 1400 1850]);
 set(gca,'XTick',[]);
 %set(gca,'YTick',[]);
 %set(gca,'YColor','w');

@@ -94,6 +94,7 @@ clear;
 % Figure 4 is for complexity increment
 figure(4);
 numBBIter = [];
+numBBBaselineIter = [32 898 27807 552507];
 numBruteForceIter = [];
 vec_nc = [5 10 15 20 25 30];
 for i = 1:length(vec_nc)
@@ -104,10 +105,12 @@ for i = 1:length(vec_nc)
     numBruteForceIter = [numBruteForceIter 2^nc];
 end
 
-semilogy(vec_nc,numBBIter,'-*','LineWidth',2,'DisplayName', ...
-    'Proposed branch-and-bound algorithm','Color','b','MarkerSize',10); hold on;
 semilogy(vec_nc,numBruteForceIter,'-*','LineWidth',2,'DisplayName', ...
-    'Brute force algorithm','Color','r','MarkerSize',10); hold on;
+    'Brute force algorithm','Color','k','MarkerSize',10); hold on;
+semilogy(vec_nc(1:4),numBBBaselineIter,'-*','LineWidth',2,'DisplayName', ...
+    'Branch-and-bound algorithm (baseline)','Color','r','MarkerSize',10); hold on;
+semilogy(vec_nc,numBBIter,'-*','LineWidth',2,'DisplayName', ...
+    'Branch-and-bound algorithm (proposed)','Color','b','MarkerSize',10);
 leg = legend('show','location','NorthWest');
 set(leg,'FontSize',12);
 axis([-inf inf -inf inf]);

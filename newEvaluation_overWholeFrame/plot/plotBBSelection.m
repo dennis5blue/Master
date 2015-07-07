@@ -5,6 +5,7 @@ addpath('../Utility');
 % Figure 1 is for BB convergence (baseline lb estimation)
 figure(1);
 load('../mat/BBoutput_test10_cam20_rng512.mat');
+%load('../mat/BBoutput_test10_cam25_rng512_rho1.mat');
 inputPath = ['../' inputPath];
 plotLb = recordLb./(1024*8);
 plotUb = recordUb./(1024*8);
@@ -24,6 +25,7 @@ clear;
 % Figure 2 is for BB convergence (proposed lb esimation)
 figure(2);
 load('../mat/BBBetterPruneOutput_test10_cam20_rng512.mat');
+%load('../mat/BBBetterPruneOutput_test10_cam25_rng512.mat');
 inputPath = ['../' inputPath];
 plotLb = recordLb./(1024*8);
 plotUb = recordUb./(1024*8);
@@ -94,7 +96,7 @@ clear;
 % Figure 4 is for complexity increment
 figure(4);
 numBBIter = [];
-numBBBaselineIter = [32 898 27807 552507];
+numBBBaselineIter = [32 898 27807 552507 12656140 3.6883e+08];
 numBruteForceIter = [];
 vec_nc = [5 10 15 20 25 30];
 for i = 1:length(vec_nc)
@@ -107,10 +109,10 @@ end
 
 semilogy(vec_nc,numBruteForceIter,'-*','LineWidth',2,'DisplayName', ...
     'Brute force algorithm','Color','k','MarkerSize',10); hold on;
-semilogy(vec_nc(1:4),numBBBaselineIter,'-*','LineWidth',2,'DisplayName', ...
-    'Branch-and-bound algorithm (baseline)','Color','r','MarkerSize',10); hold on;
-semilogy(vec_nc,numBBIter,'-*','LineWidth',2,'DisplayName', ...
-    'Branch-and-bound algorithm (proposed)','Color','b','MarkerSize',10);
+semilogy(vec_nc,numBBBaselineIter,'-o','LineWidth',2,'DisplayName', ...
+    'BB algorithm (baseline)','Color','r','MarkerSize',10); hold on;
+semilogy(vec_nc,numBBIter,'-^','LineWidth',2,'DisplayName', ...
+    'BB algorithm (proposed)','Color','b','MarkerSize',10);
 leg = legend('show','location','NorthWest');
 set(leg,'FontSize',12);
 axis([-inf inf -inf inf]);

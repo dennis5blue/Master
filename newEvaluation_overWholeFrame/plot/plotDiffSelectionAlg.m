@@ -21,7 +21,7 @@ bar([1:length(indep)], BB, 'FaceColor', [0 0.5 0.6], 'DisplayName','Branch-and-b
 
 leg = legend('show','location','NorthEast');
 set(leg,'FontSize',11);
-axis([-inf inf 1400 1850]);
+axis([-inf inf 1400 1880]);
 set(gca,'XTick',[]);
 %set(gca,'YTick',[]);
 %set(gca,'YColor','w');

@@ -10,7 +10,7 @@ bsX = 0;
 bsY = 0;
 alpha = 0.9; % weighted sum for average improvement ratio
 
-vecSlots = [9 2 6 10 3 8 7 5 4];
+vecSlots = [1 8 9 2 6 10 3 7 5 4];
 pos = dlmread([inputPath 'plotTopo/pos.txt']);
 dir = dlmread([inputPath 'plotTopo/dir.txt']);
     
@@ -77,17 +77,19 @@ vecOverBitsNoChange = vecOverBitsNoChange./(8*1024);
 figure(1);
 %plot([1:length(vecSlots)],vecIndepBits,'*-','LineWidth',2,'DisplayName', ...
 %    'Independent transmission','Color','b','MarkerSize',10); hold on;
+plot([1:length(vecSlots)],vecOverImprove,'^-','LineWidth',2,'DisplayName', ...
+    'Dynamic cost matrix (baseline)','Color','r','MarkerSize',10); hold on;
+plot([1:length(vecSlots)],vecOverImproveCondChange,'*-','LineWidth',2,'DisplayName', ...
+    'Dynamic cost matrix (proposed)','Color','b','MarkerSize',10); hold on;
 plot([1:length(vecSlots)],vecOverImproveNoChange,'o-','LineWidth',2,'DisplayName', ...
     'Static cost matrix','Color','g','MarkerSize',10); hold on;
-plot([1:length(vecSlots)],vecOverImproveCondChange,'*-','LineWidth',2,'DisplayName', ...
-    'Cond change cost matrix','Color','b','MarkerSize',10); hold on;
-plot([1:length(vecSlots)],vecOverImprove,'^-','LineWidth',2,'DisplayName', ...
-    'Dynamic cost matrix','Color','r','MarkerSize',10);
+
+
 
 %set (gca, 'XTick',[5:1:9]);
 %xt = get(gca, 'XTick');
 %set (gca, 'XTickLabel', 2.^xt);
-leg = legend('show','location','NorthEast');
+leg = legend('show','location','Best');
 set(leg,'FontSize',12);
 axis([-inf inf -inf inf]);
 ylabel('Improvement ratio (%)','FontSize',11);

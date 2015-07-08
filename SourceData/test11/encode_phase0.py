@@ -8,7 +8,7 @@ import sys
 encoderPath = "/home/dennisyu/Documents/JMVC/bin/H264AVCEncoderLibTestStaticd"
 configurePath = "./cfg/"
 yuvPath = "./yuv/"
-outputPath = "./outFiles/"
+outputPath = "./outFiles/rng32/"
 
 # Independent coding
 def idtCoding(processList, outFile):

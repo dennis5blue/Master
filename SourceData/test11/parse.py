@@ -4,9 +4,9 @@ import re
 import sys
 
 def main(argv=None):
-	indepFile = "./outFiles/slot4/phase_0.txt"
-	corrFilePrefix = "./outFiles/slot4/camera"
-	outFilePath = "./"
+	indepFile = "./outFiles/rng32/slot1/phase_0.txt"
+	corrFilePrefix = "./outFiles/rng32/slot1/camera"
+	outFilePath = "./outFiles/rng32/slot1/"
 
         N = 10 # number of cameras
 

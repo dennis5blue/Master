@@ -2,33 +2,61 @@
 \label{sec::protocolDesign}
 {\color{red} Present how our proposed correlated data gathering scheme is applied to real-world multi-camera networks.}
 %
-\subsection{Modified Motion Estimation Technique}
+%\subsection{Modified Motion Estimation Technique}
+%\begin{figure}
+%\begin{subfigure}[b]{\columnwidth}
+%\begin{center}
+%\includegraphics[width=0.95\columnwidth]{Figures/motionEstimation.pdf}
+%\caption{\label{fig::originalME}Conventional motion estimation technique}
+%\end{center}
+%\end{subfigure}
+%\begin{subfigure}[b]{\columnwidth}
+%\begin{center}
+%\includegraphics[width=0.95\columnwidth]{Figures/modifiedMotionEstimation.pdf}
+%\caption{\label{fig::modifiedME}Modified motion estimation technique}
+%\end{center}
+%\end{subfigure}
+%\caption{\label{fig::originalAndModifiedME}Demonstration motion estimation technique in multiview video coding}
+%\end{figure}
+%
+%\begin{figure}
+%\begin{center}
+%\includegraphics[width=0.95\columnwidth]{Figures/biased.pdf}
+%\caption{\label{fig::biased}Experiment result of different biased pixels}
+%\end{center}
+%\end{figure}
+{%\color{red} Explain conventional motion estimation technique and our modified motion estimation in JMVC.}
+%As we mentioned in the previous chapter, when two cameras are observing the same area but having different sensing direction, then the collected image might just be a shifted image from the other one.
+%Therefore, it motivates us to modify the conventional motion estimation technique so that we can have a larger possibility to find a correlated macroblock under a given search range.
+%The idea of our modified motion estimation technique is shown in figure~\ref{fig::modifiedME}, where we shift the search region by the value $\kappa$ estimated from equation~\eqref{eq::biasedPixels}.
+%Figure~\ref{fig::biased}
+\subsection{Overall Data Transmission Scheme}
 %
 \begin{figure}
-\begin{subfigure}[b]{\columnwidth}
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/motionEstimation.pdf}
-\caption{\label{fig::originalME}Conventional motion estimation technique}
+\includegraphics[width=0.95\columnwidth]{Figures/TxOverview.pdf}
+\caption{\label{fig::txOverview}Demonstration of data transmission scheme}
 \end{center}
-\end{subfigure}
-%
-\begin{subfigure}[b]{\columnwidth}
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/modifiedMotionEstimation.pdf}
-\caption{\label{fig::modifiedME}Modified motion estimation technique}
-\end{center}
-\end{subfigure}
-\caption{\label{fig::originalAndModifiedME}Demonstration motion estimation technique in multiview video coding}
 \end{figure}
 %
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/biased.pdf}
-\caption{\label{fig::biased}Experiment result of different biased pixels}
+\includegraphics[width=0.95\columnwidth]{Figures/baselineGOP.pdf}
+\caption{\label{fig::baselineGOP}Group of pictures}
 \end{center}
 \end{figure}
-{\color{red} Explain conventional motion estimation technique and our modified motion estimation in JMVC.}
-As we mentioned in the previous chapter, when two cameras are observing the same area but having different sensing direction, then the collected image might just be a shifted image from the other one.
-Therefore, it motivates us to modify the conventional motion estimation technique so that we can have a larger possibility to find a correlated macroblock under a given search range.
-The idea of our modified motion estimation technique is shown in figure~\ref{fig::modifiedME}, where we shift the search region by the value $\kappa$ estimated from equation~\eqref{eq::biasedPixels}.
-Figure~\ref{fig::biased}
+%
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/multiCamGOP_original.pdf}
+\caption{\label{fig::multiCamGOP_original}Group of pictures for non-cooperative multi-camera networks}
+\end{center}
+\end{figure}
+%
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/multiCamGOP.pdf}
+\caption{\label{fig::multiCamGOP}Group of pictures for cooperative multi-camera networks}
+\end{center}
+\end{figure}
+%

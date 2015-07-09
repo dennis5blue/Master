@@ -1,6 +1,10 @@
-\section{Centralized Correlated Data Gathering Protocol for Wireless Multi-Camera Networks}
+\section{Centralized Correlated Data Gathering for Wireless Multi-Camera Networks}
 \label{sec::protocolDesign}
 {\color{red} Present how our proposed correlated data gathering scheme is applied to real-world multi-camera networks.}
+As we present in Chapter~\ref{sec::IFrameSelection} about our proposed scheduling algorithms to exploit image correlation among neighboring cameras, we further describe how the proposed correlated data gathering scheme can be applied to real-world multi-camera networks in this chapter.
+First of all, we will briefly introduce some basic ideas about the conventional H.264 video compression used in multi-camera systems.
+Then, we will show our modifications about the system so that our proposed correlated data gathering technique can fit in the system.
+Finally, we will give an overall explanation about the system architecture, including how to get the required control information and when it should be updated.
 %
 %\subsection{Modified Motion Estimation Technique}
 %\begin{figure}
@@ -30,14 +34,8 @@
 %Therefore, it motivates us to modify the conventional motion estimation technique so that we can have a larger possibility to find a correlated macroblock under a given search range.
 %The idea of our modified motion estimation technique is shown in figure~\ref{fig::modifiedME}, where we shift the search region by the value $\kappa$ estimated from equation~\eqref{eq::biasedPixels}.
 %Figure~\ref{fig::biased}
-\subsection{Overall Data Transmission Scheme}
-%
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/TxOverview.pdf}
-\caption{\label{fig::txOverview}Demonstration of data transmission scheme}
-\end{center}
-\end{figure}
+\subsection{H.264 Video Compression Technique}
+\label{sec::H264CompressionIntro}
 %
 \begin{figure}
 \begin{center}
@@ -45,6 +43,35 @@
 \caption{\label{fig::baselineGOP}Group of pictures}
 \end{center}
 \end{figure}
+%
+The main idea of video compression in H.264 is to remove redundant video data so that the compressed file can be efficiently transmitted through the internet.
+Usually, this can be done by encoding the source video stream at the transmitter side, where the encoding technique can be known as as a ``difference coding'' method.
+More specifically, in order to ensure that the redundant information such as static background is not repeatedly transmitted, the video encoder (e.g. cameras in the multi-camera network) will compare the difference between the current video frame with the previous frame and perform differential encoding for the sake of removing the redundant part of the current video frame.
+When encoding video frames, the three following types are defined in the standard of H.264:
+\begin{itemize}
+\item \textbf{I-frame}:
+An I-frame is a video frame which has been encoded independently (i.e. without referencing from any other frame).
+Therefore, an I-frame can be decoded at the receiver side without any help of other frames.
+Due to this reason, any video streams will always start with a frame encoded as an I-frame and will have subsequent I-frames added after encoding several frames.
+The interval between successive I-frames is an important issue in the H.264 video compression technique.
+On one hand, I-frames are necessary for random accessing different parts of the video files since they are the only frame type which can be decoded independently.
+On the other hand, encoding video frames as I-frames has the drawback that they are the largest in terms of frame size since only intra-frame redundancy can be removed for this type of frames.
+\item \textbf{P-frame}:
+A P-frame is a video frame that exploits preceding I or P-frame as its reference when encoding.
+That is, the video encoder will perform a searching algorithm on the reference I or P-frame when encoding a P-frame.
+As long as some areas are found to be unchanged between a P-frame and its reference, only the movement of these areas are required to be encoded.
+Therefore, the frame size of a P-frame is smaller than an I-frame since the redundant data is removed after the encoding procedure.
+However, the receiver should refer to the reference frame when decoding a P-frame and it cannot be decoded if the preceding reference frame is missed at the receiver side.
+\item \textbf{B-frame}:
+A B-frame is a video frame that is able to reference from both a preceding reference frame as well as a future reference frame.
+Therefore, encoding video frames as B-frames can improve the encoding efficiency but will also increase the processing time and hence we do not consider the appearance of B-frames in this thesis.
+\end{itemize}
+
+We assume that all video frames are encoded as either I-frames or P-frames as shown in figure~\ref{fig::baselineGOP}, where a P-frame will reference from its preceding frame (can be either an I-frame or a P-frame).
+An I-frame will be repeatedly inserted after a give number of P-frames, and we denote an I-frame together with its following P-frames as a group of pictures (GOP) in this thesis.
+In the following chapter, we will show how to apply our proposed correlated data gathering mechanism for reducing encoded bits of a GOP in the multi-camera networks.
+%
+\subsection{Modified Image Gathering for Multi-Camera Networks}
 %
 \begin{figure}
 \begin{center}
@@ -60,3 +87,26 @@
 \end{center}
 \end{figure}
 %
+As we mentioned before, the encoding structure for a camera is presented in Chapter~\ref{sec::H264CompressionIntro}, and the timeline for GOPs is also shown in figure~\ref{fig::baselineGOP}.
+Therefore, the encoding structure for multi-camera networks can thus be extended directly from figure~\ref{fig::baselineGOP}, which is shown in figure~\ref{fig::multiCamGOP_original}.
+Note that we assume that the time slot for transmitting I-frames of each cameras is synchronized in this thesis, where this assumption can be done by any existing synchronization mechanisms in LTE or LTE-A.
+However, there has no cooperation between nearby cameras when encoding video streams if the encoding structure shown in figure~\ref{fig::multiCamGOP_original} is used for multi-camera networks, and hence some redundant data might still be encoded.
+In order to remove such redundancy, we modify the encoding structure and show our proposed cooperative encoding structure in figure~\ref{fig::multiCamGOP}.
+
+In our proposed method, it is not required for all GOP to start with an I-frame.
+That is, at the beginning of each cameras' GOP, only a portion of cameras are selected to encode it video frame as an I-frame, where the selection are done by our proposed \emph{I-frame selection algorithm} as presented in Chapter~\ref{sec::iFrameSelectionSubProb}.
+After the selection, the remaining P-frames will reference from its most correlated I-frame for removing redundant information.
+Note that since the captured video frames will vary as the time changed, it is thus necessary for the data aggregator to update the cost matrix $\mathbf{H}$~\eqref{eq::bbCostMatrix} from time to time in order to prevent from using outdated information for the determination of transmission schedule.
+However, frequently recalculate the cost matrix will cause too much computational complexity at the data aggregator, and hence the latency might be increased.
+Therefore, \emph{when} should the aggregator update the cost matrix $\mathbf{H}$ thus become one of the main issue to be discussed when applying the correlated data gathering scheme to real-world applications, and we will introduce our proposed criteria for recalculation in the following chapter.
+%
+\subsection{Overall System Architecture}
+%
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/TxOverview.pdf}
+\caption{\label{fig::txOverview}Demonstration of data transmission scheme}
+\end{center}
+\end{figure}
+%
+Before presenting our proposed recalculation criteria, we first show the timeline of the overall network in figure~\ref{fig::txOverview}.

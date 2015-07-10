@@ -51,6 +51,7 @@ One possible method without losing the optimality is through the branch-and-boun
 Another algorithm to solve problem~\eqref{eq::IframeSelectionSubProblem} in a more time efficient way is to model~\eqref{eq::IframeSelectionSubProblem} into a graph problem, which will also be described in this chapter.
 %
 \subsection{Branch-and-Bound I-frame Selection Algorithm}
+\label{sec::proposedBBAlg}
 %{\color{red}Describe the proposed branch-and-bound algorithm for I-frame selection}
 Note that the solution set of problem~\eqref{eq::IframeSelectionSubProblem} can be modeled as an enumeration tree as shown in figure~\ref{fig::BBdesgin}, where the root of the enumeration tree is denoted as the whole solution set $\mathcal{S}$.
 The main idea of the BB algorithm is to divide the solution set $\mathcal{S}$ into smaller subsets $\mathcal{S}^1, \mathcal{S}^2, \cdots$ and if one subset has no possibility to include the optimal solution, then it is not required to be divided any more.

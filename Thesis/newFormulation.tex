@@ -88,6 +88,11 @@ Also note that we assume every cameras encoded its image as a P-frame should ref
 x_{ij} \leq x_{jj}, \forall i \in V, \forall j \in W_i.
 \label{eq::referenceOnlyIframe}
 \end{equation}
+Besides, a camera $i$ cannot overhear another camera which is located too far or is scheduled later than the transmission of camera $i$ , that is,
+\begin{equation}
+x_{ij} = 0, \forall i \in V, \forall j \in V \setminus W_i.
+\label{eq::xConstraintForNonoverheard}
+\end{equation}
 %
 %
 \begin{table*}[htb]
@@ -146,14 +151,16 @@ subject to
 &W_i = \{ j \in U_i | z_j \leq z_i \}, &\forall i \in V, \nonumber \\
 &\sum_{j \in W_i} x_{ij} = 1, &\forall i \in V, \nonumber \\
 &x_{ij} \leq x_{jj}, &\forall i \in V, \forall j \in W_i, \nonumber \\
+&x_{ij} = 0, &\forall i \in V, \forall j \in V \setminus W_i, \nonumber \\
 &x_{ij} = \{0,1\}, &\forall i,j \in V, \nonumber \\
 &|z_i - z_j| > 0, &\forall i,j \in V, i \neq j, \nonumber \\
 &1 \leq z_i \leq N, &\forall i \in V, z_i \in \mathbb{Z}.
 \label{eq::formulation}
 \end{align}
-Since the determination of $\mathbf{X}$ and $\mathbf{Z}$ in problem~\eqref{eq::formulation} is $\mathcal{NP}$-hard, we describe in the followings how we decompose the problem into \emph{P-frame scheduling sub-problem} and \emph{I-frame selection sub-problem}.
+Since all the decision variables $\mathbf{X}$ and $\mathbf{Z}$ belong to positive integers, problem~\eqref{eq::formulation} is thus in the form of a nonlinear integer programming problem, and solving the nonlinear integer programming is usually a $\mathcal{NP}$-hard problem~\cite{NIP}.
+Therefore, we will show how to decompose problem~\eqref{eq::formulation} into the \emph{I-frame selection sub-problem} and the \emph{P-frame scheduling sub-problem} in the following chapter.
+%
+\subsection{Problem Analysis and Decomposition}
+{\color{red} Analyze problem~\eqref{eq::formulation} and show how we decompose it.}
 The \emph{P-frame scheduling sub-problem} is solved by a greedy approach, while the optimal solution of the \emph{I-frame selection sub-problem} is obtained by a proposed branch-and-bound approach as presented in chapter~\ref{sec::IFrameSelection}.
 Besides, we also propose a heuristic approach based on graph approximation for determining the I-frame cameras set in chapter~\ref{sec::graphApprox}.
-%
-\subsection{Complexity Analysis}
-{\color{red} Show that problem~\eqref{eq::formulation} is $\mathcal{NP}$-hard}

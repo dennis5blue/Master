@@ -154,20 +154,30 @@ subject to
 &x_{ij} = 0, &\forall i \in V, \forall j \in V \setminus W_i, \nonumber \\
 &x_{ij} = \{0,1\}, &\forall i,j \in V, \nonumber \\
 &|z_i - z_j| > 0, &\forall i,j \in V, i \neq j, \nonumber \\
-&1 \leq z_i \leq N, &\forall i \in V, z_i \in \mathbb{Z}.
+&1 \leq z_i \leq N, &\forall i \in V, z_i \in \mathbb{Z},
 \label{eq::formulation}
 \end{align}
-Since all the decision variables $\mathbf{X}$ and $\mathbf{Z}$ belong to positive integers, problem~\eqref{eq::formulation} is thus in the form of a nonlinear integer programming problem, and solving the nonlinear integer programming is usually a $\mathcal{NP}$-hard problem~\cite{NIP}.
+where the set of all cameras $V$, position of each cameras (i.e. the set $U_i, i \in V$), and the amount of encoded bits (i.e. $H(F_i|F_j), i,j \in V$) are given inputs parameters of problem~\eqref{eq::formulation}.
+The elements in $\mathbf{X}$ and $\mathbf{Z}$ are unknown decision variables to be solved.
+Since both the variables in $\mathbf{X}$ and $\mathbf{Z}$ are positive integers, problem~\eqref{eq::formulation} is thus in the form of a nonlinear integer programming problem, and solving the nonlinear integer programming is usually a $\mathcal{NP}$-hard problem~\cite{NIP}.
 Therefore, we will show how to decompose problem~\eqref{eq::formulation} into the \emph{I-frame selection sub-problem} and the \emph{P-frame scheduling sub-problem} in the following chapter.
 %
 \subsection{Problem Analysis and Decomposition}
-{\color{red} Analyze problem~\eqref{eq::formulation} and show how we decompose it.}
+%{\color{red} Analyze problem~\eqref{eq::formulation} and show how we decompose it.}
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.95\columnwidth]{Figures/procedureOfSubproblems.pdf}
 \caption{\label{fig::subProbProcedure}Procedure for sub-problems division}
 \end{center}
 \end{figure}
-The \emph{P-frame scheduling sub-problem} is solved by a greedy approach, while the optimal solution of the \emph{I-frame selection sub-problem} is obtained by a proposed branch-and-bound approach as presented in chapter~\ref{sec::IFrameSelection}.
-Besides, we also propose a heuristic approach based on graph approximation for determining the I-frame cameras set in chapter~\ref{sec::graphApprox}.
-Figure~\ref{fig::subProbProcedure}
+As we mentioned before, problem~\eqref{eq::formulation} belongs to a nonlinear integer programming (NIP) problem.
+In addition, the determination of $\mathbf{X}$ is highly related to $\mathbf{Z}$ due to the reason that choosing $\mathbf{X}$ is restricted by the value of $\mathbf{Z}$ as shown in equation~\eqref{eq::prevSet} and~\eqref{eq::xConstraintForNonoverheard}.
+Therefore, in order to reduce the high complexity for solving problem~\eqref{eq::formulation} directly, we decompose it into two sub-problems such that the determination of $\mathbf{X}$ and $\mathbf{Z}$ does not correlated with each other. The two decomposed sub-problems include the \emph{I-frame selection sub-problem} and the \emph{P-frame scheduling sub-problem}, and they will be solved sequentially.
+That is, the solution of \emph{I-frame selection sub-problem} will become the input of the \emph{P-frame scheduling sub-problem} as shown in figure~\ref{fig::subProbProcedure}.
+
+The goal of the \emph{I-frame selection sub-problem} is to select some cameras to encode their images as I-frames so that the other cameras can encode their images by referencing those I-frames.
+Note that since we assume that only I-frame can become the reference frame as illustrated in equation~\eqref{eq::referenceOnlyIframe}, the \emph{I-frame selection sub-problem} is the most important part for maximizing the performance of overhearing source coding.
+Therefore, we aim to find the optimal solution of the \emph{I-frame selection sub-problem} by a proposed branch-and-bound approach as presented in Chapter~\ref{sec::proposedBBAlg}.
+Besides, we also propose a heuristic approach based on graph approximation for the determination of the set of I-frame cameras in Chapter~\ref{sec::graphApprox}.
+After the selection of I-frame cameras, the performance of our proposed data gathering scheme is almost determined.
+Therefore, we solve the \emph{P-frame scheduling sub-problem} through a greedy approach as presented in Chapter~\ref{sec::PFrameScheduling}.

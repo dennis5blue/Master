@@ -1,6 +1,29 @@
 \subsection{Proposed P-frame Scheduling Algorithm}
 \label{sec::PFrameScheduling}
-{\color{red}Describe our proposed P-frame scheduling algorithm based on a greedy scheduling metric.}
+%{\color{red}Describe our proposed P-frame scheduling algorithm based on a greedy scheduling metric.}
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/PscheOverview.pdf}
+\caption{\label{fig::pScheOverview}Demonstration of transmission schedule}
+\end{center}
+\end{figure}
+As we demonstrate in figure~\ref{fig::subProbProcedure} before, the \emph{P-frame scheduling algorithm} is executed after a portion of cameras are selected to encode their images as I-frames.
+Therefore, all P-frame cameras (i.e. cameras that are not be selected as I-frame cameras) can find the most correlated I-frame cameras in polynomial time when the I-frame cameras set is given.
+Our algorithm thus make all P-frame cameras join the group of their ``most correlated'' I-frame camera.
+Time slots will be allocated group by group, starting with the I-frame camera in that group and followed by several P-frame cameras.
+The order for P-frame cameras is determined based on a greedy approach, that is, a camera that can make more other P-frames cameras to be able to overhear its transmission will be scheduled first.
+The reason why we use this metric is that the later scheduled P-frame cameras might have the possibility to reference from the previous P-frame camera instead of the first scheduled I-frame camera.
+However, referencing from a P-frame camera will increase the complexity of problem formulation and hence it is leave as a future work of this thesis.
+Besides, we also note that the greedy P-frame scheduling metric presented above can be changed for fitting into application requirements (i.e. camera which is more delay sensitive to be scheduled first).
+
+Figure~\ref{fig::pScheOverview} shows an example of the determined transmission schedule.
+Suppose that camera $4$ and $7$ are selected to be I-frame cameras by algorithm~\ref{alg::bbAlgorithm} or~\ref{alg::minWeightDS}, and cameras $1,2,3$ are more correlated with camera $4$ and cameras $5,6$ are more correlated with camera $7$.
+Therefore, cameras $1,2,3$ will join the group of camera $4$ while cameras $5,6$ will join the group of camera $7$.
+Since time slots are allocated group by group, assume that the group of camera $4$ is scheduled first, then slot $1$ will be allocated for camera $4$ since I-frame camera should be scheduled first so that the later P-frame cameras are able to overhear its transmission.
+To proceed, time slots $2,3,4$ will be allocated for the member cameras of camera $4$, and which member camera is scheduled at which time slot is based on the greedy P-frame scheduling metric.
+After all member cameras of camera $4$ is scheduled, the next group will continued to be scheduled.
+That is, slot $5$ is for the transmission of camera $7$ (the I-frame camera of the next group), and slots $6,7$ are for the member cameras of camera $7$.
+Our P-frame scheduling algorithm will keep working until all cameras groups are scheduled.
 %
 %\begin{figure}
 %\begin{center}

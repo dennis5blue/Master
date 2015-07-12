@@ -1,6 +1,6 @@
 \section{Centralized Correlated Data Gathering for Wireless Multi-Camera Networks}
 \label{sec::protocolDesign}
-{\color{red} Present how our proposed correlated data gathering scheme is applied to real-world multi-camera networks.}
+%{\color{red} Present how our proposed correlated data gathering scheme is applied to real-world multi-camera networks.}
 As we present in Chapter~\ref{sec::IFrameSelection} about our proposed scheduling algorithms to exploit image correlation among neighboring cameras, we further describe how the proposed correlated data gathering scheme can be applied to real-world multi-camera networks in this chapter.
 First of all, we will briefly introduce some basic ideas about the conventional H.264 video compression used in multi-camera systems.
 Then, we will show our modifications about the system so that our proposed correlated data gathering technique can fit in the system.
@@ -67,7 +67,7 @@ A B-frame is a video frame that is able to reference from both a preceding refer
 Therefore, encoding video frames as B-frames can improve the encoding efficiency but will also increase the processing time and hence we do not consider the appearance of B-frames in this thesis.
 \end{itemize}
 
-We assume that all video frames are encoded as either I-frames or P-frames as shown in figure~\ref{fig::baselineGOP}, where a P-frame will reference from its preceding frame (can be either an I-frame or a P-frame).
+We assume that all video frames are encoded as either I-frames or P-frames as shown in figure~\ref{fig::baselineGOP} (which is the baseline profile in H.264), where a P-frame will reference from its preceding frame (can be either an I-frame or a P-frame).
 An I-frame will be repeatedly inserted after a give number of P-frames, and we denote an I-frame together with its following P-frames as a group of pictures (GOP) in this thesis.
 In the following chapter, we will show how to apply our proposed correlated data gathering mechanism for reducing encoded bits of a GOP in the multi-camera networks.
 %
@@ -135,10 +135,68 @@ The determined camera schedule will last for several rounds of transmission, and
 \subsubsection{Data Transmission Phase}
 \label{sec::dataTransmissionPhase}
 The \emph{data transmission phase} of our scheme is partitioned into several rounds of transmission due to the reason that frequently calculating $\mathbf{H}$ will lead to very high computational complexity.
-In this thesis, the definition of a transmission round is to deliver one GOP of each camera to the data aggregator, where a GOP may consists of several video frames.
+In this thesis, the definition of ``one transmission round'' is to deliver one GOP of each camera to the data aggregator, where a GOP may consists of several video frames.
+Therefore, partitioning the data transmission phase into several transmission rounds means that the estimated $\mathbf{H}$ will last for the transmission of more than one GOPs, and only be reestimated until it is thought to be outdated.
 Note that since we assume that the I-frames of each camera is perfectly synchronized, the number of video frames contained in one GOP of each camera is also equalled.
 Therefore, one transmission round can further be separated into several parts, start with the transmission of the first frame of each camera's GOP and end up with the transmission of the last frame of each camera's GOP as shown in figure~\ref{fig::txOverview}.
 For the transmission of the first frame of each camera's GOP, the camera schedule determined by the \emph{transmission scheduling phase} finally come into play.
 That is, cameras will be sequentially allocated one time slot for transmission based on the determined schedule.
+%
+\subsubsection{Proposed Reestimation Criteria}
+Based on the ideas presented in the previous chapters, we now present our proposed criteria for reestimating $\mathbf{H}$.
+Two extreme cases for reestimating $\mathbf{H}$ are listed below:
+\begin{itemize}
+\item Estimate $\mathbf{H}$ at the end of every transmission round (i.e. update $\mathbf{H}$ after delivering one GOP).
+\item Estimate $\mathbf{H}$ only at the end of first transmission round (i.e use the same $\mathbf{H}$ for delivering all GOPs).
+\end{itemize}
+However, the two cases above both have significant drawback.
+For the former case, the data aggregator will suffer from too much computational complexity, whereas for the later one, outdated cost matrix $\mathbf{H}$ will decrease the performance for overhearing source coding technique.
+Our proposed criteria, on the other hand, is a more balanced method so that we can prevent from having those two disadvantages listed above.
 
-Based on the ideas presented in the previous chapters, 
+Denote $\eta_i^k$ as the improvement ratio of camera $i$ at transmission round $k$ as:
+\begin{align}
+&\eta_i^k = \nonumber \\
+&\frac{
+\left( \begin{tabular}{c}
+\text{Amount of encoded} \\
+\text{bits of camera $i$ at} \\
+\text{round $k$ if it is} \\
+\text{independently encoded}
+\end{tabular}
+-
+\begin{tabular}{c}
+\text{Amount of encoded} \\
+\text{bits of camera $i$ at} \\
+\text{round $k$ if overhearing} \\
+\text{source coding technique} \\
+\text{is applied}
+\end{tabular} \right)
+}{
+\begin{tabular}{c}
+\text{Amount of encoded} \\
+\text{bits of camera $i$ at} \\
+\text{round $k$ if it is} \\
+\text{independently encoded}
+\end{tabular}
+}.
+\label{eq::defImproveRatio}
+\end{align}
+Besides, we also denote $\bar{\eta}$ as the long term improvement ratio of all cameras, which is updated by a weighted sum procedure at the end of every transmission rounds.
+Suppose that now the transmission of round $k$ ends, then $\bar{\eta}$ is updated as:
+\begin{equation}
+\bar{\eta} = \alpha \frac{1}{|V|} \sum_{i=1}^{|V|} \eta_i^k + (1-\alpha) \bar{\eta},
+\label{eq::updateEta}
+\end{equation}
+where $0 \leq \alpha \leq 1$ is the smoothing parameter introduced for the update procedure.
+Our proposed reestimation criteria is thus based on $\bar{\eta}$ defined in equation~\eqref{eq::updateEta}.
+That is, if $\bar{\eta}$ becomes smaller after the transmission of round $k$, then the \emph{data transmission phase} is ended after transmission round $k$ since it is possible that the cost matrix $\mathbf{H}$ becomes outdated for the determination of transmission schedule.
+Therefore, the \emph{correlation estimation phase} and the \emph{transmission scheduling phase} will be performed before the transmission of round $k+1$, and hence a new, appropriate cost matrix $\mathbf{H}$ can be used for scheduling cameras of  transmission round $k+1$.
+%
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/overallArchitecture.pdf}
+\caption{\label{fig::overallArchitecture}Flowchart for overall proposed system architecture}
+\end{center}
+\end{figure}
+%
+As a summary, we show the overall proposed system architecture in figure~\ref{fig::overallArchitecture}.

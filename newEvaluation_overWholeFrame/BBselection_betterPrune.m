@@ -53,7 +53,9 @@ function BBselection_betterPrune (in_numCams,in_testVersion,in_searchRange,in_ov
     % Strat BB algorithm
     recordUb = [];
     recordLb = [];
-    ub = inf;
+    recordNumInQueue = [];
+    initSolution = ones(1,N);
+    ub = CalExactCost(initSolution,matCost);
     while length(BBqueue) > 0
         % sort BBqueue to get lowest lb and depthest node
         BBqueue = sortStruct(BBqueue,'lb',-1); % -1 means sort descending
@@ -71,7 +73,8 @@ function BBselection_betterPrune (in_numCams,in_testVersion,in_searchRange,in_ov
                 bestSelection = BBnode.selection;
             end
         elseif BBnode.depth < N
-            nextCam = RandomSelectNextBranch( BBnode.selection );
+            %nextCam = RandomSelectNextBranch( BBnode.selection );
+            nextCam = BBnode.depth + 1; % exactly determine next camera for branching
 
             % branch 1
             m_selec = BBnode.selection;
@@ -95,6 +98,7 @@ function BBselection_betterPrune (in_numCams,in_testVersion,in_searchRange,in_ov
         %[BBnode.lb ub]
         recordUb = [recordUb ub];
         recordLb = [recordLb BBnode.lb];
+        recordNumInQueue = [recordNumInQueue length(BBqueue)];
     end
 
     bestSelection

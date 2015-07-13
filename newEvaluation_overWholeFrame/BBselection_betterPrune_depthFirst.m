@@ -1,6 +1,10 @@
-function BBselection (in_numCams,in_testVersion,in_searchRange,in_overRange)
+function BBselection_betterPrune_depthFirst (in_numCams,in_testVersion,in_searchRange,in_overRange)
     %clc;
     %clear;
+    %in_numCams = '25';
+    %in_testVersion = '10';
+    %in_searchRange = '512';
+    %in_overRange = '1';
     addpath('./Utility');
     inputPath = ['../SourceData/test' in_testVersion '/'];
     searchRange = str2num(in_searchRange);
@@ -37,10 +41,13 @@ function BBselection (in_numCams,in_testVersion,in_searchRange,in_overRange)
     vecX = -1*ones(1,N); % indicate if a camera is encoded as an I-frame
     BBqueue = [];
     vecX(firstCam) = 1;
-    newNode = struct('depth',1,'lb',CalBBLowerBound(vecX,matCost),'selection',vecX);
+    %newNode = struct('depth',1,'lb',CalBBLowerBound2(vecX,matCost),'selection',vecX);
+    newNode = struct('depth',1,'lb',CalBBLowerBound2ConsiderOverRange(vecX,matCost,pos,bsX,bsY,rho),'selection',vecX);
+    
     BBqueue = [newNode BBqueue];
     vecX(firstCam) = 0;
-    newNode = struct('depth',1,'lb',CalBBLowerBound(vecX,matCost),'selection',vecX);
+    %newNode = struct('depth',1,'lb',CalBBLowerBound2(vecX,matCost),'selection',vecX);
+    newNode = struct('depth',1,'lb',CalBBLowerBound2ConsiderOverRange(vecX,matCost,pos,bsX,bsY,rho),'selection',vecX);
     BBqueue = [newNode BBqueue];
 
     % Strat BB algorithm
@@ -51,7 +58,6 @@ function BBselection (in_numCams,in_testVersion,in_searchRange,in_overRange)
     ub = CalExactCost(initSolution,matCost);
     while length(BBqueue) > 0
         % sort BBqueue to get lowest lb and depthest node
-        BBqueue = sortStruct(BBqueue,'lb',-1); % -1 means sort descending
         BBqueue = sortStruct(BBqueue,'depth',1); % 1 means sort ascending
 
         % pop the last element
@@ -59,7 +65,8 @@ function BBselection (in_numCams,in_testVersion,in_searchRange,in_overRange)
         BBqueue(length(BBqueue)) = [];
 
         if BBnode.depth == N
-            m_cost = CalExactCost(BBnode.selection,matCost);
+            %m_cost = CalExactCost(BBnode.selection,matCost);
+            m_cost = CalExactCostConsiderOverRange( BBnode.selection,matCost,pos,bsX,bsY,rho );
             if m_cost < ub
                 ub = m_cost;
                 bestSelection = BBnode.selection;
@@ -71,7 +78,8 @@ function BBselection (in_numCams,in_testVersion,in_searchRange,in_overRange)
             % branch 1
             m_selec = BBnode.selection;
             m_selec(nextCam) = 1;
-            m_lb = CalBBLowerBound(m_selec,matCost);
+            %m_lb = CalBBLowerBound2(m_selec,matCost);
+            m_lb = CalBBLowerBound2ConsiderOverRange(m_selec,matCost,pos,bsX,bsY,rho);
             if m_lb < ub
                 newNode = struct('depth',BBnode.depth+1,'lb',m_lb,'selection',m_selec);
                 BBqueue = [newNode BBqueue];
@@ -79,7 +87,8 @@ function BBselection (in_numCams,in_testVersion,in_searchRange,in_overRange)
 
             % branch 0
             m_selec(nextCam) = 0;
-            m_lb = CalBBLowerBound(m_selec,matCost);
+            %m_lb = CalBBLowerBound2(m_selec,matCost);
+            m_lb = CalBBLowerBound2ConsiderOverRange(m_selec,matCost,pos,bsX,bsY,rho);
             if m_lb <= ub
                 newNode = struct('depth',BBnode.depth+1,'lb',m_lb,'selection',m_selec);
                 BBqueue = [newNode BBqueue];
@@ -92,9 +101,10 @@ function BBselection (in_numCams,in_testVersion,in_searchRange,in_overRange)
     end
 
     bestSelection
-    finalTxBits = CalExactCost(bestSelection,matCost)
+    %finalTxBits = CalExactCost(bestSelection,matCost)
+    finalTxBits = CalExactCostConsiderOverRange( bestSelection,matCost,pos,bsX,bsY,rho )
     improveRatio = (sum(vecBits(1:N))-finalTxBits)/sum(vecBits(1:N))
     reducedIter = (2^N - length(recordLb))/(2^N)
-    saveFileName = ['mat/BBoutput_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' num2str(rho) '.mat'];
+    saveFileName = ['mat/BBBetterPruneOutputDepthFirst2_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' num2str(rho) '.mat'];
     save(saveFileName);
 end

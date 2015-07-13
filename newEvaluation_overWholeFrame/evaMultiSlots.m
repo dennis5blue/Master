@@ -9,7 +9,7 @@ searchRng = 32;
 bsX = 0;
 bsY = 0;
 alpha = 0.9; % weighted sum for average improvement ratio
-numAverage = 1000;
+numAverage = 500;
 
 vecSlots = [1 8 9 2 6 10 3 7 5 4];
 pos = dlmread([inputPath 'plotTopo/pos.txt']);
@@ -155,14 +155,14 @@ plotMDSCondChange = vecOverImproveCondChange;
 plotMDSNoChange = vecOverImproveNoChange;
 
 %% Plot figure 1
-f1 = figure(1);
+figure(1);
 plot([1:length(vecSlots)],plotBBAlwaysChange,'^-','LineWidth',2,'DisplayName', ...
     'Dynamic cost matrix (baseline, BB)','Color','r','MarkerSize',10); hold on;
 plot([1:length(vecSlots)],plotMDSAlwaysChange,'^--','LineWidth',2,'DisplayName', ...
     'Dynamic cost matrix (baseline, graph)','Color','r','MarkerSize',10); hold on;
-plot([1:length(vecSlots)],plotBBCondChange,'*-','LineWidth',2,'DisplayName', ...
+plot([1:length(vecSlots)],plotBBCondChange,'s-','LineWidth',2,'DisplayName', ...
     'Dynamic cost matrix (proposed, BB)','Color','b','MarkerSize',10); hold on;
-plot([1:length(vecSlots)],plotMDSCondChange,'*--','LineWidth',2,'DisplayName', ...
+plot([1:length(vecSlots)],plotMDSCondChange,'s--','LineWidth',2,'DisplayName', ...
     'Dynamic cost matrix (proposed, graph)','Color','b','MarkerSize',10); hold on;
 plot([1:length(vecSlots)],plotBBNoChange,'o-','LineWidth',2,'DisplayName', ...
     'Static cost matrix (BB)','Color','m','MarkerSize',10); hold on;
@@ -175,19 +175,9 @@ axis([-inf inf -inf 11.5]);
 ylabel('Improvement ratio (%)','FontSize',11);
 xlabel('Round','FontSize',11);
 grid on;
-ti = get(gca,'TightInset');
-set(gca,'Position',[ti(1) ti(2) 1-ti(3)-ti(1) 1-ti(4)-ti(2)]);
-set(gca,'units','centimeters');
-pos = get(gca,'Position');
-ti = get(gca,'TightInset');
-set(gcf, 'PaperUnits','centimeters');
-set(gcf, 'PaperSize', [pos(3)+ti(1)+ti(3)+0.4 pos(4)+ti(2)+ti(4)+0.5]);
-set(gcf, 'PaperPositionMode', 'manual');
-set(gcf, 'PaperPosition',[0 0 pos(3)+ti(1)+ti(3) pos(4)+ti(2)+ti(4)]);
-saveas(f1,'~/Desktop/improvementOutput.pdf');
 
 %% plot figure 2
-f2 = figure(2);
+figure(2);
 plot([1:length(vecSlots)],vecBBElTime,'o-','LineWidth',2,'DisplayName', ...
     'Proposed BB algorihm','Color','b','MarkerSize',10); hold on;
 plot([1:length(vecSlots)],vecMDSElTime,'^-','LineWidth',2,'DisplayName', ...
@@ -198,17 +188,17 @@ plot([1:length(vecSlots)],vecMDSElTime,'^-','LineWidth',2,'DisplayName', ...
 %set (gca, 'XTickLabel', 2.^xt);
 leg = legend('show','location','NorthWest');
 set(leg,'FontSize',12);
-axis([-inf inf 0 0.4]);
+axis([-inf inf 0 0.25]);
 ylabel('Execution time (sec)','FontSize',11);
 xlabel('Round','FontSize',11);
 grid on;
-ti = get(gca,'TightInset');
-set(gca,'Position',[ti(1) ti(2) 1-ti(3)-ti(1) 1-ti(4)-ti(2)]);
-set(gca,'units','centimeters');
-pos = get(gca,'Position');
-ti = get(gca,'TightInset');
-set(gcf, 'PaperUnits','centimeters');
-set(gcf, 'PaperSize', [pos(3)+ti(1)+ti(3)+0.4 pos(4)+ti(2)+ti(4)+0.5]);
-set(gcf, 'PaperPositionMode', 'manual');
-set(gcf, 'PaperPosition',[0 0 pos(3)+ti(1)+ti(3) pos(4)+ti(2)+ti(4)]);
-saveas(f2,'~/Desktop/Timeoutput.pdf');
+%ti = get(gca,'TightInset');
+%set(gca,'Position',[ti(1) ti(2) 1-ti(3)-ti(1) 1-ti(4)-ti(2)]);
+%set(gca,'units','centimeters');
+%pos = get(gca,'Position');
+%ti = get(gca,'TightInset');
+%set(gcf, 'PaperUnits','centimeters');
+%set(gcf, 'PaperSize', [pos(3)+ti(1)+ti(3)+0.4 pos(4)+ti(2)+ti(4)+0.5]);
+%set(gcf, 'PaperPositionMode', 'manual');
+%set(gcf, 'PaperPosition',[0 0 pos(3)+ti(1)+ti(3) pos(4)+ti(2)+ti(4)]);
+%saveas(f2,'~/Desktop/Timeoutput.pdf');

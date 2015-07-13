@@ -1,4 +1,4 @@
-function [finalTxBits bestSelection] = MDS_multiSlots (in_numCams,in_testVersion,in_whichSlot,in_searchRng,in_overRange)
+function [totalCost bestSelection] = MDS_multiSlots (in_numCams,in_testVersion,in_whichSlot,in_searchRng,in_overRange)
     %clc;
     %clear;
     %in_numCams = '30';
@@ -155,17 +155,21 @@ function [finalTxBits bestSelection] = MDS_multiSlots (in_numCams,in_testVersion
     end
     
     totalCost = 0;
-    bestSelection = [];
+    vecIFrames = [];
     for i = 1:N
         %vecAdjGraph(i)
         m_node = vecAdjGraph(i);
         totalCost = totalCost + m_node.cost;
         if m_node.ifIFrame == 1
-            bestSelection = [bestSelection i];
+            vecIFrames = [vecIFrames i];
         end
     end
 
-    bestSelection
+    %bestSelection
+    bestSelection = zeros(1,N);
+    for i = 1:length(vecIFrames)
+        bestSelection(vecIFrames(i)) = 1;
+    end
     totalCost;
     improveRatio = (sum(vecBits(1:N))-totalCost)/sum(vecBits(1:N));
     %finalTxBits = CalExactCost(bestSelection,matCost);

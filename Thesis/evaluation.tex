@@ -28,7 +28,7 @@ The parameters for our simulation is listed in table~\ref{tab::evaParameters}.
 \begin{table}[htb]
 \footnotesize
 \centering
-\begin{tabular}{c||c}
+\begin{tabularx}{0.9\columnwidth}{X|X}
   \hline
   City size & $500m \times 500m$ \\ \\
   Number of cameras & $30$ \\ \\
@@ -37,10 +37,9 @@ The parameters for our simulation is listed in table~\ref{tab::evaParameters}.
   Focal Length & $35$ ($mm$) \\ \\
   Multiview search range & $32,64,128,256,512$ \\ \\
   Image quantization parameter & $31$ \\ \\
-  Coding technique & Context adaptive arithmetic \\
-                                  & binary coding (CABAC) \\
+  Coding technique & Context adaptive arithmetic binary coding (CABAC) \\
   \hline
-\end{tabular}
+\end{tabularx}
 \\
 \caption{\label{tab::evaParameters}Parameters for evaluation}
 \end{table}
@@ -172,9 +171,6 @@ Figure~\ref{fig::complexity} further shows that result for required
 Figure~\ref{fig::txBytes_diffAlg}~\ref{fig::refStructure_threeAlgs}
 
 %
-\subsection{Evaluation of Different P-frame Scheduling Algorithms}
-{\color{red}Show the evaluation result of different P-frame scheduling algorithms.}
-
 %In this subsection, we present the evaluation results of the branch-and-bound algorithm for overhearing source coding.
 %Through the overhearing source coding mechanism, each camera can leverage the transmitted frame of previous scheduled cameras for reducing the amount of bits needed to be delivered.
 %That is, some correlated information is no longer necessary to be transmitted after processing the overheard frames.

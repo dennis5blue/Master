@@ -96,7 +96,7 @@ function [finalTxBits bestSelection] = BBselection_multiSlots (in_numCams,in_tes
         recordLb = [recordLb BBnode.lb];
     end
 
-    bestSelection
+    %bestSelection
     %finalTxBits = CalExactCost(bestSelection,matCost)
     finalTxBits = CalExactCostConsiderOverRange( bestSelection,matCost,pos,bsX,bsY,rho );
     improveRatio = (sum(vecBits(1:N))-finalTxBits)/sum(vecBits(1:N));

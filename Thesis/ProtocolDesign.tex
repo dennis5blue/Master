@@ -134,6 +134,19 @@ The determined camera schedule will last for several rounds of transmission, and
 %
 \subsubsection{Data Transmission Phase}
 \label{sec::dataTransmissionPhase}
+\begin{figure}
+\begin{center}
+\begin{subfigure}[b]{0.65\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/GOPexample.pdf}
+\caption{\label{fig::txRoundExampleGOP}Group of pictures}
+\end{subfigure}
+\begin{subfigure}[b]{0.95\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/txRoundExample.pdf}
+\caption{\label{fig::txRoundExampleTx}Illustration of one transmission round}
+\end{subfigure}
+\caption{\label{fig::txRoundExample}A three cameras example}
+\end{center}
+\end{figure}
 The \emph{data transmission phase} of our scheme is partitioned into several rounds of transmission due to the reason that frequently calculating $\mathbf{H}$ will lead to very high computational complexity.
 In this thesis, the definition of ``one transmission round'' is to deliver one GOP of each camera to the data aggregator, where a GOP may consists of several video frames.
 Therefore, partitioning the data transmission phase into several transmission rounds means that the estimated $\mathbf{H}$ will last for the transmission of more than one GOPs, and only be reestimated until it is thought to be outdated.
@@ -141,6 +154,14 @@ Note that since we assume that the I-frames of each camera is perfectly synchron
 Therefore, one transmission round can further be separated into several parts, start with the transmission of the first frame of each camera's GOP and end up with the transmission of the last frame of each camera's GOP as shown in figure~\ref{fig::txOverview}.
 For the transmission of the first frame of each camera's GOP, the camera schedule determined by the \emph{transmission scheduling phase} finally come into play.
 That is, cameras will be sequentially allocated one time slot for transmission based on the determined schedule.
+
+Figure~\ref{fig::txRoundExample} gives an example of how video frames are scheduled within one transmission round.
+Suppose that the network now contains three cameras, and the GOP of each cameras all have four video frames, where the reference structure is shown in figure~\ref{fig::txRoundExampleGOP}.
+In our example, camera $1$ is selected as I-frame camera whereas camera $2$ and $3$ are P-frame camera and they both reference from camera $1$.
+Therefore, the starting I-frame of camera $2$ and $3$ will become P-frame by referencing the starting I-frame of camera $1$.
+To proceed ,the data delivery procedure will start from transmitting the first frame of each camera's GOP as shown in figure~\ref{fig::txRoundExampleTx}, where the camera schedule of these three cameras is determined by the \emph{transmission scheduling phase} and we assume that the determined schedule is $1 \rightarrow 2 \rightarrow 3$ in this example.
+Note that the number shown at the lower right side of each video frames indicates the index of this frame in its corresponding GOP.
+After the first frame of all cameras are delivered to the data aggregator, the transmission of the second frame will start, and then the third, and then the last, where transmitting these frames will all follow the same cameras schedule when delivering the first frame.
 %
 \subsubsection{Proposed Reestimation Criteria}
 Based on the ideas presented in the previous chapters, we now present our proposed criteria for reestimating $\mathbf{H}$.

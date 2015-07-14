@@ -9,7 +9,7 @@ searchRng = 32;
 bsX = 0;
 bsY = 0;
 alpha = 0.9; % weighted sum for average improvement ratio
-numAverage = 500;
+numAverage = 10;
 
 vecSlots = [1 8 9 2 6 10 3 7 5 4];
 pos = dlmread([inputPath 'plotTopo/pos.txt']);
@@ -181,7 +181,7 @@ figure(2);
 plot([1:length(vecSlots)],vecBBElTime,'o-','LineWidth',2,'DisplayName', ...
     'Proposed BB algorihm','Color','b','MarkerSize',10); hold on;
 plot([1:length(vecSlots)],vecMDSElTime,'^-','LineWidth',2,'DisplayName', ...
-    'Graph approximation','Color','r','MarkerSize',10); hold on;
+    'Graph approximation','Color','r','MarkerSize',10);
 
 %set (gca, 'XTick',[5:1:9]);
 %xt = get(gca, 'XTick');
@@ -202,3 +202,39 @@ grid on;
 %set(gcf, 'PaperPositionMode', 'manual');
 %set(gcf, 'PaperPosition',[0 0 pos(3)+ti(1)+ti(3) pos(4)+ti(2)+ti(4)]);
 %saveas(f2,'~/Desktop/Timeoutput.pdf');
+
+%% plot figure 3
+vecCmuBBElTime_baseline = [vecBBElTime(1)];
+vecCmuMDSElTime_baseline = [vecMDSElTime(1)];
+vecCmuBBElTime_proposed = [vecBBElTime(1)];
+vecCmuMDSElTime_proposed = [vecMDSElTime(1)];
+for run = 2:length(vecSlots)
+    BBtime = vecCmuBBElTime_baseline(length(vecCmuBBElTime_baseline)) + vecBBElTime(run);
+    MDStime = vecCmuMDSElTime_baseline(length(vecCmuMDSElTime_baseline)) + vecMDSElTime(run);
+    vecCmuBBElTime_baseline = [vecCmuBBElTime_baseline BBtime];
+    vecCmuMDSElTime_baseline = [vecCmuMDSElTime_baseline MDStime];
+    if vecIfReCalculated(run) == 1
+        BBtime = vecCmuBBElTime_proposed(length(vecCmuBBElTime_proposed)) + vecBBElTime(run);
+        MDStime = vecCmuMDSElTime_proposed(length(vecCmuMDSElTime_proposed)) + vecMDSElTime(run);
+    else
+        BBtime = vecCmuBBElTime_proposed(length(vecCmuBBElTime_proposed));
+        MDStime = vecCmuMDSElTime_proposed(length(vecCmuMDSElTime_proposed));
+    end
+    vecCmuBBElTime_proposed = [vecCmuBBElTime_proposed BBtime];
+    vecCmuMDSElTime_proposed = [vecCmuMDSElTime_proposed MDStime];
+end
+figure(3);
+plot([1:length(vecSlots)],vecCmuBBElTime_baseline,'o-','LineWidth',2,'DisplayName', ...
+    'BB algorihm (baseline)','Color','r','MarkerSize',10); hold on;
+plot([1:length(vecSlots)],vecCmuMDSElTime_baseline,'^--','LineWidth',2,'DisplayName', ...
+    'Graph approximation (baseline)','Color','r','MarkerSize',10); hold on;
+plot([1:length(vecSlots)],vecCmuBBElTime_proposed,'o-','LineWidth',2,'DisplayName', ...
+    'BB algorihm (proposed)','Color','b','MarkerSize',10); hold on;
+plot([1:length(vecSlots)],vecCmuMDSElTime_proposed,'^--','LineWidth',2,'DisplayName', ...
+    'Graph approximation (proposed)','Color','b','MarkerSize',10);
+leg = legend('show','location','NorthWest');
+set(leg,'FontSize',12);
+axis([-inf inf -inf inf]);
+ylabel('Cumulative execution time (sec)','FontSize',11);
+xlabel('Round','FontSize',11);
+grid on;

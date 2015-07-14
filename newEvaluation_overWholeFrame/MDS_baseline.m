@@ -1,4 +1,4 @@
-function MDS_baseline (in_numCams,in_testVersion,in_searchRange,in_overRange)
+function [improveRatio] = MDS_baseline (in_numCams,in_testVersion,in_searchRange,in_overRange)
     %clc;
     %clear;
     %in_numCams = '30';
@@ -104,8 +104,9 @@ function MDS_baseline (in_numCams,in_testVersion,in_searchRange,in_overRange)
         end
     end
     
-    
+    iter = 0;
     while(1)
+        iter = iter + 1;
         % attach P-cam to new generated I-cam
         % For remaining cameras, join a head if this head is its smallest weight neighbor (outEdges)
         for cam = 1:N
@@ -168,7 +169,8 @@ function MDS_baseline (in_numCams,in_testVersion,in_searchRange,in_overRange)
         % check if all cameras are determined
         ifbreak = 1;
         for i = 1:N
-            m_node = vecAdjGraph(i); 
+            m_node = vecAdjGraph(i);
+            %[m_node.idx m_node.ifIFrame]
             if m_node.ifIFrame == -1
                 ifbreak = 0;
             end
@@ -176,23 +178,35 @@ function MDS_baseline (in_numCams,in_testVersion,in_searchRange,in_overRange)
         if ifbreak == 1
             break;
         end
+        if iter > 100
+            for i = 1:N
+                m_node = vecAdjGraph(i);
+                if m_node.ifIFrame == -1
+                    m_node.ifIFrame = 1;
+                    m_node.cost = vecBits(i);
+                    vecAdjGraph(i) = m_node;
+                end
+            end
+            break;
+        end
     end
     
     totalCost = 0;
-    bestSelection = [];
+    bestSelection = zeros(1,N);
     for i = 1:N
         %vecAdjGraph(i)
         m_node = vecAdjGraph(i);
         totalCost = totalCost + m_node.cost;
         if m_node.ifIFrame == 1
-            bestSelection = [bestSelection i];
+            bestSelection(i) = 1;
         end
     end
 
-    bestSelection
-    totalCost
-    improveRatio = (sum(vecBits(1:N))-totalCost)/sum(vecBits(1:N))
-    %finalTxBits = CalExactCost(bestSelection,matCost);
-    saveFileName = ['mat/MDSoutput2_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' in_overRange '.mat'];
-    save(saveFileName);
+    bestSelection;
+    totalCost;
+    finalTxBits = CalExactCostConsiderOverRange( bestSelection,matCost,pos,bsX,bsY,rho );
+    improveRatio = (sum(vecBits(1:N))-finalTxBits)/sum(vecBits(1:N));
+    %improveRatio = (sum(vecBits(1:N))-totalCost)/sum(vecBits(1:N))
+    %saveFileName = ['mat/MDSoutput2_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' in_overRange '.mat'];
+    %save(saveFileName);
 end

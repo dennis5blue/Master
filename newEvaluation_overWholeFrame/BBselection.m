@@ -1,4 +1,4 @@
-function BBselection (in_numCams,in_testVersion,in_searchRange,in_overRange)
+function [improveRatio] = BBselection (in_numCams,in_testVersion,in_searchRange,in_overRange)
     %clc;
     %clear;
     addpath('./Utility');
@@ -95,6 +95,6 @@ function BBselection (in_numCams,in_testVersion,in_searchRange,in_overRange)
     finalTxBits = CalExactCost(bestSelection,matCost)
     improveRatio = (sum(vecBits(1:N))-finalTxBits)/sum(vecBits(1:N))
     reducedIter = (2^N - length(recordLb))/(2^N)
-    saveFileName = ['mat/BBoutput_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' num2str(rho) '.mat'];
-    save(saveFileName);
+    %saveFileName = ['mat/BBoutput_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' num2str(rho) '.mat'];
+    %save(saveFileName);
 end

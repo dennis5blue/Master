@@ -46,15 +46,27 @@ The parameters for our simulation is listed in table~\ref{tab::evaParameters}.
 %
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/imageDemo.pdf}
-\caption{\label{fig::imageDemo}Original frame and reference frame}
-\end{center}
-\end{figure}
+\begin{subfigure}[b]{0.45\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/org}
+\caption{Original frame}
+\end{subfigure}
 %
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/imageDemo2.pdf}
-\caption{\label{fig::imageDemo2}Reconstructed frame and error}
+\begin{subfigure}[b]{0.45\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/ref}
+\caption{Reference frame}
+\end{subfigure}
+%
+\begin{subfigure}[b]{0.45\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/rec}
+\caption{Reconstructed frame}
+\end{subfigure}
+%
+\begin{subfigure}[b]{0.45\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/diff}
+\caption{Reconstructed error}
+\end{subfigure}
+%
+\caption{\label{fig::multiViewImageDemo} Illustration of multiview encoding}
 \end{center}
 \end{figure}
 %
@@ -70,19 +82,29 @@ The parameters for our simulation is listed in table~\ref{tab::evaParameters}.
 \end{figure}
 Figure~\ref{fig::txBytes_diffRng}
 
+\subsection{Evaluation of Different Branching method}
+{\color{red}Show the converged speed of different branching method for BB algorithm.}
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/compareBranching.pdf}
+\caption{\label{fig::compareBranching} Comparison of convergence speed for different branching approach}
+\end{center}
+\end{figure}
+Figure~\ref{fig::compareBranching}
+
 \subsection{Evaluation of Different Lower Bound Estimation Technique}
 {\color{red}Show the converged speed of different lower bound estimation for BB algorithm.}
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/converge_baseline.pdf}
-\caption{\label{fig::converge_baseline} Convergence of BB algorithm (baseline lower bound estimation)}
+\includegraphics[width=0.95\columnwidth]{Figures/compareLbEstimation.pdf}
+\caption{\label{fig::compareLbEstimation} Comparison of convergence speed for different lower bound estimation methods}
 \end{center}
 \end{figure}
 %
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/converge_proposed.pdf}
-\caption{\label{fig::converge_proposed} Convergence of BB algorithm (proposed lower bound estimation)}
+\includegraphics[width=0.95\columnwidth]{Figures/evaNumActiveBBNodes.pdf}
+\caption{\label{fig::evaNumActiveBBNodes} Comparison of number of active BB nodes for different lower bound estimation methods}
 \end{center}
 \end{figure}
 %
@@ -131,10 +153,11 @@ As a summary, the baseline lower bound estimation method is shown in algorithm~\
 
 Note that the lower bound obtained by algorithm~\ref{alg::lbEstimation_baseline} is a loose bound, since the obtained cost might refer to an infeasible reference structure (i.e. $i$ reference $j$ together with $j$ reference $i$).
 Therefore, we can claim that our proposed lower bound estimation method can reduce more computational complexity than the baseline approach.
-As shown in figure~\ref{fig::converge_baseline} and figure~\ref{fig::converge_proposed}, although the two algorithms converge to the same optimal objective value, the required iterations for convergence for those two approaches are definitely different.
+As shown in figure~\ref{fig::compareLbEstimation}, although the two algorithms converge to the same optimal objective value, the required iterations for convergence for those two approaches are definitely different.
 That is, more than $98\%$ of iterations can be further reduced if our proposed lower bound estimation technique is applied.
 The results thus confirm us that the lower bound estimated by algorithm~\ref{alg::lbEstimation} is a tighter bound so that the optimal solution can be found under lower computational complexity.
 
+Figure~\ref{fig::evaNumActiveBBNodes}
 Figure~\ref{fig::complexity} further shows that result for required
 
 \subsection{Evaluation of Different I-frame Selection Algorithms}
@@ -218,9 +241,67 @@ Figure~\ref{fig::txBytes_diffAlg}~\ref{fig::refStructure_threeAlgs}
 {\color{red}Show the evaluation results for different transmission round.}
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/evaMultiSlots.pdf}
-\caption{\label{fig::evaMultiSlots}Evaluation of different transmission round}
+\begin{subfigure}[b]{0.4\columnwidth}
+\includegraphics[width=\columnwidth]{Figures/multiSlots/cam3Slot1}
+\caption{Camera 1, round 1}
+\end{subfigure}
+\begin{subfigure}[b]{0.4\columnwidth}
+\includegraphics[width=\columnwidth]{Figures/multiSlots/cam4Slot1}
+\caption{Camera 2, round 1}
+\end{subfigure}
+%
+\begin{subfigure}[b]{0.4\columnwidth}
+\includegraphics[width=\columnwidth]{Figures/multiSlots/cam3Slot7}
+\caption{Camera 1, round 2}
+\end{subfigure}
+\begin{subfigure}[b]{0.4\columnwidth}
+\includegraphics[width=\columnwidth]{Figures/multiSlots/cam4Slot7}
+\caption{Camera 2, round 2}
+\end{subfigure}
+%
+\begin{subfigure}[b]{0.4\columnwidth}
+\includegraphics[width=\columnwidth]{Figures/multiSlots/cam3Slot3}
+\caption{Camera 1, round 3}
+\end{subfigure}
+\begin{subfigure}[b]{0.4\columnwidth}
+\includegraphics[width=\columnwidth]{Figures/multiSlots/cam4Slot3}
+\caption{Camera 2, round 3}
+\end{subfigure}
+%
+\begin{subfigure}[b]{0.4\columnwidth}
+\includegraphics[width=\columnwidth]{Figures/multiSlots/cam3Slot5}
+\caption{Camera 1, round 4}
+\end{subfigure}
+\begin{subfigure}[b]{0.4\columnwidth}
+\includegraphics[width=\columnwidth]{Figures/multiSlots/cam4Slot5}
+\caption{Camera 2, round 4}
+\end{subfigure}
+%
+\begin{subfigure}[b]{0.4\columnwidth}
+\includegraphics[width=\columnwidth]{Figures/multiSlots/cam3Slot4}
+\caption{Camera 1, round 5}
+\end{subfigure}
+\begin{subfigure}[b]{0.4\columnwidth}
+\includegraphics[width=\columnwidth]{Figures/multiSlots/cam4Slot4}
+\caption{Camera 2, round 5}
+\end{subfigure}
+\caption{\label{fig::imgCapMultiSlots} Image captured at different transmission round}
 \end{center}
 \end{figure}
 %
-Figure~\ref{fig::evaMultiSlots}
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/evaMultiSlots2.pdf}
+\caption{\label{fig::evaMultiSlots}Evaluation of improvement ratio for different transmission round}
+\end{center}
+\end{figure}
+%
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/evaExecTime.pdf}
+\caption{\label{fig::evaExecTime}Evaluation of execution time for different transmission round}
+\end{center}
+\end{figure}
+%
+Figure~\ref{fig::imgCapMultiSlots}
+Figure~\ref{fig::evaMultiSlots}~\ref{fig::evaExecTime}

@@ -47,22 +47,22 @@ The parameters for our simulation is listed in table~\ref{tab::evaParameters}.
 \begin{figure}
 \begin{center}
 \begin{subfigure}[b]{0.45\columnwidth}
-\includegraphics[width=0.95\columnwidth]{Figures/org}
+\includegraphics[width=0.95\columnwidth]{Figures/org.pdf}
 \caption{Original frame}
 \end{subfigure}
 %
 \begin{subfigure}[b]{0.45\columnwidth}
-\includegraphics[width=0.95\columnwidth]{Figures/ref}
+\includegraphics[width=0.95\columnwidth]{Figures/ref.pdf}
 \caption{Reference frame}
 \end{subfigure}
 %
 \begin{subfigure}[b]{0.45\columnwidth}
-\includegraphics[width=0.95\columnwidth]{Figures/rec}
+\includegraphics[width=0.95\columnwidth]{Figures/rec.pdf}
 \caption{Reconstructed frame}
 \end{subfigure}
 %
 \begin{subfigure}[b]{0.45\columnwidth}
-\includegraphics[width=0.95\columnwidth]{Figures/diff}
+\includegraphics[width=0.95\columnwidth]{Figures/diff.pdf}
 \caption{Reconstructed error}
 \end{subfigure}
 %
@@ -239,6 +239,7 @@ Figure~\ref{fig::txBytes_diffAlg}~\ref{fig::refStructure_threeAlgs}
 %
 \subsection{Evaluation of Multiple Transmission Rounds}
 {\color{red}Show the evaluation results for different transmission round.}
+\ignore{
 \begin{figure}
 \begin{center}
 \begin{subfigure}[b]{0.4\columnwidth}
@@ -288,6 +289,7 @@ Figure~\ref{fig::txBytes_diffAlg}~\ref{fig::refStructure_threeAlgs}
 \caption{\label{fig::imgCapMultiSlots} Image captured at different transmission round}
 \end{center}
 \end{figure}
+} % end ignore
 %
 \begin{figure}
 \begin{center}
@@ -303,5 +305,55 @@ Figure~\ref{fig::txBytes_diffAlg}~\ref{fig::refStructure_threeAlgs}
 \end{center}
 \end{figure}
 %
-Figure~\ref{fig::imgCapMultiSlots}
-Figure~\ref{fig::evaMultiSlots}~\ref{fig::evaExecTime}
+\begin{figure}
+\begin{center}
+\begin{subfigure}[b]{\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/evaAllPSNR.pdf}
+\caption{\label{fig::evaAllPSNR}}
+\end{subfigure}
+\begin{subfigure}[b]{\columnwidth}
+\includegraphics[width=\columnwidth]{Figures/evaPartialPSNR.pdf}
+\caption{\label{fig::evaPartialPSNR}}
+\end{subfigure}
+\caption{\label{fig::evaMultiRunPSNR} PSNR for reconstructed video frames}
+\end{center}
+\end{figure}
+%
+%Figure~\ref{fig::imgCapMultiSlots}
+For real-world multi-camera applications, each camera will transmit video streams instead of only one isolated video frame.
+As a consequence, in this chapter, we consider the scenario that each camera will transmit its video frames sequentially for multiple transmission round, where the definition of ``one transmission round'' is presented in Chapter~\ref{sec::overallSystemArchi}.
+Assume that the scenario we considered has $10$ transmission round, which means that each camera is required to deliver $10$ I-frames to the data aggregator.
+Since different transmission rounds mean we make observation at different time instance, it is clearly that the video frames captured by each camera will become different at different transmission round.
+In addition, the exact cost matrix will also be changed for different transmission round.
+Due to the reasons described above, the improvement ratio of our proposed correlated data gathering scheme (either the branch-and-bound method or the graph approximation approach) will vary as the transmission round changes.
+
+We now consider a scenario having $10$ cameras deployed at intersections of a city.
+%where the captured video snapshots of two cameras at different transmission round is shown in figure~\ref{fig::imgCapMultiSlots}.
+Three different criteria for dealing with the cost matrix $\mathbf{H}$~\eqref{eq::bbCostMatrix} are now compared in this chapter.
+The idea of three different criteria are listed below:
+\begin{itemize}
+\item \textbf{Static cost matrix}: Indicate the case that the cost matrix does not modified as the transmission round changes.
+That is, the data aggregator only calculates the cost matrix for the first transmission round, and the obtained cost matrix will be used for the following $9$ transmission round.
+The advantage of this criterion is that it has the lowest computational complexity at the data aggregator since it only requires calculating cost matrix and scheduling cameras once.
+However, outdated cost matrix will decrease the performance of our proposed data gathering scheme.
+\item \textbf{Dynamic cost matrix (baseline)}: Indicate the case that the cost matrix is dynamically being modified as the transmission round changes, where baseline means that our proposed reestimation criteria introduced in Chapter~\ref{sec::reestimationCriteria} has not been applied.
+Therefore, the data aggregator will use a multiview encoder for updating the cost matrix each time when a transmission round is terminated.
+The advantage of this criterion is that it can adapt to the scenario that the video streams change rapidly since the cost matrix is updated round by round.
+However, frequently calculating cost matrix will lead to very high computational complexity at the data aggregator.
+\item \textbf{Dynamic cost matrix (proposed)}:
+Indicate the case that the cost matrix is dynamically being modified at some transmission rounds, where the reestimation criteria introduced in Chapter~\ref{sec::reestimationCriteria} is applied for this case.
+Intuitively speaking, this case can achieve better performance than static cost matrix and also has lower computational complexity compared to baseline dynamic cost matrix.
+\end{itemize}
+
+Figure~\ref{fig::evaMultiSlots} thus confirms our claim of advantages and disadvantages for the above three cases.
+Both the results of branch-and-bound algorithm and graph approximation algorithm are shown in this figure.
+For the graph approximation algorithm, since it is a heuristic approach and hence it is not promised to obtain the optimal solution.
+Therefore, we can observe in figure~\ref{fig::evaMultiSlots} that although the performance of graph approximation can sometimes be very closed to the performance of branch-and-bound algorithm, it happens that there exists a considerable performance gap between these two methods at some transmission round (e.g. round $1$).
+Let us now focus on the variation of improvement ratio, it is clearly that the baseline dynamic cost matrix is the upper bound for the improvement ratio since it updates $\mathbf{H}$ for every transmission round.
+On the other hand, using static cost matrix is the lower bound for the improvement ratio and we can observe in figure~\ref{fig::evaMultiSlots} that the performance for this case become very bad after round $2$.
+However, as long as the improvement ratio decrease badly at round $2$, the long term improvement ratio $\bar{\eta}$~\eqref{eq::updateEta} will decrease.
+The decrease of $\bar{\eta}$ will trigger the reestimation of $\mathbf{H}$ so that the performance can be recovered at round $3$.
+For the same reason, the result in figure~\ref{fig::evaMultiSlots} indicates that the performance will recover to the ``best'' performance in the next transmission round if the improvement ratio becomes lower than a threshold.
+
+Figure~\ref{fig::evaExecTime}
+Figure~\ref{fig::evaMultiRunPSNR}

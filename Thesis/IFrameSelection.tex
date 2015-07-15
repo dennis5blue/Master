@@ -50,36 +50,31 @@ Using equation~\eqref{eq::moreThanOneCanHear} to represent the three constraints
 \label{eq::formulationSimplifiedAsGraph}
 \end{align}
 
-As we mentioned before, the goal for the \emph{I-frame selection sub-problem} is to determine the set of I-frame cameras.
+As we mentioned before, the goal of the \emph{I-frame selection sub-problem} is to determine the set of I-frame cameras.
 Therefore, we only care about the diagonal elements of $\mathbf{X}$, which means that the variables $x_{ij}, i \neq j$ are not what we aim to solve in this sub-problem.
 For this reason, we can further simplify Problem~\eqref{eq::formulationSimplifiedAsGraph} such that only $x_{ii}, \forall i \in V$ is considered in the formulation.
 In order to achieve this goal, we note that if camera $i$ is encoded as an I-frame, it is clearly that it requires $H(F_i)$ to encode its image.
 However, if camera $i$ is encoded as a P-frame, the amount of encoded bits should depend on which I-frame it references from.
-An intuitive method to determine the reference frame is to select the most correlated I-frame, and the amount of encoded bits can be written as $\underset{u_{ij} \times x_{jj} = 1}{\min} H(F_i|F_j)$.
-Therefore, if we denote ${\hat{H(F_i)} = \underset{u_{ij} \times x_{jj} = 1}{\min} H(F_i|F_j)}$ as the smallest amount of encoded bits if camera $i$ is a P-frame camera, Problem~\eqref{eq::formulationSimplifiedAsGraph} can be transformed as:
+An intuitive method to determine the reference frame is to select the most correlated I-frame, and the amount of encoded bits can be written as $\underset{u_{ij}x_{jj} = 1}{\min} H(F_i|F_j)$, where $u_{ij}x_{jj} = 1$ indicates the I-frame camera that camera $i$ can overhear.
+Therefore, if we denote ${\widehat{H(F_i)} = \underset{u_{ij}x_{jj} = 1}{\min} H(F_i|F_j)}$ as the smallest amount of encoded bits if camera $i$ is a P-frame camera, Problem~\eqref{eq::formulationSimplifiedAsGraph} can be transformed into:
 \begin{align}
 \text{minimize} & & \nonumber \\
-	&\sum_{i=1}^{|V|} x_{ii}H(F_i) + \sum_{i=1}^{|V|} (1-x_{ii}) \underset{u_{ij} x_{jj} = 1}{\min} H(F_i|F_j), & \nonumber \\
+	&\sum_{i=1}^{|V|} x_{ii}H(F_i) + \sum_{i=1}^{|V|} (1-x_{ii}) \widehat{H(F_i)}, & \nonumber \\
 \text{subject to} & & \nonumber \\
 	&\sum_{j=1}^{|V|} u_{ij} x_{jj} \geq 1, &\forall i \in V, \nonumber \\
-	&x_{ij} = \{0,1\}, &\forall i,j \in V. 
-\text{subject to} & & \nonumber \\
-	&U_i = \{ j \in V | d_{ij} \leq \rho d_{j0} \}, &\forall i \in V, \nonumber \\
-	&D_i = \{ j \in U_i| x_{jj} = 1\}, &\forall i \in V, \nonumber \\
-	&x_{ii} = \{0,1\}, &\forall i \in V.
+	&x_{jj} = \{0,1\}, &\forall j \in V.  
 \label{eq::IframeSelectionSubProblem}
 \end{align}
+Problem~\eqref{eq::IframeSelectionSubProblem} describes the decomposed \emph{I-frame selection sub-problem}, we will further give an analysis of this problem and then show our proposed algorithm for solving it in the followings.
 
-Since all the decision variables ${x_{ii},i \in V}$ belong to a binary integer, it is clearly that the optimal solution can be found if we search through the feasible set.
-However, directly traversing the whole set would lead to very high computational complexity, and hence some policy must be included for reducing the complexity.
-One possible method without losing the optimality is through the branch-and-bound (BB) algorithm~\cite{BB} as presented in the followings.
-Another algorithm to solve problem~\eqref{eq::IframeSelectionSubProblem} in a more time efficient way is to model~\eqref{eq::IframeSelectionSubProblem} into a graph problem, which will also be described in this chapter.
 %
 \subsubsection{Analysis for I-Frame Selection Sub-Problem}
-In this chapter, we will analyze the I-frame selection sub-problem formulated in Chapter~\ref{sec::iFrameSelectionSubProbFormulation}, and we will also show that this sub-problem is $\mathcal{NP}$-complete.
-To start, we first give a definition of the well-known \emph{set covering problem} as:
+In this chapter, we will give a comprehensive analysis of Problem~\eqref{eq::IframeSelectionSubProblem} formulated in Chapter~\ref{sec::iFrameSelectionSubProbFormulation}.
+First, we will prove the $\mathcal{NP}$-hardness of Problem~\eqref{eq::IframeSelectionSubProblem}, and then we will point out some possible directions for solving this problem.
+To start proving the $\mathcal{NP}$-hardness, we first give a definition of the well-known \emph{set covering problem} as:
 \begin{mydef}[\textbf{Set Covering Problem}]
-The set covering problem is a $\mathcal{NP}$-complete problem~\cite{SetCoveringNPComplete} such that given a set of elements $V = \{1,2,\cdots,|V|\}$ and a set $S$ of $n$ sets whose union equals $V$, the goal of the set covering problem is to identify the smallest subset of $S$ whose union equals $V$.
+The set covering problem is $\mathcal{NP}$-complete~\cite{SetCoveringNPComplete} such that given a set of elements $V = \{1,2,\cdots,|V|\}$ and a set $S$ of $n$ sets whose union equals $V$, the goal of the set covering problem is to identify the smallest subset of $S$ whose union equals $V$.
+\label{def::SCP}
 \end{mydef}
 Note that the set covering problem can be formulated in the form of an integer programming problem~\cite{SetCoveringFormulation} as:
 \begin{align}
@@ -92,10 +87,27 @@ Note that the set covering problem can be formulated in the form of an integer p
 \end{align}
 where $c_j > 0$ is the coverage cost of set $j$, $x_j$ is a binary decision variable indicates that if set $j$ is selected, and $a_{ij}$ is a binary parameter shows that whether node $i$ is covered by the set $j$.
 \begin{mylem}
-Considering a special case of Problem~\eqref{eq::IframeSelectionSubProblem}, this problem can be reduced to a set covering problem if the cost for selecting every cameras as I-frame cameras are equalled and if the cost of P-frame cameras is small enough to be neglected.
+Considering a special case of Problem~\eqref{eq::IframeSelectionSubProblem}, this problem can be reduced to a set covering problem if the cost of P-frame cameras is small enough to be neglected.
+\label{lemma::ReduceProb}
 \end{mylem}
 \textbf{\emph{Proof}}
-GG
+To start the proof, we first model the transmission range of each camera into sets.
+That is, we consider the set $S$ contains $|V|$ different sets, where all the members of the $j^{th}$ set are those cameras which can overhear the transmission of camera $j$ (including camera $j$).
+More specifically, if $u_{ij} = 1$ then it means that $i$ is a member of the $j^{th}$ set.
+Therefore, the goal for selecting I-frame cameras such that all P-frame cameras can have at least one I-frame camera to reference thus become selecting selecting sets such that the union of those selected sets equalled to the set of all cameras.
+To proceed, note that we make the assumption in lemma~\ref{lemma::ReduceProb} that the cost of P-frame cameras is small enough to be neglected.
+Therefore, the remaining part for the objective value in Problem~\eqref{eq::IframeSelectionSubProblem} is the cost for selecting I-frame cameras, which is equivalent to the coverage cost of $j$, and hence we finish showing that the special case of Problem~\eqref{eq::IframeSelectionSubProblem} can be reduced to the set covering problem.
+
+According to definition~\ref{def::SCP} and lemma~\ref{lemma::ReduceProb}, we can show that the special case of the reduced I-frame selection sub-problem is $\mathcal{NP}$-complete.
+Therefore, by reduction from the set covering problem, we can learn that the original problem is $\mathcal{NP}$-hard, and hence we give the following theorem:
+\begin{mythm}
+For the I-frame selection sun-problem~\eqref{eq::IframeSelectionSubProblem} with $u_{ij}, \forall i,j$ given, finding the optimal solution is $\mathcal{NP}$-hard.
+\end{mythm}
+Due to the $\mathcal{NP}$-hardness of Problem~\eqref{eq::IframeSelectionSubProblem}, we can claim that although the optimal solution can be found if we search through the feasible set, directly traversing the whole solution set would lead to very high computational complexity.
+Therefore, some policy must be included for reducing the complexity.
+Since all the decision variables ${x_{jj},j \in V}$ are binary integers, Problem~\eqref{eq::IframeSelectionSubProblem} belongs to a \emph{binary integer programming problem}, and one possible method for solving binary integer programming problem without losing the optimality is through the branch-and-bound (BB) algorithm~\cite{BB} as presented in Chapter~\ref{sec::proposedBBAlg}.
+However, sometimes the applications for multi-camera networks does not concern the optimality due to real-time requirements.
+We thus propose another algorithm to solve Problem~\eqref{eq::IframeSelectionSubProblem} in a more time efficient way by modeling it into a graph problem, where the proposed method will be described in Chapter~\ref{sec::graphApprox}.
 %
 \subsection{Branch-and-Bound I-Frame Selection Algorithm}
 \label{sec::proposedBBAlg}

@@ -1,47 +1,72 @@
 \section{Proposed Algorithms}
-\label{sec::IFrameSelection}
-%\begin{figure*}
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/BBdesignIframeSelection.pdf}
-\caption{\label{fig::BBdesgin}Enumeration tree of branch-and-bound algorithm}
-\end{center}
-\end{figure}
-%\end{figure*}
+\label{sec::proposedAlgs}
 %
-%\begin{figure}
-%\begin{center}
-%\includegraphics[width=0.95\columnwidth]{Figures/referenceStructure.pdf}
-%\caption{\label{fig::encodeOrder}Coding structure of a group of pictures}
-%\end{center}
-%\end{figure}
-As we mentioned before, problem~\eqref{eq::formulation} is a $\mathcal{NP}$-hard problem, therefore, we show how to simplify and solve this problem in this chapter.
-Note that we assume a P-frame can only reference from one I-frame as equation~\eqref{eq::referenceOnlyIframe} shows.
-According to equation~\eqref{eq::referenceOnlyIframe},
-%the coding structure of a group of pictures can be shown in figure~\ref{fig::encodeOrder}, where
-every P-frames will reference from the closest previous I-frame to reduce its encoded bits.
-Consequently, problem~\eqref{eq::formulation} can be decomposed into two sub-problems, including (a) the I-frame selection sub-problem and (b) the P-frame scheduling sub-problem.
-We will show how the I-frame selection sub-problem is solved in this chapter.
-%, where the proposed algorithm for P-frame scheduling is presented in chapter~\ref{sec::PFrameScheduling}.
-
-\subsection{I-frame Selection Sub-Problem}
+In this chapter, we present our proposed algorithms for solving Problem~\eqref{eq::formulation}, and we will follow the decomposition idea shown in Chapter~\ref{sec::OverallProbAnalysis}.
+That is, we first show the procedure for translating Problem~\eqref{eq::formulation} into the \emph{I-frame selection sub-problem} by relaxing scheduling constraints.
+After that, two proposed algorithms is introduced for solving the \emph{I-frame selection sub-problem}.
+Finally, we give a heuristic approach for scheduling the remaining P-frame cameras by a given subset of I-frame cameras.
+\subsection{I-Frame Selection Sub-Problem}
 \label{sec::iFrameSelectionSubProb}
+In this chapter, we show the derivation from Problem~\eqref{eq::formulation} into the \emph{I-frame selection sub-problem}, and we also give an analysis about the formulated \emph{I-frame selection sub-problem}.
+%
+\subsubsection{Formulation for I-Frame Selection Sub-Problem}
+\label{sec::iFrameSelectionSubProbFormulation}
 Note that the decision variables of the I-frame selection sub-problem are the diagonal elements of $\mathbf{X}$.
-We aim to figure out whether ${x_{ii},i \in V}$ equals to $0$ or $1$ so that the total amount of encoded bits can be minimized, where the other scheduling constraints are ignore during the selection of I-frames.
-Suppose that camera $i$ is encoded as an I-frame, it is clearly that it requires $H(F_i)$ to encode its image.
-However, if camera $i$ is encoded as a P-frame, the amount of encoded bits should depend on which I-frame it references from.
-An intuitive method to determine the reference frame is to select the most correlated I-frame, and the amount of encoded bits can be written as $\underset{j \in U_i, x_{jj}=1}{\min} H(F_i|F_j)$.
-Therefore, the I-frame selection sub-problem can be written as
-\begin{equation*}
-\min \left(
-\sum_{i=1}^{|V|} x_{ii}H(F_i) +
-\sum_{i=1}^{|V|} (1-x_{ii}) \underset{j \in D_i}{\min} H(F_i|F_j) \right),
-\end{equation*}
-subject to
+Our goal is to figure out whether ${x_{ii},i \in V}$ equals to $0$ or $1$ so that the total amount of encoded bits can be minimized, where the other scheduling constraints (i.e. constraints about $\mathbf{Z}$) are ignore during the phase of selecting I-frame cameras for the sake of simplification.
+Therefore, the simplified problem without scheduling constraints can be written as:
 \begin{align}
-&U_i = \{ j \in V | d_{ij} \leq \rho d_{j0} \}, &\forall i \in V, \nonumber \\
-&D_i = \{ j \in U_i| x_{jj} = 1\}, &\forall i \in V, \nonumber \\
-&x_{ii} = \{0,1\}, &\forall i \in V.
+\text{minimize} & & \nonumber \\
+	&\sum_{i=1}^{|V|} \sum_{j \in U_i}  x_{ij} H(F_i|F_j), & \nonumber \\
+\text{subject to} & & \nonumber \\
+	&U_i = \{ j \in V | d_{ij} \leq \rho d_{j0} \}, &\forall i \in V, \nonumber \\
+	&\sum_{j \in U_i} x_{ij} = 1, &\forall i \in V, \nonumber \\
+	&x_{ij} \leq x_{jj}, &\forall i \in V, \forall j \in W_i, \nonumber \\
+	&x_{ij} = 0, &\forall i \in V, \forall j \in V \setminus U_i, \nonumber \\
+	&x_{ij} = \{0,1\}, &\forall i,j \in V.
+\label{eq::formulationSimplified}
+\end{align}
+For the formulation in Problem~\eqref{eq::formulationSimplified}, the mathematical form is also complicated, therefore, we define a new variable $u_{ij}$ such that $u_{ij} = 1$ if $j \in U_i$, otherwise, $u_{ij} = 0$.
+Note that the meanings about the following three constraints
+\begin{align}
+&\sum_{j \in U_i} x_{ij} = 1, &\forall i \in V, \nonumber \\
+&x_{ij} \leq x_{jj}, &\forall i \in V, \forall j \in W_i, \nonumber \\
+&x_{ij} = 0, &\forall i \in V, \forall j \in V \setminus U_i,
+\label{eq::threeConstraintsToSimplfied}
+\end{align}
+is to ensure that only I-frame cameras can be referenced and each P-frame camera should reference from an overheard I-frame camera.
+In order to further simply Problem~\eqref{eq::formulationSimplified}, we use a simple constraint to express the three constraints in~\eqref{eq::threeConstraintsToSimplfied}, which is written as:
+\begin{equation}
+\sum_{j=1}^{|V|} u_{ij} x_{jj} \geq 1, \forall i \in V.
+\label{eq::moreThanOneCanHear}
+\end{equation}
+The interpretation of equation~\eqref{eq::moreThanOneCanHear} is that each P-frame camera must have at least one I-frame camera that it can overhear, and if a camera $i$ cannot overhear any other cameras (i.e. $u_{ij} = 0, \forall j \neq i$), then camera $i$ must be an I-frame camera (i.e. $x_{ii}=1$).
+Using equation~\eqref{eq::moreThanOneCanHear} to represent the three constraints in~\eqref{eq::threeConstraintsToSimplfied}, Problem~\eqref{eq::formulationSimplified} is thus equivalent to the following formulation:
+\begin{align}
+\text{minimize} & & \nonumber \\
+	&\sum_{i=1}^{|V|} \sum_{j=1}^{|V|}  x_{ij} H(F_i|F_j), & \nonumber \\
+\text{subject to} & & \nonumber \\
+	&\sum_{j=1}^{|V|} u_{ij} x_{jj} \geq 1, &\forall i \in V, \nonumber \\
+	&x_{ij} = \{0,1\}, &\forall i,j \in V.
+\label{eq::formulationSimplifiedAsGraph}
+\end{align}
+
+As we mentioned before, the goal for the \emph{I-frame selection sub-problem} is to determine the set of I-frame cameras.
+Therefore, we only care about the diagonal elements of $\mathbf{X}$, which means that the variables $x_{ij}, i \neq j$ are not what we aim to solve in this sub-problem.
+For this reason, we can further simplify Problem~\eqref{eq::formulationSimplifiedAsGraph} such that only $x_{ii}, \forall i \in V$ is considered in the formulation.
+In order to achieve this goal, we note that if camera $i$ is encoded as an I-frame, it is clearly that it requires $H(F_i)$ to encode its image.
+However, if camera $i$ is encoded as a P-frame, the amount of encoded bits should depend on which I-frame it references from.
+An intuitive method to determine the reference frame is to select the most correlated I-frame, and the amount of encoded bits can be written as $\underset{u_{ij} \times x_{jj} = 1}{\min} H(F_i|F_j)$.
+Therefore, if we denote ${\hat{H(F_i)} = \underset{u_{ij} \times x_{jj} = 1}{\min} H(F_i|F_j)}$ as the smallest amount of encoded bits if camera $i$ is a P-frame camera, Problem~\eqref{eq::formulationSimplifiedAsGraph} can be transformed as:
+\begin{align}
+\text{minimize} & & \nonumber \\
+	&\sum_{i=1}^{|V|} x_{ii}H(F_i) + \sum_{i=1}^{|V|} (1-x_{ii}) \underset{u_{ij} x_{jj} = 1}{\min} H(F_i|F_j), & \nonumber \\
+\text{subject to} & & \nonumber \\
+	&\sum_{j=1}^{|V|} u_{ij} x_{jj} \geq 1, &\forall i \in V, \nonumber \\
+	&x_{ij} = \{0,1\}, &\forall i,j \in V. 
+\text{subject to} & & \nonumber \\
+	&U_i = \{ j \in V | d_{ij} \leq \rho d_{j0} \}, &\forall i \in V, \nonumber \\
+	&D_i = \{ j \in U_i| x_{jj} = 1\}, &\forall i \in V, \nonumber \\
+	&x_{ii} = \{0,1\}, &\forall i \in V.
 \label{eq::IframeSelectionSubProblem}
 \end{align}
 
@@ -50,8 +75,38 @@ However, directly traversing the whole set would lead to very high computational
 One possible method without losing the optimality is through the branch-and-bound (BB) algorithm~\cite{BB} as presented in the followings.
 Another algorithm to solve problem~\eqref{eq::IframeSelectionSubProblem} in a more time efficient way is to model~\eqref{eq::IframeSelectionSubProblem} into a graph problem, which will also be described in this chapter.
 %
-\subsection{Branch-and-Bound I-frame Selection Algorithm}
+\subsubsection{Analysis for I-Frame Selection Sub-Problem}
+In this chapter, we will analyze the I-frame selection sub-problem formulated in Chapter~\ref{sec::iFrameSelectionSubProbFormulation}, and we will also show that this sub-problem is $\mathcal{NP}$-complete.
+To start, we first give a definition of the well-known \emph{set covering problem} as:
+\begin{mydef}[\textbf{Set Covering Problem}]
+The set covering problem is a $\mathcal{NP}$-complete problem~\cite{SetCoveringNPComplete} such that given a set of elements $V = \{1,2,\cdots,|V|\}$ and a set $S$ of $n$ sets whose union equals $V$, the goal of the set covering problem is to identify the smallest subset of $S$ whose union equals $V$.
+\end{mydef}
+Note that the set covering problem can be formulated in the form of an integer programming problem~\cite{SetCoveringFormulation} as:
+\begin{align}
+\text{minimize} & & \nonumber \\
+ &\sum_{j \in S} c_j x_j, & \nonumber \\
+\text{subject to} & & \nonumber \\
+ &\sum_{j \in S} a_{ij}x_j \geq 1, &\forall i \in V, \nonumber \\
+ &x_{j} = \{0,1\}, &\forall j \in S,
+\label{eq::SetCoveringProblemFormualtion}
+\end{align}
+where $c_j > 0$ is the coverage cost of set $j$, $x_j$ is a binary decision variable indicates that if set $j$ is selected, and $a_{ij}$ is a binary parameter shows that whether node $i$ is covered by the set $j$.
+\begin{mylem}
+Considering a special case of Problem~\eqref{eq::IframeSelectionSubProblem}, this problem can be reduced to a set covering problem if the cost for selecting every cameras as I-frame cameras are equalled and if the cost of P-frame cameras is small enough to be neglected.
+\end{mylem}
+\textbf{\emph{Proof}}
+GG
+%
+\subsection{Branch-and-Bound I-Frame Selection Algorithm}
 \label{sec::proposedBBAlg}
+%\begin{figure*}
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/BBdesignIframeSelection.pdf}
+\caption{\label{fig::BBdesgin}Enumeration tree of branch-and-bound algorithm}
+\end{center}
+\end{figure}
+%\end{figure*}
 %{\color{red}Describe the proposed branch-and-bound algorithm for I-frame selection}
 Note that the solution set of problem~\eqref{eq::IframeSelectionSubProblem} can be modeled as an enumeration tree as shown in figure~\ref{fig::BBdesgin}, where the root of the enumeration tree is denoted as the whole solution set $\mathcal{S}$.
 The main idea of the BB algorithm is to divide the solution set $\mathcal{S}$ into smaller subsets $\mathcal{S}^1, \mathcal{S}^2, \cdots$ and if one subset has no possibility to include the optimal solution, then it is not required to be divided any more.
@@ -320,6 +375,6 @@ We now summarize the overall proposed BB algorithm in algorithm~\ref{alg::bbAlgo
 \end{table*}
 %
 %
-\subsubsection{Complexity Analysis}
-{\color{red}Try to analyze the time complexity of BB algorithm. }
+%\subsubsection{Complexity Analysis}
+%{\color{red}Try to analyze the time complexity of BB algorithm. }
 %

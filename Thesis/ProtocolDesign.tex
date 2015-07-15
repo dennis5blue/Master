@@ -1,7 +1,7 @@
 \section{Centralized Correlated Data Gathering for Wireless Multi-Camera Networks}
 \label{sec::protocolDesign}
 %{\color{red} Present how our proposed correlated data gathering scheme is applied to real-world multi-camera networks.}
-As we present in Chapter~\ref{sec::IFrameSelection} about our proposed scheduling algorithms to exploit image correlation among neighboring cameras, we further describe how the proposed correlated data gathering scheme can be applied to real-world multi-camera networks in this chapter.
+As we present in Chapter~\ref{sec::proposedAlgs} about our proposed scheduling algorithms to exploit image correlation among neighboring cameras, we further describe how the proposed correlated data gathering scheme can be applied to real-world multi-camera networks in this chapter.
 First of all, we will briefly introduce some basic ideas about the conventional H.264 video compression used in multi-camera systems.
 Then, we will show our modifications about the system so that our proposed correlated data gathering technique can fit in the system.
 Finally, we will give an overall explanation about the system architecture, including how to get the required control information and when it should be updated.
@@ -195,12 +195,12 @@ Denote $\eta_i^k$ as the improvement ratio of camera $i$ at transmission round $
 \text{is applied}
 \end{tabular} \right)
 }{
-\begin{tabular}{c}
+\left( \begin{tabular}{c}
 \text{Amount of encoded} \\
 \text{bits of camera $i$ at} \\
 \text{round $k$ if it is} \\
 \text{independently encoded}
-\end{tabular}
+\end{tabular} \right)
 }.
 \label{eq::defImproveRatio}
 \end{align}

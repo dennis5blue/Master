@@ -230,6 +230,12 @@ Figure~\ref{fig::txBytes_diffAlg}~\ref{fig::refStructure_threeAlgs}
 %
 \subsection{Evaluation of Different Overhearing Range}
 {\color{red}Show the evaluation result of different overhearing range.}
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/overRange.pdf}
+\caption{\label{fig::evaOverRange}Evaluation of different overhearing range parameter $\rho$}
+\end{center}
+\end{figure}
 %\begin{figure}
 %\begin{center}
 %\includegraphics[width=0.95\columnwidth]{Figures/overhearingRange.pdf}
@@ -237,6 +243,8 @@ Figure~\ref{fig::txBytes_diffAlg}~\ref{fig::refStructure_threeAlgs}
 %\end{center}
 %\end{figure}
 %
+Figure~\ref{fig::evaOverRange}
+
 \subsection{Evaluation of Multiple Transmission Rounds}
 {\color{red}Show the evaluation results for different transmission round.}
 \ignore{
@@ -300,26 +308,11 @@ Figure~\ref{fig::txBytes_diffAlg}~\ref{fig::refStructure_threeAlgs}
 %
 \begin{figure}
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/evaExecTime.pdf}
-\caption{\label{fig::evaExecTime}Evaluation of execution time for different transmission round}
+\includegraphics[width=0.95\columnwidth]{Figures/cmuExecTime.pdf}
+\caption{\label{fig::evaExecTime}Evaluation of cumulative execution time for different algorithms}
 \end{center}
 \end{figure}
 %
-\begin{figure}
-\begin{center}
-\begin{subfigure}[b]{\columnwidth}
-\includegraphics[width=0.95\columnwidth]{Figures/evaAllPSNR.pdf}
-\caption{\label{fig::evaAllPSNR}}
-\end{subfigure}
-\begin{subfigure}[b]{\columnwidth}
-\includegraphics[width=\columnwidth]{Figures/evaPartialPSNR.pdf}
-\caption{\label{fig::evaPartialPSNR}}
-\end{subfigure}
-\caption{\label{fig::evaMultiRunPSNR} PSNR for reconstructed video frames}
-\end{center}
-\end{figure}
-%
-%Figure~\ref{fig::imgCapMultiSlots}
 For real-world multi-camera applications, each camera will transmit video streams instead of only one isolated video frame.
 As a consequence, in this chapter, we consider the scenario that each camera will transmit its video frames sequentially for multiple transmission round, where the definition of ``one transmission round'' is presented in Chapter~\ref{sec::overallSystemArchi}.
 Assume that the scenario we considered has $10$ transmission round, which means that each camera is required to deliver $10$ I-frames to the data aggregator.
@@ -356,4 +349,21 @@ The decrease of $\bar{\eta}$ will trigger the reestimation of $\mathbf{H}$ so th
 For the same reason, the result in figure~\ref{fig::evaMultiSlots} indicates that the performance will recover to the ``best'' performance in the next transmission round if the improvement ratio becomes lower than a threshold.
 
 Figure~\ref{fig::evaExecTime}
+
+\subsection{Evaluation of Received Image Quality}
+{\color{red}Show the evaluation results for image quality of different transmission round.}
+\begin{figure}
+\begin{center}
+\begin{subfigure}[b]{\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/evaAllPSNR.pdf}
+\caption{\label{fig::evaAllPSNR}}
+\end{subfigure}
+\begin{subfigure}[b]{\columnwidth}
+\includegraphics[width=\columnwidth]{Figures/evaPartialPSNR.pdf}
+\caption{\label{fig::evaPartialPSNR}}
+\end{subfigure}
+\caption{\label{fig::evaMultiRunPSNR} PSNR for reconstructed video frames}
+\end{center}
+\end{figure}
+%
 Figure~\ref{fig::evaMultiRunPSNR}

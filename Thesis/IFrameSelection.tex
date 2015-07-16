@@ -73,7 +73,7 @@ In this chapter, we will give a comprehensive analysis of Problem~\eqref{eq::Ifr
 First, we will prove the $\mathcal{NP}$-hardness of Problem~\eqref{eq::IframeSelectionSubProblem}, and then we will point out some possible directions for solving this problem.
 To start proving the $\mathcal{NP}$-hardness, we first give a definition of the well-known \emph{set covering problem} as:
 \begin{mydef}[\textbf{Set Covering Problem}]
-The set covering problem is $\mathcal{NP}$-complete~\cite{SetCoveringNPComplete} such that given a set of elements $V = \{1,2,\cdots,|V|\}$ and a set $S$ of $n$ sets whose union equals $V$, the goal of the set covering problem is to identify the smallest subset of $S$ whose union equals $V$.
+The set covering problem is a $\mathcal{NP}$-complete problem~\cite{SetCoveringNPComplete} such that given a set of elements $V = \{1,2,\cdots,|V|\}$ and a set $S$ of $n$ sets whose union equals $V$, the goal of the set covering problem is to identify the smallest subset of $S$ whose union equals $V$.
 \label{def::SCP}
 \end{mydef}
 Note that the set covering problem can be formulated in the form of an integer programming problem~\cite{SetCoveringFormulation} as:
@@ -87,22 +87,24 @@ Note that the set covering problem can be formulated in the form of an integer p
 \end{align}
 where $c_j > 0$ is the coverage cost of set $j$, $x_j$ is a binary decision variable indicates that if set $j$ is selected, and $a_{ij}$ is a binary parameter shows that whether node $i$ is covered by the set $j$.
 \begin{mylem}
-Considering a special case of Problem~\eqref{eq::IframeSelectionSubProblem}, this problem can be reduced to a set covering problem if the cost of P-frame cameras is small enough to be neglected.
+Considering a special case of Problem~\eqref{eq::IframeSelectionSubProblem}, this problem is equivalent to a set covering problem if the cost of P-frame cameras is small enough to be neglected.
 \label{lemma::ReduceProb}
 \end{mylem}
-\textbf{\emph{Proof}}
+\textbf{\emph{Proof:}}
 To start the proof, we first model the transmission range of each camera into sets.
-That is, we consider the set $S$ contains $|V|$ different sets, where all the members of the $j^{th}$ set are those cameras which can overhear the transmission of camera $j$ (including camera $j$).
+That is, the set $S$ will contain $|V|$ different sets, where all the members of the $j^{th}$ set are those cameras which can overhear the transmission of camera $j$ (including camera $j$).
 More specifically, if $u_{ij} = 1$ then it means that $i$ is a member of the $j^{th}$ set.
-Therefore, the goal for selecting I-frame cameras such that all P-frame cameras can have at least one I-frame camera to reference thus become selecting selecting sets such that the union of those selected sets equalled to the set of all cameras.
+Therefore, the goal for selecting I-frame cameras such that all P-frame cameras can have at least one I-frame camera to reference thus become selecting sets such that the union of those selected sets equalled to the set of all cameras.
 To proceed, note that we make the assumption in lemma~\ref{lemma::ReduceProb} that the cost of P-frame cameras is small enough to be neglected.
-Therefore, the remaining part for the objective value in Problem~\eqref{eq::IframeSelectionSubProblem} is the cost for selecting I-frame cameras, which is equivalent to the coverage cost of $j$, and hence we finish showing that the special case of Problem~\eqref{eq::IframeSelectionSubProblem} can be reduced to the set covering problem.
+Therefore, the remaining part for the objective value in Problem~\eqref{eq::IframeSelectionSubProblem} is the cost for selecting I-frame cameras, which is equivalent to the coverage cost of $j$, and hence we finish showing that the special case of Problem~\eqref{eq::IframeSelectionSubProblem} is equivalent to the set covering problem.\hfill$\mathsmaller{\mathsmaller{\blacksquare}}$
 
-According to definition~\ref{def::SCP} and lemma~\ref{lemma::ReduceProb}, we can show that the special case of the reduced I-frame selection sub-problem is $\mathcal{NP}$-complete.
-Therefore, by reduction from the set covering problem, we can learn that the original problem is $\mathcal{NP}$-hard, and hence we give the following theorem:
 \begin{mythm}
 For the I-frame selection sun-problem~\eqref{eq::IframeSelectionSubProblem} with $u_{ij}, \forall i,j$ given, finding the optimal solution is $\mathcal{NP}$-hard.
 \end{mythm}
+\textbf{\emph{Proof:}}
+According to definition~\ref{def::SCP} and lemma~\ref{lemma::ReduceProb}, we can show that the special case of the reduced I-frame selection sub-problem is $\mathcal{NP}$-complete.
+Therefore, by restriction~\cite{Restriction}, the original problem is $\mathcal{NP}$-hard.\hfill$\mathsmaller{\mathsmaller{\blacksquare}}$
+
 Due to the $\mathcal{NP}$-hardness of Problem~\eqref{eq::IframeSelectionSubProblem}, we can claim that although the optimal solution can be found if we search through the feasible set, directly traversing the whole solution set would lead to very high computational complexity.
 Therefore, some policy must be included for reducing the complexity.
 Since all the decision variables ${x_{jj},j \in V}$ are binary integers, Problem~\eqref{eq::IframeSelectionSubProblem} belongs to a \emph{binary integer programming problem}, and one possible method for solving binary integer programming problem without losing the optimality is through the branch-and-bound (BB) algorithm~\cite{BB} as presented in Chapter~\ref{sec::proposedBBAlg}.
@@ -207,10 +209,11 @@ h_{21}^t &h_{22}^t &\cdots &h_{2|V|}^t \\
 \vdots &\vdots &\vdots &\vdots \\
 h_{|V|1}^t &h_{|V|2}^t &\cdots &h_{|V||V|}^t
 \end{array} \right]
-= \mathbf{H},
+= \mathbf{H}.
 \label{eq::modBBcostMatrix}
 \end{align}
-where the columns of P-frame cameras are set to infinity since we assume that P-frame cannot become a reference frame.
+Note that if $i \in \mathcal{I}^t$, then the elements of the $i^{th}$ row of $\mathbf{H}^t$ will all equalled to $H(F_i)$.
+Besides, the columns of P-frame cameras are set to infinity since we assume that P-frame cannot become a reference frame.
 That is,
 \begin{equation}
 \mathbf{h}^t_i = \left[ \begin{array}{c}
@@ -264,12 +267,61 @@ In short, the lower bound estimation procedure of an arbitrary sub solution set 
  }
  \For{$i \in V$}
  {
- 	$lb(\mathcal{S}^t) \gets lb(\mathcal{S}^t) + \underset{j \in U_i}{\min} h_{ij}^t$ \\
+ 	$lb(\mathcal{S}^t) \gets lb(\mathcal{S}^t) + \underset{u_{ij}=1}{\min} h_{ij}^t$ \\
  }
  \caption{\label{alg::lbEstimation}Proposed lower bound estimation method}
 \end{algorithm}
 \DecMargin{1em}
 %
+\begin{mylem}
+Considering a sub solution set $\mathcal{S}^t$, its lower bound estimated by algorithm~\ref{alg::bbAlgorithm} is the lowest objective value that can be obtained from the sub solution sets of further dividing $\mathcal{S}^t$.
+\label{lemma::lbEstimation}
+\end{mylem}
+\textbf{\emph{Proof:}}
+To prove lemma~\ref{lemma::lbEstimation}, we need to show the following two statements are true:
+\begin{enumerate}
+\item If $\mathcal{S}^t$ is at the leaf of enumeration tree, then $lb(\mathcal{S}^t)$ is the exact objective value that is obtained from $\tilde{\mathbf{X}^t}$.
+\item If $\mathcal{S}^t$ is not at the leaf of enumeration tree, and $\mathcal{S}^{t_0}$ and $\mathcal{S}^{t_1}$ are the two sub solution sets created by fixing one undermined decision variable in $\mathcal{S}^t$ into $0$ or $1$, then $lb(\mathcal{S}^t) \leq lb(\mathcal{S}^{t_0})$ and $lb(\mathcal{S}^t) \leq lb(\mathcal{S}^{t_1})$.
+\end{enumerate}
+For the first statement, we note that since if $\mathcal{S}^t$ is at the leaf of enumeration tree, it means that all elements of $\tilde{\mathbf{X}^t}$ equals to $0$ or $1$ (i.e. $\mathcal{I}^t \cup \mathcal{P}^t = V$).
+Therefore, the initialization of $\mathbf{R}^t$ becomes:
+\begin{equation}
+r_i^t = 
+\left\{ \begin{array}{cc}
+i,  &\text{ if $i \in \mathcal{I}^t$,} \\                  	   
+\underset{u_{ik}=1, k \in \mathcal{I}^t}{\arg\min} H(F_i|F_k),  &\text{ if $i \in \mathcal{P}^t$,} \\
+\end{array} \right.
+\label{eq::initRefStructureAtLeaf}
+\end{equation}
+due to the reason that $V \setminus \mathcal{I}^t = \mathcal{P}^t$.
+Since we are now using equation~\eqref{eq::initRefStructureAtLeaf} instead of equation~\eqref{eq::initRefStructure} to initialize $\mathbf{R}^t$, P-frame cameras will all reference from an I-frame camera.
+That is, we can claim that $\forall i,j \in V, i \neq j$, if $r_i^t = j$, then $r_j^t = j$.
+Therefore, line $3$ to line $14$ in algorithm~\ref{alg::lbEstimation} will not be executed.
+We also note that $\underset{u_{ij}=1}{\min} h_{ij}^t$ will be the exact cost that required to encode the image of camera $i$, and we can thus claim that the first statement is true.
+
+In order to show the second statement is true, suppose that $\mathcal{S}^t$ is divided into $\mathcal{S}^{t_0}$ and $\mathcal{S}^{t_1}$ by fixing $x_{kk}=0$ or $x_{kk}=1$.
+For $\mathcal{S}^{t_1}$, camera $k$ is moved from undetermined cameras set to I-frame cameras set such that $\mathcal{I}^{t_1} = \mathcal{I}^t \cup \{k\}$ and $\mathcal{P}^{t_1} = \mathcal{P}^t$, which means that only the cost of camera $k$ will be changed.
+Therefore, we can claim that the cost of camera $k$ will increase for $\left( H(F_k) - \underset{u_{kj}=1}{\min} h_{kj}^t \right)$ since camera $k$ is required to encode its image independently instead of referencing from other cameras.
+Since the cost for other cameras $V\setminus \{k\}$ will stay the same, and hence $lb(\mathcal{S}^t) \leq lb(\mathcal{S}^{t_1})$.
+For $\mathcal{S}^{t_0}$, camera $k$ is moved from undetermined cameras set to P-frame cameras set such that $\mathcal{I}^{t_0} = \mathcal{I}^t$ and $\mathcal{P}^{t_0} = \mathcal{P}^t \cup \{k\}$, which indicates the cost for I-frame cameras in $\mathcal{S}^{t_0}$ will equal to $\mathcal{S}^t$.
+However, for those cameras in the set $V \setminus \mathcal{I}^{t_0}$, since the set $\mathcal{P}^{t_0}$ becomes larger than $\mathcal{P}^t$, we can thus claim that $\underset{u_{ij}=1, j \notin \mathcal{P}^{t_0}}{\arg\min} H(F_i|F_j) \geq \underset{u_{ij}=1, j \notin \mathcal{P}^{t}}{\arg\min} H(F_i|F_j)$ due to the reason that camera $k$ is removed from the candidate reference cameras set.
+Therefore, we can claim that $lb(\mathcal{S}^t) \leq lb(\mathcal{S}^{t_0})$, and we have done showing that the second statement is true.
+
+By statement~$1$ and statement~$2$, we can learn that dividing $\mathcal{S}^t$ into sub solution sets will only increase the value of estimated lower bound.
+If we keep dividing until the leaf of enumeration tree is reached, then the value of estimated lower bound will equal to the exact required cost.
+Therefore, the exact required cost obtained by divisions of $\mathcal{S}^t$ must be greater or equal to $lb(\mathcal{S}^t)$, and we have done the proof of lemma~\ref{lemma::lbEstimation}.\hfill$\mathsmaller{\mathsmaller{\blacksquare}}$
+
+\begin{mythm}
+If $lb(\mathcal{S}^t)$ is greater than the best objective value obtained so far, then the optimal solution will not be found in any divisions of $\mathcal{S}^t$.
+\label{theorem::bound}
+\end{mythm}
+\textbf{\emph{Proof:}}
+By lemma~\ref{lemma::lbEstimation}, we know that $lb(\mathcal{S}^t)$ is the lowest objective value that can be obtained from the sub solution sets of further dividing $\mathcal{S}^t$.
+Therefore, we can claim that if $lb(\mathcal{S}^t)$ is greater than the best objective value obtained so far, then all the objective value obtained by further dividing $\mathcal{S}^t$ will also greater than the best objective value obtained so far, and hence there is no chance to find a better solution by further dividing $\mathcal{S}^t$.\hfill$\mathsmaller{\mathsmaller{\blacksquare}}$
+
+Theorem~\ref{theorem::bound} can thus be used for the determination of whether a sub solution set $\mathcal{S}^t$ should be further divided or not.
+That is, if $lb(\mathcal{S}^t)$ is greater than the best objective value obtained so far, then no more division is necessary, and this is the idea of our bounding policy.
+
 \subsubsection{Branching Policy}
 After presenting the bounding policy of our proposed BB algorithm in the previous chapter, we introduce how we (a) divide the solution set $\mathcal{S}^t$ into subsets and (b) decide which subset to be traversed first.
 To answer the first question, note that since the decision variables $x_{ii}$ belongs to binary integer (i.e. $0$ or $1$), it is thus clearly that the division of $\mathcal{S}^t$ includes two different subsets $\mathcal{S}^{t_0}$ and $\mathcal{S}^{t_1}$, where  $\mathcal{S}^{t_0}$ and $\mathcal{S}^{t_1}$ is created by fixing one decision variable ${x_{kk},k \in V \setminus \{\mathcal{I}^t \cup \mathcal{P}^t\} }$ into $0$ or $1$, respectively.

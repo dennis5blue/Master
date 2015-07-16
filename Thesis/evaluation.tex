@@ -1,4 +1,4 @@
-\section{Evaluation Results}
+\section{Performance Evaluation}
 \label{sec::evaluation}
 %
 \begin{figure}
@@ -15,15 +15,17 @@
 \end{center}
 \end{figure}
 %
-In this section, we present evaluation results for the proposed scheduling approaches.
-In order to evaluate the proposed approach for transmission scheduling, we resort to a 3D modeling software~\cite{Suicidator,Blender} for rendering ``semi-realistic'' city views as the data source.
-An example of rendered city is shown in figure~\ref{fig::cityView}.
-We then deployed 30 cameras with different view angles in the ``virtual'' city to capture different but correlated views of the city, where the position and sensing direction of those 30 cameras are shown in figure~\ref{fig::deploy30}.
+In this chapter, we show the evaluation results in terms of various observation points of our proposed approaches for correlated data gathering.
+In order to evaluate the proposed approaches for multi-camera networks, we resort to a 3D modeling software~\cite{Suicidator,Blender} for rendering ``semi-realistic'' city views as the data source.
+An example of the rendered city is shown in figure~\ref{fig::cityView}.
+We then deployed $30$ cameras with different view angles in the ``virtual'' city to capture different but correlated views of the city, where the position and sensing direction of those $30$ cameras are shown in figure~\ref{fig::deploy30}.
 
 Each camera deployed is configured to take the city snapshot as a $1280 \times 720$ HD image.
-To find the amount of encoded bits $H(F_i)$ of each camera, we use a multi-view video coding reference software~\cite{JMVC} to process those regions (treated as an I-frame) of each camera's view.
-Afterwards, we perform the multi-view encoding for each pair of cameras and experimentally create the cost matrix $\mathbf{H}$~\eqref{eq::bbCostMatrix}.
-The parameters for our simulation is listed in table~\ref{tab::evaParameters}.
+To find the amount of encoded bits $H(F_i)$ of each camera, we use a multi-view video coding reference software~\cite{JMVC} to process the image (treated as an I-frame) of each camera's view.
+Afterwards, we perform the multi-view encoding (treated as a P-frame) for each pair of cameras and experimentally create the cost matrix $\mathbf{H}$~\eqref{eq::bbCostMatrix}.
+We note that the multi-view encoding does not decrease the image quality as shown in figure~\ref{fig::multiViewImageDemo}, where we can learn in this figure that the reconstructed frame is almost equalled to the original frame.
+Therefore, we can claim that our proposed correlated data gathering scheme is almost ``lossless'' with the advantage for reducing the amount of encoded bits.
+The other parameters for our simulation is listed in table~\ref{tab::evaParameters}.
 %
 \begin{table}[htb]
 \footnotesize
@@ -34,7 +36,8 @@ The parameters for our simulation is listed in table~\ref{tab::evaParameters}.
   Number of cameras & $30$ \\ \\
   Overhearing gap $\rho$ & $1$ \\ \\
   Image resolution & $1280 \times 720$ (HD $720p$) \\ \\
-  Focal Length & $35$ ($mm$) \\ \\
+  Camera focal Length & $35$ ($mm$) \\ \\
+  Camera sensor size & $35$ ($mm$) \\ \\
   Multiview search range & $32,64,128,256,512$ \\ \\
   Image quantization parameter & $31$ \\ \\
   Coding technique & Context adaptive arithmetic binary coding (CABAC) \\

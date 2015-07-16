@@ -9,12 +9,12 @@ In addition, multimedia data often generate larger packets size and hence the li
 
 Fortunately, since the deployment of cameras often has overlapped region of interest, to be able to transport a large amount of data from cameras to the back-end server, correlated data gathering has been considered as one effective technology for leveraging data correlation.
 On the one hand, multiple cameras observing the same area from different point of view will produce correlated video streams. 
-On the other hand, multiview video coding technique can allow us to reduce the packet size required to encode frames collected from different neighborhood cameras.
-Therefore, in this thesis, we exploit the idea of correlated data gathering in wireless multi-camera networks for the sake of reducing the amount of encoded bits required to be transmitted through the wireless communication links.
+On the other hand, multiview video encoding technique can allow us to reduce the packet size required to encode frames collected from different neighborhood cameras.
+Therefore, in this thesis, we exploit the idea of correlated data gathering via overhearing in wireless multi-camera networks for the sake of reducing the amount of encoded bits required to be transmitted through the wireless communication links.
 %
-While correlated data gathering has been popularly investigated in the literature, most related work has modeled the correlation between cameras from a theoretic perspective using their predefined position.
+While correlated data gathering has been popularly investigated in the literature, most related works has modeled the correlation between cameras from a theoretic perspective using their predefined position.
 As we describe in Section~\ref{sec::relatedWork}, such an assumption fails to consider the realistic correlation level in the multimedia devices.
-Hence, the theoretic correlation model may lead to sub-optimal solution in the context of wireless multi-camera networks with {\em tight radio resource constraints.}
+Therefore, the theoretic correlation model may lead to sub-optimal solution in the context of wireless multi-camera networks with {\em tight radio resource constraints.}
 
 In this thesis, we investigate the problem of correlated data gathering from a set of cameras deployed in a city.
 It is required that these cameras periodically send their data back to a back-end server through direct wireless communications (e.g. LTE).
@@ -22,15 +22,18 @@ To exploit data correlation among cameras, we allow cameras to overhear nearby t
 We take the communication constraint into consideration to determine the transmission schedule of cameras such that the limited wireless radio resource can be utilized in a more efficient way through the overhearing source coding technique.
 %Unlike related work on similar problems, our goal is not to maximize the link quality (sum data rate) or the amount of cameras that can be served.
 %Instead, realizing the fact that cameras are typically deployed to perform one task collectively, we {\em prioritize data over camera} and allow cameras with less important data to be dropped from support under resource limitation.
-Afterwards, we propose two algorithms to select I-frame transmitters and determine the transmission schedule.
-The first algorithm for selecting I-frame transmitters is based on the branch-and-bound method so that the optimal solution is promised to be obtained.
-The second algorithm for determining the transmission schedule is a heuristic approach such that the order of transmission can be determined with less overhead of control message.
+Afterwards, we propose two algorithms to select I-frame cameras and determine the overall transmission schedule according to those selected I-frame cameras.
+The first algorithm for selecting I-frame cameras is based on the branch-and-bound method so that the optimal solution is promised to be obtained.
+The second algorithm for choosing I-frame cameras is through a graph approximation approach for the sake of reducing computational complexity.
+%The second algorithm for determining the transmission schedule is a heuristic approach such that the order of transmission can be determined with less overhead of control message.
+To proceed, note that in general cameras are deployed for observing moving objects, and hence the correlation among cameras might vary as the time changes.
+For this reason, we also propose a centralized approach so that the overhearing source coding technique can be applied even though the correlation becomes different.
 To evaluate the proposed algorithms, we resort to a 3D modeling software to generate quasi-realistic city views for all cameras and use H.264 multiview video coding (MVC) reference software to encode collected images.
 Evaluation results show that the proposed algorithms can outperform baseline approaches, thus motivating further investigation along this direction.
 
 The rest of this thesis is organized as follows:
-Chapter~\ref{sec::backgroundAndRelatedWork} describes the background of our work and some related works.
-Our target network scenario and relative models are then introduced in chapter~\ref{sec::scenarioAndModel}.
-Based on the relative models, we further formulate our problem in chapter~\ref{sec::OSC} and present in chapter~\ref{sec::proposedAlgs} how we solve the formulated problem through decoupling it into the {\em I-frame selection} sub-problem and the {\em P-frame scheduling} sub-problem. 
-%Based on the evaluation for a semi-realistic camera surveillance network in Section~\ref{sec::results}, the proposed approach can effectively provide resource-efficient transmission.
-Evaluation results in chapter~\ref{sec::evaluation} show that compared to the baseline approaches, our proposed approach can result in minimum amount of encoded bits, and finally, chapter~\ref{sec::conclusion} concludes our work.
+Chapter~\ref{sec::backgroundAndRelatedWork} describes the background of this thesis and some related works.
+Our target network scenario and relative models are then introduced in Chapter~\ref{sec::scenarioAndModel}.
+According to the relative models, we further formulate our problem in Chapter~\ref{sec::OSC} and present in Chapter~\ref{sec::proposedAlgs} how we solve the formulated problem through decoupling it into the {\em I-frame selection} sub-problem and the {\em P-frame scheduling} sub-problem. 
+Based on the proposed algorithms, we describe in Chapter~\ref{sec::protocolDesign} how the proposed scheme can be applied for real-world multi-camera applications.
+Evaluation results in Chapter~\ref{sec::evaluation} show that compared to the baseline approaches, our proposed approach can result in better performance in terms of various observation point of view, and finally, Chapter~\ref{sec::conclusion} concludes our work.

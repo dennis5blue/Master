@@ -120,14 +120,15 @@ We thus propose another algorithm to solve Problem~\eqref{eq::IframeSelectionSub
 \end{figure}
 %\end{figure*}
 %{\color{red}Describe the proposed branch-and-bound algorithm for I-frame selection}
-Note that the solution set of problem~\eqref{eq::IframeSelectionSubProblem} can be modeled as an enumeration tree as shown in figure~\ref{fig::BBdesgin}, where the root of the enumeration tree is denoted as the whole solution set $\mathcal{S}$.
-The main idea of the BB algorithm is to divide the solution set $\mathcal{S}$ into smaller subsets $\mathcal{S}^1, \mathcal{S}^2, \cdots$ and if one subset has no possibility to include the optimal solution, then it is not required to be divided any more.
+Note that the decision variables of Problem~\eqref{eq::IframeSelectionSubProblem} are binary integers with value $0$ or $1$, therefore, the  solution set of this problem can be modelled as an enumeration tree as shown in figure~\ref{fig::BBdesgin}, where the root of the enumeration tree is denoted as the whole solution set $\mathcal{S}$.
+The branch-and-bound (BB) algorithm can thus be applied for traversing the enumeration tree in an efficient way.
+The main idea of the BB algorithm is to divide the solution set $\mathcal{S}$ into smaller subsets (i.e. $\mathcal{S}^1, \mathcal{S}^2, \cdots$), and if a subset has no possibility to include the optimal solution, then it is not required to be divided any more.
 Therefore, a proper policy to ``branch'' and ``bound'' must be well designed for the efficiency of the BB algorithm, and we introduce the ``branching'' and ``bounding'' policy in the followings.
 %
 \subsubsection{Bounding Policy}
 Before introducing the bounding policy, we first propose an algorithm to estimate the lower bound of total cost of each sub solution set $\mathcal{S}^t$.
 If the cost lower bound of a sub solution set $lb(\mathcal{S}^t)$ is greater than the upper bound of objective value, the sub solution set $\mathcal{S}^t$ is no longer necessary to be divided since it has no possibility to contain the optimal solution.
-Therefore, the time complexity of the BB algorithm is highly correlated to the difference between estimated lower bound and actual lower bound.
+Therefore, the time complexity of the BB algorithm is highly correlated to the difference between ``estimated lower bound'' and ``actual lower bound''.
 For this reason, a smart algorithm is thus necessary to be designed for finding a tighter lower bound.
 To start, we denote the cost matrix for the I-frame selection sub-problem as:
 \begin{align}
@@ -172,18 +173,18 @@ where the set of undetermined encoded style cameras at $\mathcal{S}^t$ is $V \se
 For camera $i \in \mathcal{I}^t$, it is clearly that the amount of bits required to encoded $F_i$ equals $H(F_i)$.
 On the other hand, if $k \in V \setminus \mathcal{I}^t$, camera $k$ has the possibility to encode its image as a P-frame.
 As a consequence, the amount of bits required to encode $F_k$ must be less than or equal to $H(F_k)$.
-Since our goal is to find the \emph{lower bound} of required encoded bits, we can thus relaxed the constraints of P-frame reference from an I-frame so that the obtained result will become a weak lower bound.
-That is, the cost of P-frame $\underset{j \in D_k}{\min} H(F_k|F_j)$ now becomes $\underset{j \in U_k}{\min} H(F_k|F_j)$.
-However, we also note that according to constraint~\eqref{eq::referenceOnlyIframe}, a P-frame cannot become a reference frame of camera $k$, which means that the lower bound $\underset{j \in U_k}{\min} H(F_k|F_j)$ is still too optimistic.
-Therefore, a tighter lower bound of camera $k$'s encoding cost should be $\underset{j \in U_k, j \notin \mathcal{P}^t}{\min} H(F_k|F_j)$.
+Since our goal is to find the \emph{lower bound} of required encoded bits and undetermined encoded style cameras have the possibility to become I-frame cameras, we can thus relaxed the constraints of P-frame reference from an I-frame so that the obtained result will become a weak lower bound.
+That is, the cost of P-frame $\underset{u_{kj}x_{jj}=1}{\min} H(F_k|F_j)$ now becomes $\underset{u_{kj}=1}{\min} H(F_k|F_j)$.
+However, we also note that according to constraint~\eqref{eq::referenceOnlyIframe}, a P-frame cannot become a reference frame of camera $k$, which means that the lower bound $\underset{u_{kj}=1}{\min} H(F_k|F_j)$ is too optimistic.
+Therefore, a tighter lower bound of camera $k$'s encoding cost should be $\underset{u_{kj}=1, j \notin \mathcal{P}^t}{\min} H(F_k|F_j)$.
 %
 
 Besides, also note that if camera $i$ reference from camera $j$, then camera $j$ cannot reference from camera $i$.
 As a consequence, either camera $i$ or $j$ should change its reference camera so that the solution can be feasible.
 Since our goal is to find the lower bound of encoding cost, which one to change the reference camera depends on the incremental cost for changing the reference camera, where the incremental cost of camera $i$ and $j$ can be written as:
 \begin{align}
-\Delta_i &= \left( \underset{k \in U_i, k \notin \{\mathcal{P}^t \cup j\}}{\min} H(F_i|F_k) \right) - H(F_i|F_j), \nonumber \\
-\Delta_j &= \left( \underset{k \in U_j, k \notin \{\mathcal{P}^t \cup i\}}{\min} H(F_j|F_k) \right) - H(F_j|F_i).
+\Delta_i &= \left( \underset{u_{ik}=1, k \notin \{\mathcal{P}^t \cup j\}}{\min} H(F_i|F_k) \right) - H(F_i|F_j), \nonumber \\
+\Delta_j &= \left( \underset{u_{kj}=1, k \notin \{\mathcal{P}^t \cup i\}}{\min} H(F_j|F_k) \right) - H(F_j|F_i).
 \end{align}
 Based on the incremental cost $\Delta_i$ and $\Delta_j$, we can define a selection function for determining which camera should change its reference as:
 \begin{equation}
@@ -194,7 +195,7 @@ j,  &\text{ if $\Delta_i > \Delta_j$,} \\
 \end{array} \right.
 \label{eq::selectionFunctionQ}
 \end{equation}
-where $Q(i,j) = i$ means that the reference camera of camera $i$ is changed from camera $j$ to camera $\underset{k \in U_i, k \notin \{\mathcal{P}^t \cup\{j\}\}}{\arg \min} H(F_i|F_k)$ due to the reason that changing camera $i$'s reference camera has lower cost.
+where $Q(i,j) = i$ means that the reference camera of camera $i$ is changed from camera $j$ to camera $\underset{u_{ik}=1, k \notin \{\mathcal{P}^t \cup\{j\}\}}{\arg \min} H(F_i|F_k)$ due to the reason that changing camera $i$'s reference camera has lower cost.
 
 To start the lower bound estimation algorithm for sub solution set $\mathcal{S}^t$, we first initialize its cost matrix as
 \begin{align}
@@ -226,7 +227,7 @@ To proceed, we then define the reference vector ${\mathbf{R}^t = [r_1^t,r_2^t,\c
 r_i^t = 
 \left\{ \begin{array}{cc}
 i,  &\text{ if $i \in \mathcal{I}^t$,} \\                  	   
-\underset{k \in U_i, k \notin \mathcal{P}^t}{\arg\min} H(F_i|F_k),  &\text{ if $i \in V\setminus \mathcal{I}^t$.} \\
+\underset{u_{ik}=1, k \notin \mathcal{P}^t}{\arg\min} H(F_i|F_k),  &\text{ if $i \in V\setminus \mathcal{I}^t$.} \\
 \end{array} \right.
 \label{eq::initRefStructure}
 \end{equation}
@@ -247,15 +248,16 @@ In short, the lower bound estimation procedure of an arbitrary sub solution set 
  Initialize $\mathcal{I}^t$ by~\eqref{eq::IframeSet}, $\mathcal{P}^t$ by~\eqref{eq::PframeSet}, $\mathbf{H}^t$ by~\eqref{eq::modBBcostMatrix}~\eqref{eq::infColumn} and $\mathbf{R}^t$ by~\eqref{eq::initRefStructure} \\
  \While{$\forall i \in V, \exists j \in V, j \neq i$ such that $r_i^t=j$ and $r_j^t=i$}
  {
- 	$\Delta_i \gets \left( \underset{k \in U_i, k \notin \{\mathcal{P}^t \cup j\}}{\min} h_{ik}^t \right) - h_{ij}^t$ \\
-	$\Delta_j \gets \left( \underset{k \in U_j, k \notin \{\mathcal{P}^t \cup i\}}{\min} h_{jk}^t \right) - h_{ji}^t$ \\
+ 	$\Delta_i \gets \left( \underset{u_{ik}=1, k \notin \{\mathcal{P}^t \cup j\}}{\min} h_{ik}^t \right) - h_{ij}^t$ \\
+	$\Delta_j \gets \left( \underset{u_{jk}=1, k \notin \{\mathcal{P}^t \cup i\}}{\min} h_{jk}^t \right) - h_{ji}^t$ \\
  	$k \gets Q(i,j)$ \\
- 	$r_k^t \gets \underset{m \in U_i, m \notin \{\mathcal{P}^t \cup \{j\}\}}{\arg \min} h_{im}^t$ \\
  	\eIf{$k = i$}
  	{
+ 		$r_i^t \gets \underset{u_{im}=1, m \notin \{\mathcal{P}^t \cup \{j\}\}}{\arg \min} h_{im}^t$ \\
  		$h_{ij}^t \gets \inf$ \\
  	}
  	{
+ 		$r_j^t \gets \underset{u_{jm}=1, m \notin \{\mathcal{P}^t \cup \{i\}\}}{\arg \min} h_{jm}^t$ \\
  		$h_{ji}^t \gets \inf$ \\
  	}
  	

@@ -27,25 +27,38 @@ We note that the multi-view encoding does not decrease the image quality as show
 Therefore, we can claim that our proposed correlated data gathering scheme is almost ``lossless'' with the advantage for reducing the amount of encoded bits.
 The other parameters for our simulation is listed in table~\ref{tab::evaParameters}.
 %
-\begin{table}[htb]
+%
+\begin{table*}[htb]
 \footnotesize
 \centering
-\begin{tabularx}{0.9\columnwidth}{X|X}
+\begin{tabularx}{0.9\textwidth}{c|c|X}
   \hline
-  City size & $500m \times 500m$ \\ \\
-  Number of cameras & $30$ \\ \\
-  Overhearing gap $\rho$ & $1$ \\ \\
-  Image resolution & $1280 \times 720$ (HD $720p$) \\ \\
-  Camera focal Length & $35$ ($mm$) \\ \\
-  Camera sensor size & $35$ ($mm$) \\ \\
-  Multiview search range & $32,64,128,256,512$ \\ \\
-  Image quantization parameter & $31$ \\ \\
-  Coding technique & Context adaptive arithmetic binary coding (CABAC) \\
+  Type &Parameter &Setting \\
+  \hline
+  \hline
+  \multirow{3}{*}
+  {Network topology} &City radius &$500m$ \\
+       &Number of cameras &$30$ \\
+       &Position of data aggregator &$(0,0)$ \\
+       
+  \hline
+  \multirow{2}{*}
+  {Algorithm parameter} &$\rho$ &$1$ \\
+  	&$\alpha$ &$0.9$ \\
+  \hline
+  \multirow{6}{*}
+  {Video encoder} &Image resolution &$1280 \times 720$ (HD $720p$) \\ 
+   &Camera focal length &$36 (mm)$ \\ 
+   &Camera sensor size &$35 (mm)$ \\ 
+   &Multiview search range &$32,64,128,256,512$ \\
+   &Image quantization parameter &$31$ \\
+   &Coding technique &Context adaptive arithmetic binary coding (CABAC) \\
   \hline
 \end{tabularx}
 \\
 \caption{\label{tab::evaParameters}Parameters for evaluation}
-\end{table}
+\end{table*}
+%
 %
 \begin{figure}
 \begin{center}
@@ -75,7 +88,6 @@ The other parameters for our simulation is listed in table~\ref{tab::evaParamete
 %
 
 \subsection{Evaluation of Different Search Range}
-{\color{red}Show the evaluation result of different search range(results obtained by BB algorithm)}
 %
 \begin{figure}
 \begin{center}
@@ -83,19 +95,31 @@ The other parameters for our simulation is listed in table~\ref{tab::evaParamete
 \caption{\label{fig::txBytes_diffRng} Comparison of different search range of motion estimation}
 \end{center}
 \end{figure}
-Figure~\ref{fig::txBytes_diffRng}
+Before comparing our proposed algorithms with some baseline approaches, we first show the impact of using different search range while performing the multiview encoding procedure in this chapter, where the results are obtained by our proposed BB algorithm.
+As shown in figure~\ref{fig::txBytes_diffRng}, it is obvious that larger search range will lead to a better performance of the overhearing source coding technique since more correlated macroblock might be found if the searching range of motion estimation becomes larger.
+However, we also need to mention that the search range might be increased carefully in order to prevent from causing too much computational complexity at the data aggregator.
+Note that the time complexity of the baseline motion estimation in H.264 is $\mathcal{O}(N^2)$ since both horizontal direction and vertical direction are required to be searched.
+Therefore, we can claim that the complexity will increase quadratically as the search range becomes larger.
 
-\subsection{Evaluation of Different Branching method}
-{\color{red}Show the converged speed of different branching method for BB algorithm.}
+\subsection{Evaluation of Proposed Branch and Bound Algorithm}
+In this chapter, we show the several evaluation results of the proposed BB algorithm.
+That is, we compare our proposed ``branching'' and ``bounding'' policy with some baseline approaches, and show that our method can outperform those baseline approaches.
+
+\subsubsection{Evaluation of Different Branching method}
+%{\color{red}Show the converged speed of different branching method for BB algorithm.}
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.95\columnwidth]{Figures/compareBranching.pdf}
 \caption{\label{fig::compareBranching} Comparison of convergence speed for different branching approach}
 \end{center}
 \end{figure}
-Figure~\ref{fig::compareBranching}
+To start, we first show the benefit of using our proposed metric compared to applying the depth first searching method in this chapter.
+Note that as we mentioned in Chapter~\ref{sec::proposedBBBranchingPolicy}, the determination of which branch in the enumeration tree should be traverse first can be decided by our proposed branching metric~\eqref{eq::branchingMetric}.
+For the depth first searching, although this method is popularly being used in the BB algorithm, it does not consider which node has the higher probability to contain a better solution.
+Therefore, it might require more iterations to obtain a good enough objective value as shown in figure~\ref{fig::compareBranching}.
+Our proposed branching metric, on the other hand, consider the estimated lower bound of each node in the enumeration tree, and hence fewer iteration is needed for converging to the optimal solution.
 
-\subsection{Evaluation of Different Lower Bound Estimation Technique}
+\subsubsection{Evaluation of Different Lower Bound Estimation Technique}
 {\color{red}Show the converged speed of different lower bound estimation for BB algorithm.}
 \begin{figure}
 \begin{center}

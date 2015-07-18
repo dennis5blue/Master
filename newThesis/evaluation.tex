@@ -17,13 +17,13 @@
 %
 In this chapter, we show the evaluation results in terms of various observation points of our proposed approaches for correlated data gathering.
 In order to evaluate the proposed approaches for multi-camera networks, we resort to a 3D modeling software~\cite{Suicidator,Blender} for rendering ``semi-realistic'' city views as the data source.
-An example of the rendered city is shown in figure~\ref{fig::cityView}.
-We then deployed $30$ cameras with different view angles in the ``virtual'' city to capture different but correlated views of the city, where the position and sensing direction of those $30$ cameras are shown in figure~\ref{fig::deploy30}.
+An example of the rendered city is shown in Fig.~\ref{fig::cityView}.
+We then deployed $30$ cameras with different view angles in the ``virtual'' city to capture different but correlated views of the city, where the position and sensing direction of those $30$ cameras are shown in Fig.~\ref{fig::deploy30}.
 
 Each camera deployed is configured to take the city snapshot as a $1280 \times 720$ HD image.
 To find the amount of encoded bits $H(F_i)$ of each camera, we use a multi-view video coding reference software~\cite{JMVC} to process the image (treated as an I-frame) of each camera's view.
 Afterwards, we perform the multi-view encoding (treated as a P-frame) for each pair of cameras and experimentally create the cost matrix $\mathbf{H}$~\eqref{eq::bbCostMatrix}.
-We note that the multi-view encoding does not decrease the image quality as shown in figure~\ref{fig::multiViewImageDemo}, where we can learn in this figure that the reconstructed frame is almost equalled to the original frame.
+We note that the multi-view encoding does not decrease the image quality as shown in Fig.~\ref{fig::multiViewImageDemo}, where we can learn in this figure that the reconstructed frame is almost equalled to the original frame.
 Therefore, we can claim that our proposed correlated data gathering scheme is almost ``lossless'' with the advantage for reducing the amount of encoded bits.
 The other parameters for our simulation is listed in table~\ref{tab::evaParameters}.
 %
@@ -96,7 +96,7 @@ The other parameters for our simulation is listed in table~\ref{tab::evaParamete
 \end{center}
 \end{figure}
 Before comparing our proposed algorithms with some baseline approaches, we first show the impact of using different search range while performing the multiview encoding procedure in this chapter, where the results are obtained by our proposed BB algorithm.
-As shown in figure~\ref{fig::txBytes_diffRng}, it is obvious that larger search range will lead to a better performance of the overhearing source coding technique since more correlated macroblock might be found if the searching range of motion estimation becomes larger.
+As shown in Fig.~\ref{fig::txBytes_diffRng}, it is obvious that larger search range will lead to a better performance of the overhearing source coding technique since more correlated macroblock might be found if the searching range of motion estimation becomes larger.
 However, we also need to mention that the search range might be increased carefully in order to prevent from causing too much computational complexity at the data aggregator.
 Note that the time complexity of the baseline motion estimation in H.264 is $\mathcal{O}(N^2)$ since both horizontal direction and vertical direction are required to be searched.
 Therefore, we can claim that the complexity will increase quadratically as the search range becomes larger.
@@ -116,7 +116,7 @@ That is, we compare our proposed ``branching'' and ``bounding'' policy with some
 To start, we first show the benefit of using our proposed metric compared to applying the depth first searching method in this chapter.
 Note that as we mentioned in Chapter~\ref{sec::proposedBBBranchingPolicy}, the determination of which branch in the enumeration tree should be traverse first can be decided by our proposed branching metric~\eqref{eq::branchingMetric}.
 For the depth first searching, although this method is popularly being used in the BB algorithm, it does not consider which node has the higher probability to contain a better solution.
-Therefore, it might require more iterations to obtain a good enough objective value as shown in figure~\ref{fig::compareBranching}.
+Therefore, it might require more iterations to obtain a good enough objective value as shown in Fig.~\ref{fig::compareBranching}.
 Our proposed branching metric, on the other hand, consider the estimated lower bound of each node in the enumeration tree, and hence fewer iteration is needed for converging to the optimal solution.
 
 \subsubsection{Evaluation of Different Lower Bound Estimation Technique}
@@ -180,12 +180,12 @@ As a summary, the baseline lower bound estimation method is shown in algorithm~\
 
 Note that the lower bound obtained by algorithm~\ref{alg::lbEstimation_baseline} is a loose bound, since the obtained cost might refer to an infeasible reference structure (i.e. $i$ reference $j$ together with $j$ reference $i$).
 Therefore, we can claim that our proposed lower bound estimation method can reduce more computational complexity than the baseline approach.
-As shown in figure~\ref{fig::compareLbEstimation}, although the two algorithms converge to the same optimal objective value, the required iterations for convergence for those two approaches are definitely different.
+As shown in Fig.~\ref{fig::compareLbEstimation}, although the two algorithms converge to the same optimal objective value, the required iterations for convergence for those two approaches are definitely different.
 That is, more than $98\%$ of iterations can be further reduced if our proposed lower bound estimation technique is applied.
 The results thus confirm us that the lower bound estimated by algorithm~\ref{alg::lbEstimation} is a tighter bound so that the optimal solution can be found under lower computational complexity.
 
-Figure~\ref{fig::evaNumActiveBBNodes}
-Figure~\ref{fig::complexity} further shows that result for required
+Fig.~\ref{fig::evaNumActiveBBNodes}
+Fig.~\ref{fig::complexity} further shows that result for required
 
 \subsection{Evaluation of Different I-frame Selection Algorithms}
 {\color{red}Show the evaluation result of different I-frame selection algorithms (BB, proposed MDS, baseline MDS~\cite{MWDS_baseline}).}
@@ -218,7 +218,7 @@ Figure~\ref{fig::complexity} further shows that result for required
 \caption{\label{fig::refStructure_threeAlgs} Selected I-frame cameras and their member P-frame cameras}
 \end{center}
 \end{figure}
-Figure~\ref{fig::txBytes_diffAlg}~\ref{fig::refStructure_threeAlgs}
+Fig.~\ref{fig::txBytes_diffAlg}~\ref{fig::refStructure_threeAlgs}
 
 %
 %In this subsection, we present the evaluation results of the branch-and-bound algorithm for overhearing source coding.
@@ -270,7 +270,7 @@ Figure~\ref{fig::txBytes_diffAlg}~\ref{fig::refStructure_threeAlgs}
 %\end{center}
 %\end{figure}
 %
-Figure~\ref{fig::evaOverRange}
+Fig.~\ref{fig::evaOverRange}
 
 \subsection{Evaluation of Multiple Transmission Rounds}
 {\color{red}Show the evaluation results for different transmission round.}
@@ -365,17 +365,17 @@ Indicate the case that the cost matrix is dynamically being modified at some tra
 Intuitively speaking, this case can achieve better performance than static cost matrix and also has lower computational complexity compared to baseline dynamic cost matrix.
 \end{itemize}
 
-Figure~\ref{fig::evaMultiSlots} thus confirms our claim of advantages and disadvantages for the above three cases.
+Fig.~\ref{fig::evaMultiSlots} thus confirms our claim of advantages and disadvantages for the above three cases.
 Both the results of branch-and-bound algorithm and graph approximation algorithm are shown in this figure.
 For the graph approximation algorithm, since it is a heuristic approach and hence it is not promised to obtain the optimal solution.
-Therefore, we can observe in figure~\ref{fig::evaMultiSlots} that although the performance of graph approximation can sometimes be very closed to the performance of branch-and-bound algorithm, it happens that there exists a considerable performance gap between these two methods at some transmission round (e.g. round $1$).
+Therefore, we can observe in Fig.~\ref{fig::evaMultiSlots} that although the performance of graph approximation can sometimes be very closed to the performance of branch-and-bound algorithm, it happens that there exists a considerable performance gap between these two methods at some transmission round (e.g. round $1$).
 Let us now focus on the variation of improvement ratio, it is clearly that the baseline dynamic cost matrix is the upper bound for the improvement ratio since it updates $\mathbf{H}$ for every transmission round.
-On the other hand, using static cost matrix is the lower bound for the improvement ratio and we can observe in figure~\ref{fig::evaMultiSlots} that the performance for this case become very bad after round $2$.
+On the other hand, using static cost matrix is the lower bound for the improvement ratio and we can observe in Fig.~\ref{fig::evaMultiSlots} that the performance for this case become very bad after round $2$.
 However, as long as the improvement ratio decrease badly at round $2$, the long term improvement ratio $\bar{\eta}$~\eqref{eq::updateEta} will decrease.
 The decrease of $\bar{\eta}$ will trigger the reestimation of $\mathbf{H}$ so that the performance can be recovered at round $3$.
-For the same reason, the result in figure~\ref{fig::evaMultiSlots} indicates that the performance will recover to the ``best'' performance in the next transmission round if the improvement ratio becomes lower than a threshold.
+For the same reason, the result in Fig.~\ref{fig::evaMultiSlots} indicates that the performance will recover to the ``best'' performance in the next transmission round if the improvement ratio becomes lower than a threshold.
 
-Figure~\ref{fig::evaExecTime}
+Fig.~\ref{fig::evaExecTime}
 
 \subsection{Evaluation of Received Image Quality}
 {\color{red}Show the evaluation results for image quality of different transmission round.}
@@ -393,4 +393,4 @@ Figure~\ref{fig::evaExecTime}
 \end{center}
 \end{figure}
 %
-Figure~\ref{fig::evaMultiRunPSNR}
+Fig.~\ref{fig::evaMultiRunPSNR}

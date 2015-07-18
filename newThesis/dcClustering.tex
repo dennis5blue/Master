@@ -9,7 +9,7 @@
 %
 For the multi-camera networks, cameras are deployed for collecting data around a neighboring area, and thus video streams of those cameras are correlated in nature.
 Therefore, for the sake of using the radio resource in an efficient way, we should therefore focus on the quality of the gathered data at the base station instead of the data rate of individual cameras especially when the radio resource (e.g. channel bandwidth, allocated time slot) is limited.
-In order to achieve such a ``data-centirc'' approach, we apply a hierarchical \emph{two-hop relay} communication model for uplink transmission in our previous works~\cite{steven} for the sake of exploiting spatial reuse as shown in Figure~\ref{fig::dcModel}.
+In order to achieve such a ``data-centirc'' approach, we apply a hierarchical \emph{two-hop relay} communication model for uplink transmission in our previous works~\cite{steven} for the sake of exploiting spatial reuse as shown in Fig.~\ref{fig::dcModel}.
 More specifically, suppose that there has a set of cameras deployed over a city for gathering multimedia data from different intersections, where a base station with limited radio resource (e.g. time slots in TDMA or resource block in OFDMA) is deployed in the city for collecting data from those cameras through wireless communication links.
 Data collected from individual cameras is to be periodically transmitted back to the base station for forwarding to a back-end server.
 We then divide cameras into several clusters and each cluster will select one camera to act as cluster head for relaying data of its member to the base station.
@@ -34,4 +34,4 @@ In our previous works, we proposed a solution for the optimization problem for j
 The power control mechanism is to ensure that all cameras can transmit their data successfully to its serving head under the worst interference case.
 Although the tier-2 transmission schedule is not investigated in our previous work, power control for any arbitrary transmission schedule is feasible due to the reason that the worst case is already considered.
 However, note that in multi-camera networks, data collected from nearby cameras are often correlated, and hence it is possible for each camera only forwards ``useful'' information to its serving head.
-Therefore, in this thesis, cameras are assumed to be able to overhear transmission from nearby cameras for the sake of exploiting the benefit of correlated data gathering, and we consider the scenario \emph{within one cluster}, which will be further presented along with some useful models in chapter~\ref{sec::scenarioAndModel}.
+Therefore, in this thesis, cameras are assumed to be able to overhear transmission from nearby cameras for the sake of exploiting the benefit of correlated data gathering, and we consider the scenario \emph{within one cluster}, which will be further presented along with some useful models in Chapter~\ref{sec::networkScenario} and Chapter~\ref{sec::dataModel}.

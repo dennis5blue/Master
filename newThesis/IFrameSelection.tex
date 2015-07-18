@@ -357,7 +357,7 @@ As a summary, among all un-traversed sub solution sets, our proposed branching p
 \caption{\label{fig::flowChartBB}Flow chart of proposed BB algorithm}
 \end{center}
 \end{figure}
-Based on the ideas described in the previous chapters, we can now present how the overall proposed BB algorithm works, where figure~\ref{fig::flowChartBB} shows the flow chart of our proposed algorithm.
+Based on the ideas described in the previous chapters, we can now present how the overall proposed BB algorithm works, where Fig.~\ref{fig::flowChartBB} shows the flow chart of our proposed algorithm.
 For the setup of BB algorithm, we first define the whole solution set $\mathcal{S}$ as the combination of $x_{ii} = \{0,1\}, \forall i \in V$, and the initial minimum cost $ub(\mathcal{S}^*) = \infty$.
 We then divide $\mathcal{S}$ into two sub solution sets by fixing an arbitrary $x_{ii}, i \in V$ to $0$ and $1$, where the two divided sub solution sets are inserted into a queue for containing sub solution sets.
 Among all sub solution sets in queue, we refer to the branching metric~\eqref{eq::branchingMetric} for the determination of which one to be traversed first.

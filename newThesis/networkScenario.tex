@@ -1,0 +1,21 @@
+\subsection{Network Scenario}
+\label{sec::networkScenario}
+%
+\begin{figure}
+\centering
+\includegraphics[width=0.95\columnwidth]{Figures/topo}
+\caption{\label{fig::sysModel}Network scenario for overhearing communication}
+\end{figure}
+%
+As we mentioned in chapter~\ref{sec::dcClustering}, we focus on the problem of transmission scheduling in a cluster for the sake of realizing the idea of correlated data gathering.
+That is, we aim to determine the transmission schedule of each cluster so that the benefit of correlated data gathering can be maximized through the overhearing source coding.
+Figure~\ref{fig::sysModel} shows our target scenario, where the cluster heads in figure~\ref{fig::dcModel} is now considered as data aggregators.
+Each camera within the cluster is responsible to deliver its data to the aggregator once, and we also assume that each camera has the capability to overhear transmissions form nearby cameras that belong to the same cluster.
+After a camera overhear nearby transmissions, it can apply some multiview coding technique to reduce the amount of data that is required to be delivered to the data aggregator (i.e. the serving cluster head of this camera).
+In order to overhear the transmission from nearby cameras, it is clearly that the below two condition must be satisfied:
+\begin{itemize}
+\item The listener camera must be scheduled after the transmitter camera.
+\item The listener camera must fall in the transmission range of the transmitter camera.
+\end{itemize}
+For example, suppose that camera $8$ in figure~\ref{fig::sysModel} is about to transmit its data to the aggregator, then only camera $7$ and $9$ can overhear the data of camera $8$ if and only if they are scheduled after camera $8$.
+On the other hand, camera ${1,2,3,4,5,6,10}$ cannot overhear the transmission of camera $8$ no matter when they are scheduled since they fall outside the transmission of camera $8$.

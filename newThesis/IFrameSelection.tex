@@ -15,7 +15,7 @@ Note that the decision variables of the I-frame selection sub-problem are the di
 Our goal is to figure out whether ${x_{ii},i \in V}$ equals to $0$ or $1$ so that the total amount of encoded bits can be minimized, where the other scheduling constraints (i.e. constraints about $\mathbf{Z}$) are ignore during the phase of selecting I-frame cameras for the sake of simplification.
 Therefore, the simplified problem without scheduling constraints can be written as:
 \begin{align}
-\text{minimize} & & \nonumber \\
+\underset{\mathbf{X}}{\text{minimize}} & & \nonumber \\
 	&\sum_{i=1}^{|V|} \sum_{j \in U_i}  x_{ij} H(F_i|F_j), & \nonumber \\
 \text{subject to} & & \nonumber \\
 	&U_i = \{ j \in V | d_{ij} \leq \rho d_{j0} \}, &\forall i \in V, \nonumber \\
@@ -42,7 +42,7 @@ In order to further simply Problem~\eqref{eq::formulationSimplified}, we use a s
 The interpretation of equation~\eqref{eq::moreThanOneCanHear} is that each P-frame camera must have at least one I-frame camera that it can overhear, and if a camera $i$ cannot overhear any other cameras (i.e. $u_{ij} = 0, \forall j \neq i$), then camera $i$ must be an I-frame camera (i.e. $x_{ii}=1$).
 Using equation~\eqref{eq::moreThanOneCanHear} to represent the three constraints in~\eqref{eq::threeConstraintsToSimplfied}, Problem~\eqref{eq::formulationSimplified} is thus equivalent to the following formulation:
 \begin{align}
-\text{minimize} & & \nonumber \\
+\underset{\mathbf{X}}{\text{minimize}} & & \nonumber \\
 	&\sum_{i=1}^{|V|} \sum_{j=1}^{|V|}  x_{ij} H(F_i|F_j), & \nonumber \\
 \text{subject to} & & \nonumber \\
 	&\sum_{j=1}^{|V|} u_{ij} x_{jj} \geq 1, &\forall i \in V, \nonumber \\
@@ -58,7 +58,7 @@ However, if camera $i$ is encoded as a P-frame, the amount of encoded bits shoul
 An intuitive method to determine the reference frame is to select the most correlated I-frame, and the amount of encoded bits can be written as $\underset{u_{ij}x_{jj} = 1}{\min} H(F_i|F_j)$, where $u_{ij}x_{jj} = 1$ indicates the I-frame camera that camera $i$ can overhear.
 Therefore, if we denote ${\widehat{H(F_i)} = \underset{u_{ij}x_{jj} = 1}{\min} H(F_i|F_j)}$ as the smallest amount of encoded bits if camera $i$ is a P-frame camera, Problem~\eqref{eq::formulationSimplifiedAsGraph} can be transformed into:
 \begin{align}
-\text{minimize} & & \nonumber \\
+\underset{\mathbf{X}}{\text{minimize}} & & \nonumber \\
 	&\sum_{i=1}^{|V|} x_{ii}H(F_i) + \sum_{i=1}^{|V|} (1-x_{ii}) \widehat{H(F_i)}, & \nonumber \\
 \text{subject to} & & \nonumber \\
 	&\sum_{j=1}^{|V|} u_{ij} x_{jj} \geq 1, &\forall i \in V, \nonumber \\
@@ -78,7 +78,7 @@ The set covering problem is a $\mathcal{NP}$-complete problem~\cite{SetCoveringN
 \end{mydef}
 Note that the set covering problem can be formulated in the form of an integer programming problem~\cite{SetCoveringFormulation} as:
 \begin{align}
-\text{minimize} & & \nonumber \\
+\underset{\mathbf{X}}{\text{minimize}} & & \nonumber \\
  &\sum_{j \in S} c_j x_j, & \nonumber \\
 \text{subject to} & & \nonumber \\
  &\sum_{j \in S} a_{ij}x_j \geq 1, &\forall i \in V, \nonumber \\

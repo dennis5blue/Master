@@ -39,4 +39,4 @@ Since B-frame is an extension from P-frame, we do not consider the appearance of
 
 In this thesis, we assume that all video frames are encoded as either I-frames or P-frames as shown in Fig.~\ref{fig::baselineGOP} (which is the baseline profile in H.264 and has been widely used for mobile devices~\cite{h264Recommendation}), where a P-frame will reference from its preceding frame (can be either an I-frame or a P-frame).
 An I-frame will be repeatedly inserted after a give number of P-frames, and we denote an I-frame together with its following P-frames as a group of pictures (GOP) in this thesis.
-In the following chapter, we will introduce the idea of extending H.264 video compression technique into the scenario of multi-camera networks by the multiview encoding procedure.
+In the following chapters, we will explain more detailed about how the \emph{inter prediction} is done, and we will also introduce the idea of extending H.264 video compression technique into the scenario of multi-camera networks by the multiview encoding procedure.

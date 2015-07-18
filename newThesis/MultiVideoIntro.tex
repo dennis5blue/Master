@@ -17,7 +17,11 @@
 In order to achieve a higher compression ratio for mutli-camera networks, Multiview Video Coding (MVC)~\cite{MVCoverview} has been popularly investigated in literatures.
 Multiview videos are the video data that observe the same scene from different position or different sensing directions simultaneously.
 An example of multiview videos can be shown in Fig.~\ref{fig::multiCam}, where we can learn in this figure that the captured video streams of the two cameras are similar to each other but with a little bit different.
-Therefore, in order to exploit the spatial correlation between these views for the delivery of efficient compression, MVC allows the idea of \emph{interview prediction}.
+%We now describe how we define the correlation between multiple cameras, which can be further exploited to leverage spatial correlation while delivering data.
+More specifically, camera $i$ and camera $j$ in Fig.~\ref{fig::multiCam} are both observing the same object but from different positions and having different sensing directions, there will cause some overlapped regions between the collected views from the two cameras.
+This spatial correlation from neighboring cameras can thus help to reduce the amount of data needed to be delivered.
+%With the help of MVC, correlated regions between two images can be encoded with less amount of bits, therefore, the usage of radio resource for communication can be reduced.
+In order to exploit the spatial correlation between these views for the delivery of efficient compression, MVC allows the idea of \emph{interview prediction}.
 That is, the MVC encoder is able to reference from views captured from nearby cameras during the stage of inter prediction as shown in Fig.~\ref{fig::MVC}.
 
 In Fig.~\ref{fig::MVC}, the GOP produced by camera~$1$ contains an I-frame (or known as the anchor frame) followed by seven B-frames.

@@ -1,0 +1,42 @@
+\subsection{Proposed P-frame Scheduling Algorithm}
+\label{sec::PFrameScheduling}
+%{\color{red}Describe our proposed P-frame scheduling algorithm based on a greedy scheduling metric.}
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/PscheOverview.pdf}
+\caption{\label{fig::pScheOverview}Demonstration of transmission schedule}
+\end{center}
+\end{figure}
+As we demonstrate in figure~\ref{fig::subProbProcedure} before, the \emph{P-frame scheduling algorithm} is executed after a portion of cameras are selected to encode their images as I-frames.
+Therefore, all P-frame cameras (i.e. cameras that are not be selected as I-frame cameras) can find the most correlated I-frame cameras in polynomial time when the I-frame cameras set is given.
+Our algorithm thus make all P-frame cameras join the group of their ``most correlated'' I-frame camera.
+Time slots will be allocated group by group, starting with the I-frame camera in that group and followed by several P-frame cameras.
+The order for P-frame cameras is determined based on a greedy approach, that is, a camera that can make more other P-frames cameras to be able to overhear its transmission will be scheduled first.
+The reason why we use this metric is that the later scheduled P-frame cameras might have the possibility to reference from the previous P-frame camera instead of the first scheduled I-frame camera.
+However, referencing from a P-frame camera will increase the complexity of problem formulation and hence it is leave as a future work of this thesis.
+Besides, we also note that the greedy P-frame scheduling metric presented above can be changed for fitting into application requirements (i.e. camera which is more delay sensitive to be scheduled first).
+
+Figure~\ref{fig::pScheOverview} shows an example of the determined transmission schedule.
+Suppose that camera $4$ and $7$ are selected to be I-frame cameras by algorithm~\ref{alg::bbAlgorithm} or~\ref{alg::minWeightDS}, and cameras $1,2,3$ are more correlated with camera $4$ and cameras $5,6$ are more correlated with camera $7$.
+Therefore, cameras $1,2,3$ will join the group of camera $4$ while cameras $5,6$ will join the group of camera $7$.
+Since time slots are allocated group by group, assume that the group of camera $4$ is scheduled first, then slot $1$ will be allocated for camera $4$ since I-frame camera should be scheduled first so that the later P-frame cameras are able to overhear its transmission.
+To proceed, time slots $2,3,4$ will be allocated for the member cameras of camera $4$, and which member camera is scheduled at which time slot is based on the greedy P-frame scheduling metric.
+After all member cameras of camera $4$ is scheduled, the next group will continued to be scheduled.
+That is, slot $5$ is for the transmission of camera $7$ (the I-frame camera of the next group), and slots $6,7$ are for the member cameras of camera $7$.
+Our P-frame scheduling algorithm will keep working until all cameras groups are scheduled.
+%
+%\begin{figure}
+%\begin{center}
+%\includegraphics[width=0.95\columnwidth]{Figures/referenceStructure2.pdf}
+%\caption{\label{fig::encodeOrder2}Extended Coding structure of a group of pictures}
+%\end{center}
+%\end{figure}
+%
+%As we describe in chapter~\ref{sec::iFrameSelectionSubProb}, the set of cameras that encode their image as an I-frame can be determined through the proposed branch-and-bound algorithm.
+%Therefore, it is clearly that all the remaining P-frame cameras can decide which camera in the I-frame cameras set is the best one to reference from while encoding their image.
+%However, the schedule for those P-frame cameras is still undetermined yet, and hence we discuss in this chapter that how to determine the schedule of those P-frame cameras.
+%For the P-frame cameras scheduling, we extend the coding structure of a group of pictures from figure~\ref{fig::encodeOrder} to figure~\ref{fig::encodeOrder2}.
+%That is, a P-frame camera can now reference from a previous scheduled I-frame camera or P-frame camera, depends on which one is more correlated.
+%However, if a P-frame camera $i$ aims to reference from another P-frame camera $j$, camera $i$ must be able to reconstruct the image of camera $j$, which means that camera $i$ also needs to overhear the transmission of the reference frame of camera $j$.
+%For example, suppose that the coding structure is shown in figure~\ref{fig::encodeOrder2}, camera $4$ must both overhear the transmission of camera $1$ and $3$ if it aims to reference from the image of camera $3$.
+%

@@ -1,0 +1,76 @@
+\documentclass[12pt,onendahalfspaced, a4paper]{tonic-thesis}
+
+\usepackage{textcomp}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{cite}
+\usepackage{amsfonts}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{caption}
+\usepackage{subcaption}
+\newtheorem{mydef}{Definition}
+\newtheorem{mythm}{Theorem}
+\newtheorem{myCor}{Corollary}
+\newtheorem{mylem}{Lemma}
+
+\usepackage{epstopdf}
+\usepackage{enumerate}
+\usepackage{units}
+\usepackage{color}
+\usepackage[T1]{fontenc}
+%\usepackage{graphicx}
+%\usepackage{subfigure}
+\usepackage{bm}
+
+%\usepackage{algorithm}
+%\usepackage{algorithmic}
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+%\newcommand{\ignore}[1]{}
+
+\title{Data-Centric Resource Allocation for Correlated Data Gathering in Wireless Multi-Camera Networks}
+%
+\author{Chang-Yu, Song}
+\department{Graduate Institute of Communication Engineering}
+\degree{Master of Science}
+\submitdate{July 2014}
+\copyrightyear{2014}
+
+\begin{document}
+\begin{preliminary}
+
+\begin{abstract}
+\input{abstract.tex}
+\end{abstract}
+
+\contents
+\end{preliminary}
+
+\input{introduction.tex}
+\input{background.tex}
+%\input{scenarioAndModel.tex}
+\input{newScenarioAndModel.tex}
+%\input{systemFramework.tex}
+%\input{formulation.tex}
+\input{newFormulation.tex}
+%\input{crossEntropy.tex}
+%\input{branchAndBound.tex}
+%\input{newBranchAndBound.tex}
+\input{IFrameSelection.tex}
+\input{graphApproximation.tex}
+\input{PFrameScheduling.tex}
+\input{ProtocolDesign.tex}
+\input{evaluation.tex}
+\input{conclusion.tex}
+
+
+\begin{postliminary}
+\bibfiles{reference}
+\bibliographystyle{IEEEtran}
+\references
+\end{postliminary}
+
+\end{document} 

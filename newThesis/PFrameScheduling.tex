@@ -7,7 +7,7 @@
 \caption{\label{fig::pScheOverview}Demonstration of transmission schedule}
 \end{center}
 \end{figure}
-As we demonstrate in figure~\ref{fig::subProbProcedure} before, the \emph{P-frame scheduling algorithm} is executed after a portion of cameras are selected to encode their images as I-frames.
+As we demonstrate in Fig.~\ref{fig::subProbProcedure} before, the \emph{P-frame scheduling algorithm} is executed after a portion of cameras are selected to encode their images as I-frames.
 Therefore, all P-frame cameras (i.e. cameras that are not be selected as I-frame cameras) can find the most correlated I-frame cameras in polynomial time when the I-frame cameras set is given.
 Our algorithm thus make all P-frame cameras join the group of their ``most correlated'' I-frame camera.
 Time slots will be allocated group by group, starting with the I-frame camera in that group and followed by several P-frame cameras.
@@ -16,7 +16,7 @@ The reason why we use this metric is that the later scheduled P-frame cameras mi
 However, referencing from a P-frame camera will increase the complexity of problem formulation and hence it is leave as a future work of this thesis.
 Besides, we also note that the greedy P-frame scheduling metric presented above can be changed for fitting into application requirements (i.e. camera which is more delay sensitive to be scheduled first).
 
-Figure~\ref{fig::pScheOverview} shows an example of the determined transmission schedule.
+Fig.~\ref{fig::pScheOverview} shows an example of the determined transmission schedule.
 Suppose that camera $4$ and $7$ are selected to be I-frame cameras by algorithm~\ref{alg::bbAlgorithm} or~\ref{alg::minWeightDS}, and cameras $1,2,3$ are more correlated with camera $4$ and cameras $5,6$ are more correlated with camera $7$.
 Therefore, cameras $1,2,3$ will join the group of camera $4$ while cameras $5,6$ will join the group of camera $7$.
 Since time slots are allocated group by group, assume that the group of camera $4$ is scheduled first, then slot $1$ will be allocated for camera $4$ since I-frame camera should be scheduled first so that the later P-frame cameras are able to overhear its transmission.

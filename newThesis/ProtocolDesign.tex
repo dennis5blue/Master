@@ -51,11 +51,11 @@ Finally, we will give an overall explanation about the system architecture, incl
 \end{center}
 \end{figure}
 %
-As we mentioned before, the encoding structure for a camera is presented in Chapter~\ref{sec::H264CompressionIntro}, and the timeline for GOPs is also shown in figure~\ref{fig::baselineGOP}.
-Therefore, the encoding structure for multi-camera networks can thus be extended directly from figure~\ref{fig::baselineGOP}, which is shown in figure~\ref{fig::multiCamGOP_original}.
+As we mentioned before, the encoding structure for a camera is presented in Chapter~\ref{sec::H264CompressionIntro}, and the timeline for GOPs is also shown in Fig.~\ref{fig::baselineGOP}.
+Therefore, the encoding structure for multi-camera networks can thus be extended directly from Fig.~\ref{fig::baselineGOP}, which is shown in Fig.~\ref{fig::multiCamGOP_original}.
 Note that we assume that the time slot for transmitting I-frames of each cameras is synchronized in this thesis, where this assumption can be done by any existing synchronization mechanisms in LTE or LTE-A.
-However, there has no cooperation between nearby cameras when encoding video streams if the encoding structure shown in figure~\ref{fig::multiCamGOP_original} is used for multi-camera networks, and hence some redundant data might still be encoded.
-In order to remove such redundancy, we modify the encoding structure and show our proposed cooperative encoding structure in figure~\ref{fig::multiCamGOP}.
+However, there has no cooperation between nearby cameras when encoding video streams if the encoding structure shown in Fig.~\ref{fig::multiCamGOP_original} is used for multi-camera networks, and hence some redundant data might still be encoded.
+In order to remove such redundancy, we modify the encoding structure and show our proposed cooperative encoding structure in Fig.~\ref{fig::multiCamGOP}.
 
 In our proposed method, it is not required for all GOP to start with an I-frame.
 That is, at the beginning of each cameras' GOP, only a portion of cameras are selected to encode it video frame as an I-frame, where the selection are done by our proposed \emph{I-frame selection algorithms} as presented in Chapter~\ref{sec::proposedBBAlg} and~\ref{sec::graphApprox}.
@@ -74,14 +74,14 @@ Therefore, \emph{when} should the aggregator update the cost matrix $\mathbf{H}$
 \end{center}
 \end{figure}
 %
-Before presenting our proposed recalculation criteria, we first show the timeline of the overall system architecture in figure~\ref{fig::txOverview}.
+Before presenting our proposed recalculation criteria, we first show the timeline of the overall system architecture in Fig.~\ref{fig::txOverview}.
 Our proposed data gathering scheme consists of three different phases, which includes the \emph{correlation estimation phase} (CE), \emph{transmission scheduling phase} (TS) and \emph{data transmission phase}.
 Note that the first two phases (correlation estimation phase and transmission scheduling phase) are done by the data aggregator, and the determined cameras schedule can maintain for several rounds.
-Since figure~\ref{fig::txOverview} only gives a big picture of our proposed data gathering scheme, we will thus illustrate these three phases more detailed in the following chapters. 
+Since Fig.~\ref{fig::txOverview} only gives a big picture of our proposed data gathering scheme, we will thus illustrate these three phases more detailed in the following chapters. 
 %
 \subsubsection{Correlation Estimation (CE) Phase}
 During the \emph{correlation estimation phase}, the data aggregator is responsible for calculating the cost matrix $\mathbf{H}$~\eqref{eq::bbCostMatrix} by the received video frames of the preceding data transmission phase.
-Note that our proposed correlated data gathering scheme is only applied for I-frames of each camera (i.e. some I-frames in figure~\ref{fig::multiCamGOP_original} can be encoded as P-frames as shown in figure~\ref{fig::multiCamGOP}), which means that the procedure for encoding P-frames of the H.264 baseline profile is not changed in our proposed data gathering scheme.
+Note that our proposed correlated data gathering scheme is only applied for I-frames of each camera (i.e. some I-frames in Fig.~\ref{fig::multiCamGOP_original} can be encoded as P-frames as shown in Fig.~\ref{fig::multiCamGOP}), which means that the procedure for encoding P-frames of the H.264 baseline profile is not changed in our proposed data gathering scheme.
 Therefore, the calculation of $\mathbf{H}$ should based on the received I-frames (or ``used to'' be I-frames if our scheme is not applied) of each camera.
 
 To start, we will reconstruct those I-frames (or ``used to'' be I-frames) received from the preceding transmission.
@@ -94,7 +94,7 @@ Therefore, it in not efficient for the data aggregator to perform correlation es
 \subsubsection{Transmission Scheduling (TS) Phase}
 During the \emph{transmission scheduling phase}, the data aggregator will refer to either the branch-and-bound I-frame selection algorithm (present in Chapter~\ref{sec::proposedBBAlg}) or the graph approximation I-frame selection algorithm (introduce in Chapter~\ref{sec::graphApprox}) for the determination of I-frame cameras.
 After that, the P-frame scheduling algorithm describe in Chapter~\ref{sec::PFrameScheduling} will be applied for attaching and scheduling P-frame cameras.
-As long as the transmission scheduling phase is done, each camera will allocate one dedicated time slot for delivering its data to the aggregator as shown in the bottom of figure~\ref{fig::txOverview}.
+As long as the transmission scheduling phase is done, each camera will allocate one dedicated time slot for delivering its data to the aggregator as shown in the bottom of Fig.~\ref{fig::txOverview}.
 The determined camera schedule will last for several rounds of transmission, and the schedule will only be changed when the cost matrix $\mathbf{H}$ becomes different.
 %
 \subsubsection{Data Transmission Phase}
@@ -116,15 +116,15 @@ The \emph{data transmission phase} of our scheme is partitioned into several rou
 In this thesis, the definition of ``one transmission round'' is to deliver one GOP of all cameras to the data aggregator, where a GOP may consists of several video frames.
 Therefore, partitioning the data transmission phase into several transmission rounds means that the estimated $\mathbf{H}$ will last for the transmission of more than one GOPs, and only be reestimated until it is thought to be outdated.
 Note that since we assume that the I-frames of each camera is perfectly synchronized, the number of video frames contained in one GOP of each camera is also equalled.
-Therefore, one transmission round can further be separated into several parts, start with the transmission of the GOP of first scheduled camera and end up with the transmission of the GOP of the last scheduled camera as shown in figure~\ref{fig::txOverview}.
+Therefore, one transmission round can further be separated into several parts, start with the transmission of the GOP of first scheduled camera and end up with the transmission of the GOP of the last scheduled camera as shown in Fig.~\ref{fig::txOverview}.
 For the transmission of each camera, all the video frames of GOP will be delivered to the data aggregator sequentially.
 
-Figure~\ref{fig::txRoundExample} gives an example of how video frames are scheduled within one transmission round.
-Suppose that the network now contains three cameras, and the GOP of each cameras all have four video frames, where the reference structure is shown in figure~\ref{fig::txRoundExampleGOP}.
+Fig.~\ref{fig::txRoundExample} gives an example of how video frames are scheduled within one transmission round.
+Suppose that the network now contains three cameras, and the GOP of each cameras all have four video frames, where the reference structure is shown in Fig.~\ref{fig::txRoundExampleGOP}.
 In our example, camera $1$ is selected as I-frame camera whereas camera $2$ and $3$ are P-frame camera and they both reference from camera $1$.
 Therefore, the starting I-frame of camera $2$ and $3$ will become P-frame by referencing the starting I-frame of camera $1$.
 To proceed, assume that the determined cameras schedule is $1 \rightarrow 2 \rightarrow 3$ in this example.
-In this way, the data delivery procedure will start from transmitting all videos frames of camera $1$'s GOP as shown in figure~\ref{fig::txRoundExampleTx}, where the number shown at the lower right side of each video frames indicates the index of this frame in its corresponding GOP.
+In this way, the data delivery procedure will start from transmitting all videos frames of camera $1$'s GOP as shown in Fig.~\ref{fig::txRoundExampleTx}, where the number shown at the lower right side of each video frames indicates the index of this frame in its corresponding GOP.
 After the transmission of camera $1$ is done, camera $2$ will start its transmission, and then camera $3$, where the the first video frame of camera $2$ and $3$ will both reference from the I-frame of camera $1$.
 As long as camera $3$ finishes its transmission, this transmission round is ended.
 %
@@ -186,4 +186,4 @@ Therefore, the \emph{correlation estimation phase} and the \emph{transmission sc
 \end{center}
 \end{figure}
 %
-As a summary, we show the overall proposed system architecture in figure~\ref{fig::overallArchitecture}.
+As a summary, we show the overall proposed system architecture in Fig.~\ref{fig::overallArchitecture}.

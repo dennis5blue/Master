@@ -16,7 +16,7 @@ Our goal is to figure out whether ${x_{ii},i \in V}$ equals to $0$ or $1$ so tha
 Therefore, the simplified problem without scheduling constraints can be written as:
 \begin{align}
 \underset{\mathbf{X}}{\text{minimize}} & & \nonumber \\
-	&\sum_{i=1}^{|V|} \sum_{j \in U_i}  x_{ij} H(F_i|F_j), & \nonumber \\
+	&\sum_{i=1}^{|V|} \sum_{j \in U_i}  x_{ij} h_{ij}, & \nonumber \\
 \text{subject to} & & \nonumber \\
 	&U_i = \{ j \in V | d_{ij} \leq \rho d_{j0} \}, &\forall i \in V, \nonumber \\
 	&\sum_{j \in U_i} x_{ij} = 1, &\forall i \in V, \nonumber \\
@@ -43,7 +43,7 @@ The interpretation of equation~\eqref{eq::moreThanOneCanHear} is that each P-fra
 Using equation~\eqref{eq::moreThanOneCanHear} to represent the three constraints in~\eqref{eq::threeConstraintsToSimplfied}, Problem~\eqref{eq::formulationSimplified} is thus equivalent to the following formulation:
 \begin{align}
 \underset{\mathbf{X}}{\text{minimize}} & & \nonumber \\
-	&\sum_{i=1}^{|V|} \sum_{j=1}^{|V|}  x_{ij} H(F_i|F_j), & \nonumber \\
+	&\sum_{i=1}^{|V|} \sum_{j=1}^{|V|}  x_{ij} h_{ij}, & \nonumber \\
 \text{subject to} & & \nonumber \\
 	&\sum_{j=1}^{|V|} u_{ij} x_{jj} \geq 1, &\forall i \in V, \nonumber \\
 	&x_{ij} = \{0,1\}, &\forall i,j \in V.
@@ -53,13 +53,13 @@ Using equation~\eqref{eq::moreThanOneCanHear} to represent the three constraints
 As we mentioned before, the goal of the \emph{I-frame selection sub-problem} is to determine the set of I-frame cameras.
 Therefore, we only care about the diagonal elements of $\mathbf{X}$, which means that the variables $x_{ij}, i \neq j$ are not what we aim to solve in this sub-problem.
 For this reason, we can further simplify Problem~\eqref{eq::formulationSimplifiedAsGraph} such that only $x_{ii}, \forall i \in V$ is considered in the formulation.
-In order to achieve this goal, we note that if camera $i$ is encoded as an I-frame, it is clearly that it requires $H(F_i)$ to encode its image.
+In order to achieve this goal, we note that if camera $i$ is encoded as an I-frame, it is clearly that it requires $h_{ii}$ to encode its image.
 However, if camera $i$ is encoded as a P-frame, the amount of encoded bits should depend on which I-frame it references from.
-An intuitive method to determine the reference frame is to select the most correlated I-frame, and the amount of encoded bits can be written as $\underset{u_{ij}x_{jj} = 1}{\min} H(F_i|F_j)$, where $u_{ij}x_{jj} = 1$ indicates the I-frame camera that camera $i$ can overhear.
-Therefore, if we denote ${\widehat{H(F_i)} = \underset{u_{ij}x_{jj} = 1}{\min} H(F_i|F_j)}$ as the smallest amount of encoded bits if camera $i$ is a P-frame camera, Problem~\eqref{eq::formulationSimplifiedAsGraph} can be transformed into:
+An intuitive method to determine the reference frame is to select the most correlated I-frame, and the amount of encoded bits can be written as $\underset{u_{ij}x_{jj} = 1}{\min} h_{ij}$, where $u_{ij}x_{jj} = 1$ indicates the I-frame camera that camera $i$ can overhear.
+Therefore, if we denote ${\hat{h}_i = \underset{u_{ij}x_{jj} = 1}{\min} h_{ij}}$ as the smallest amount of encoded bits if camera $i$ is a P-frame camera, Problem~\eqref{eq::formulationSimplifiedAsGraph} can be transformed into:
 \begin{align}
 \underset{\mathbf{X}}{\text{minimize}} & & \nonumber \\
-	&\sum_{i=1}^{|V|} x_{ii}H(F_i) + \sum_{i=1}^{|V|} (1-x_{ii}) \widehat{H(F_i)}, & \nonumber \\
+	&\sum_{i=1}^{|V|} x_{ii}h_{ii} + \sum_{i=1}^{|V|} (1-x_{ii}) \hat{h}_i, & \nonumber \\
 \text{subject to} & & \nonumber \\
 	&\sum_{j=1}^{|V|} u_{ij} x_{jj} \geq 1, &\forall i \in V, \nonumber \\
 	&x_{jj} = \{0,1\}, &\forall j \in V.  
@@ -131,63 +131,49 @@ Therefore, a proper policy to ``branch'' and ``bound'' must be well designed for
 \label{sec::proposedBBBoundingPolicy}
 Before introducing the bounding policy, we first propose an algorithm to estimate the lower bound of total cost of each sub solution set $\mathcal{S}^t$.
 If the cost lower bound of a sub solution set $lb(\mathcal{S}^t)$ is greater than the upper bound of objective value, the sub solution set $\mathcal{S}^t$ is no longer necessary to be divided since it has no possibility to contain the optimal solution.
-Therefore, the time complexity of the BB algorithm is highly correlated to the difference between ``estimated lower bound'' and ``actual lower bound''.
+Therefore, the time complexity of the BB algorithm is highly correlated to the gap between ``estimated lower bound'' and ``actual lower bound''.
 For this reason, a smart algorithm is thus necessary to be designed for finding a tighter lower bound.
-To start, we denote the cost matrix for the I-frame selection sub-problem as:
-\begin{align}
-\mathbf{H}
-&= \left[ \mathbf{h}_1 \quad \mathbf{h}_2 \quad \cdots \quad \mathbf{h}_{|V|} \right], \nonumber \\
-&= \left[ \begin{array}{cccc}
-h_{11} &h_{12} &\cdots &h_{1|V|} \\
-h_{21} &h_{22} &\cdots &h_{2|V|} \\
-\vdots &\vdots &\vdots &\vdots \\
-h_{|V|1} &h_{|V|2} &\cdots &h_{|V||V|}
-\end{array} \right],
-\label{eq::bbCostMatrix}
-\end{align}
-where $\mathbf{h}_k$ is the $k^{th}$ column of $\mathbf{H}$ and ${h_{ij} = H(F_i|F_j)}$ if ${i \neq j}$ and ${h_{ii}=H(F_i|F_i)=H(F_i)}$.
-The cost matrix in~\eqref{eq::bbCostMatrix} will be calculated as a beforehand information so that the lower bound of cost below a branch can be estimated directly through $\mathbf{H}$.
 
-For an arbitrary sub solution set $\mathcal{S}^t$, some decision variables are fixed to either $0$ or $1$ while the others are still undetermined.
-We thus denote the partial determined selection vector ${\tilde{\mathbf{X}^t} = \{ \tilde{x_{11}^t},\cdots, \tilde{x_{|V||V|}^t} \} }$ such that
+Note that for an arbitrary sub solution set $\mathcal{S}^t$, some decision variables are fixed to either $0$ or $1$ while the others are still undetermined.
+We thus denote the partial determined selection vector ${\tilde{\mathbf{X}}^t = \{ \tilde{x}_{11}^t,\cdots, \tilde{x}_{|V||V|}^t \} }$ such that
 \begin{equation*}
 \left\{ \begin{array}{ll}
-\tilde{x_{ii}^t} = 1,  &\text{ if camera $i$ is determined to encode as an} \\
+\tilde{x}_{ii}^t = 1,  &\text{ if camera $i$ is determined to encode as an} \\
                    	   &\text{ I-frame for $\mathcal{S}^t$ and all its sub solution set,} \\
-\tilde{x_{ii}^t} = 0,  &\text{ if camera $i$ is determined to encode as a} \\
+\tilde{x}_{ii}^t = 0,  &\text{ if camera $i$ is determined to encode as a} \\
                    	   &\text{ P-frame for $\mathcal{S}^t$ and all its sub solution set,} \\
-\tilde{x_{ii}^t} = -1, &\text{ if the camera $i$'s encoding style is not decided} \\
+\tilde{x}_{ii}^t = -1, &\text{ if the camera $i$'s encoding style is not decided} \\
                        &\text{ until the division of sub solution set $\mathcal{S}^t$.}
 \end{array} \right.
 \end{equation*}
 %
-According to $\tilde{\mathbf{X}^t}$, we can further define the determined I-frame set of $\mathcal{S}^t$ as $\mathcal{I}^t$:
+According to $\tilde{\mathbf{X}}^t$, we can further define the determined I-frame set of $\mathcal{S}^t$ as $\mathcal{I}^t$:
 \begin{equation}
-\mathcal{I}^t = \{ i \in V | \tilde{x_{ii}^t} = 1 \},
+\mathcal{I}^t = \{ i \in V | \tilde{x}_{ii}^t = 1 \},
 \label{eq::IframeSet}
 \end{equation}
 and the determined P-frame set can also be written as:
 \begin{equation}
-\mathcal{P}^t = \{ i \in V | \tilde{x_{ii}^t} = 0 \},
+\mathcal{P}^t = \{ i \in V | \tilde{x}_{ii}^t = 0 \},
 \label{eq::PframeSet}
 \end{equation}
 where the set of undetermined encoded style cameras at $\mathcal{S}^t$ is $V \setminus \{ \mathcal{I}^t \cup \mathcal{P}^t \}$.
 
 For camera $i \in \mathcal{I}^t$, it is clearly that the amount of bits required to encoded $F_i$ equals $H(F_i)$.
 On the other hand, if $k \in V \setminus \mathcal{I}^t$, camera $k$ has the possibility to encode its image as a P-frame.
-As a consequence, the amount of bits required to encode $F_k$ must be less than or equal to $H(F_k)$.
+As a consequence, the amount of bits required to encode $F_k$ must be less than or equal to $h_{kk}$.
 Since our goal is to find the \emph{lower bound} of required encoded bits and undetermined encoded style cameras have the possibility to become I-frame cameras, we can thus relaxed the constraints of P-frame reference from an I-frame so that the obtained result will become a weak lower bound.
-That is, the cost of P-frame $\underset{u_{kj}x_{jj}=1}{\min} H(F_k|F_j)$ now becomes $\underset{u_{kj}=1}{\min} H(F_k|F_j)$.
-However, we also note that according to constraint~\eqref{eq::referenceOnlyIframe}, a P-frame cannot become a reference frame of camera $k$, which means that the lower bound $\underset{u_{kj}=1}{\min} H(F_k|F_j)$ is too optimistic.
-Therefore, a tighter lower bound of camera $k$'s encoding cost should be $\underset{u_{kj}=1, j \notin \mathcal{P}^t}{\min} H(F_k|F_j)$.
+That is, the cost of P-frame $\underset{u_{kj}x_{jj}=1}{\min} h_{kj}$ now becomes $\underset{u_{kj}=1}{\min} h_{kj}$.
+However, we also note that according to constraint~\eqref{eq::referenceOnlyIframe}, a P-frame cannot become a reference frame of camera $k$, which means that the lower bound $\underset{u_{kj}=1}{\min} h_{kj}$ is too optimistic.
+Therefore, a tighter lower bound of camera $k$'s encoding cost should be $\underset{u_{kj}=1, j \notin \mathcal{P}^t}{\min} h_{kj}$.
 %
 
 Besides, also note that if camera $i$ reference from camera $j$, then camera $j$ cannot reference from camera $i$.
 As a consequence, either camera $i$ or $j$ should change its reference camera so that the solution can be feasible.
 Since our goal is to find the lower bound of encoding cost, which one to change the reference camera depends on the incremental cost for changing the reference camera, where the incremental cost of camera $i$ and $j$ can be written as:
 \begin{align}
-\Delta_i &= \left( \underset{u_{ik}=1, k \notin \{\mathcal{P}^t \cup j\}}{\min} H(F_i|F_k) \right) - H(F_i|F_j), \nonumber \\
-\Delta_j &= \left( \underset{u_{kj}=1, k \notin \{\mathcal{P}^t \cup i\}}{\min} H(F_j|F_k) \right) - H(F_j|F_i).
+\Delta_i &= \left( \underset{u_{ik}=1, k \notin \{\mathcal{P}^t \cup j\}}{\min} h_{ik} \right) - h_{ij}, \nonumber \\
+\Delta_j &= \left( \underset{u_{kj}=1, k \notin \{\mathcal{P}^t \cup i\}}{\min} h_{jk} \right) - h_{ji}.
 \end{align}
 Based on the incremental cost $\Delta_i$ and $\Delta_j$, we can define a selection function for determining which camera should change its reference as:
 \begin{equation}
@@ -198,7 +184,7 @@ j,  &\text{ if $\Delta_i > \Delta_j$,} \\
 \end{array} \right.
 \label{eq::selectionFunctionQ}
 \end{equation}
-where $Q(i,j) = i$ means that the reference camera of camera $i$ is changed from camera $j$ to camera $\underset{u_{ik}=1, k \notin \{\mathcal{P}^t \cup\{j\}\}}{\arg \min} H(F_i|F_k)$ due to the reason that changing camera $i$'s reference camera has lower cost.
+where $Q(i,j) = i$ means that the reference camera of camera $i$ is changed from camera $j$ to camera $\underset{u_{ik}=1, k \notin \{\mathcal{P}^t \cup\{j\}\}}{\arg \min} h_{ik}$ due to the reason that changing camera $i$'s reference camera has lower cost.
 
 To start the lower bound estimation algorithm for sub solution set $\mathcal{S}^t$, we first initialize its cost matrix as
 \begin{align}
@@ -213,7 +199,7 @@ h_{|V|1}^t &h_{|V|2}^t &\cdots &h_{|V||V|}^t
 = \mathbf{H}.
 \label{eq::modBBcostMatrix}
 \end{align}
-Note that if $i \in \mathcal{I}^t$, then the elements of the $i^{th}$ row of $\mathbf{H}^t$ will all equalled to $H(F_i)$.
+Note that if $i \in \mathcal{I}^t$, then the elements of the $i^{th}$ row of $\mathbf{H}^t$ will all equalled to $h_{ii}$.
 Besides, the columns of P-frame cameras are set to infinity since we assume that P-frame cannot become a reference frame.
 That is,
 \begin{equation}
@@ -231,7 +217,7 @@ To proceed, we then define the reference vector ${\mathbf{R}^t = [r_1^t,r_2^t,\c
 r_i^t = 
 \left\{ \begin{array}{cc}
 i,  &\text{ if $i \in \mathcal{I}^t$,} \\                  	   
-\underset{u_{ik}=1, k \notin \mathcal{P}^t}{\arg\min} H(F_i|F_k),  &\text{ if $i \in V\setminus \mathcal{I}^t$.} \\
+\underset{u_{ik}=1, k \notin \mathcal{P}^t}{\arg\min} h_{ik},  &\text{ if $i \in V\setminus \mathcal{I}^t$.} \\
 \end{array} \right.
 \label{eq::initRefStructure}
 \end{equation}
@@ -245,7 +231,7 @@ In short, the lower bound estimation procedure of an arbitrary sub solution set 
 \begin{algorithm}[]
  \SetAlgoLined
  \SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
- \Input{Partial determined selection vector $\tilde{\mathbf{X}^t}$ of $\mathcal{S}^t$ and cost matrix $\mathbf{H}$~\eqref{eq::bbCostMatrix}}
+ \Input{Partial determined selection vector $\tilde{\mathbf{X}}^t$ of $\mathcal{S}^t$ and cost matrix $\mathbf{H}$~\eqref{eq::bbCostMatrix}}
  \Output{Cost lower bound $lb(\mathcal{S}^t)$ among all sub solution set of $\mathcal{S}^t$}
  \BlankLine
  Initialize $lb(\mathcal{S}^t) \gets 0$\\
@@ -281,16 +267,16 @@ Considering a sub solution set $\mathcal{S}^t$, its lower bound estimated by alg
 \textbf{\emph{Proof:}}
 To prove lemma~\ref{lemma::lbEstimation}, we need to show the following two statements are true:
 \begin{enumerate}
-\item If $\mathcal{S}^t$ is at the leaf of enumeration tree, then $lb(\mathcal{S}^t)$ is the exact objective value that is obtained from $\tilde{\mathbf{X}^t}$.
+\item If $\mathcal{S}^t$ is at the leaf of enumeration tree, then $lb(\mathcal{S}^t)$ is the exact objective value that is obtained from $\tilde{\mathbf{X}}^t$.
 \item If $\mathcal{S}^t$ is not at the leaf of enumeration tree, and $\mathcal{S}^{t_0}$ and $\mathcal{S}^{t_1}$ are the two sub solution sets created by fixing one undermined decision variable in $\mathcal{S}^t$ into $0$ or $1$, then $lb(\mathcal{S}^t) \leq lb(\mathcal{S}^{t_0})$ and $lb(\mathcal{S}^t) \leq lb(\mathcal{S}^{t_1})$.
 \end{enumerate}
-For the first statement, we note that since if $\mathcal{S}^t$ is at the leaf of enumeration tree, it means that all elements of $\tilde{\mathbf{X}^t}$ equals to $0$ or $1$ (i.e. $\mathcal{I}^t \cup \mathcal{P}^t = V$).
+For the first statement, we note that since if $\mathcal{S}^t$ is at the leaf of enumeration tree, it means that all elements of $\tilde{\mathbf{X}}^t$ equals to $0$ or $1$ (i.e. $\mathcal{I}^t \cup \mathcal{P}^t = V$).
 Therefore, the initialization of $\mathbf{R}^t$ becomes:
 \begin{equation}
 r_i^t = 
 \left\{ \begin{array}{cc}
 i,  &\text{ if $i \in \mathcal{I}^t$,} \\                  	   
-\underset{u_{ik}=1, k \in \mathcal{I}^t}{\arg\min} H(F_i|F_k),  &\text{ if $i \in \mathcal{P}^t$,} \\
+\underset{u_{ik}=1, k \in \mathcal{I}^t}{\arg\min} h_{ik},  &\text{ if $i \in \mathcal{P}^t$,} \\
 \end{array} \right.
 \label{eq::initRefStructureAtLeaf}
 \end{equation}
@@ -302,10 +288,10 @@ We also note that $\underset{u_{ij}=1}{\min} h_{ij}^t$ will be the exact cost th
 
 In order to show the second statement is true, suppose that $\mathcal{S}^t$ is divided into $\mathcal{S}^{t_0}$ and $\mathcal{S}^{t_1}$ by fixing $x_{kk}=0$ or $x_{kk}=1$.
 For $\mathcal{S}^{t_1}$, camera $k$ is moved from undetermined cameras set to I-frame cameras set such that $\mathcal{I}^{t_1} = \mathcal{I}^t \cup \{k\}$ and $\mathcal{P}^{t_1} = \mathcal{P}^t$, which means that only the cost of camera $k$ will be changed.
-Therefore, we can claim that the cost of camera $k$ will increase for $\left( H(F_k) - \underset{u_{kj}=1}{\min} h_{kj}^t \right)$ since camera $k$ is required to encode its image independently instead of referencing from other cameras.
+Therefore, we can claim that the cost of camera $k$ will increase for $\left( h_{kk} - \underset{u_{kj}=1}{\min} h_{kj}^t \right)$ since camera $k$ is required to encode its image independently instead of referencing from other cameras.
 Since the cost for other cameras $V\setminus \{k\}$ will stay the same, and hence $lb(\mathcal{S}^t) \leq lb(\mathcal{S}^{t_1})$.
 For $\mathcal{S}^{t_0}$, camera $k$ is moved from undetermined cameras set to P-frame cameras set such that $\mathcal{I}^{t_0} = \mathcal{I}^t$ and $\mathcal{P}^{t_0} = \mathcal{P}^t \cup \{k\}$, which indicates the cost for I-frame cameras in $\mathcal{S}^{t_0}$ will equal to $\mathcal{S}^t$.
-However, for those cameras in the set $V \setminus \mathcal{I}^{t_0}$, since the set $\mathcal{P}^{t_0}$ becomes larger than $\mathcal{P}^t$, we can thus claim that $\underset{u_{ij}=1, j \notin \mathcal{P}^{t_0}}{\arg\min} H(F_i|F_j) \geq \underset{u_{ij}=1, j \notin \mathcal{P}^{t}}{\arg\min} H(F_i|F_j)$ due to the reason that camera $k$ is removed from the candidate reference cameras set.
+However, for those cameras in the set $V \setminus \mathcal{I}^{t_0}$, since the set $\mathcal{P}^{t_0}$ becomes larger than $\mathcal{P}^t$, we can thus claim that $\underset{u_{ij}=1, j \notin \mathcal{P}^{t_0}}{\arg\min} h_{ij} \geq \underset{u_{ij}=1, j \notin \mathcal{P}^{t}}{\arg\min} h_{ij}$ due to the reason that camera $k$ is removed from the candidate reference cameras set.
 Therefore, we can claim that $lb(\mathcal{S}^t) \leq lb(\mathcal{S}^{t_0})$, and we have done showing that the second statement is true.
 
 By statement~$1$ and statement~$2$, we can learn that dividing $\mathcal{S}^t$ into sub solution sets will only increase the value of estimated lower bound.

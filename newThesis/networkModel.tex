@@ -73,7 +73,8 @@ We thus consider the spatial correlation between cameras in this thesis for the 
 \end{center}
 \end{figure}
 %
-However, it rises a problem that how to determine the search range of multi-view video encoder.
+However, note that as we mentioned in Chapter~\ref{sec::MEIntro}, the motion prediction for a video encoder is usually computational expensive.
+Therefore, it rises a problem that how to determine the search range of multi-view video encoder such that the matched block can be found in a more efficient way.
 It is clearly that the correlation level between two cameras highly depends on the area of their overlapped FoV.
 As shown in Fig.~\ref{fig::overlappedCam}, if camera $1$ and camera $2$ are observing the same area at the same position with the same image resolution $K$ (pixels) but having a difference of sensing direction equaled to $\phi$.
 Then we can claim that the image collected from camera $2$ is just a ``shift'' of camera $1$'s image, where we denote shifted extent as the amount of biased pixels $\kappa$.

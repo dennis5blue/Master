@@ -9,7 +9,7 @@
 \end{center}
 \end{figure}
 %
-In addition to finding the optimal solution of problem~\eqref{eq::IframeSelectionSubProblem} through a BB approach, we are also wondering if a near optimal solution can be obtained under lower computational complexity.
+In addition to finding the optimal solution of Problem~\eqref{eq::IframeSelectionSubProblem} through a BB approach, we are also wondering if a near optimal solution can be obtained under lower computational complexity.
 One possible approach to reduce complexity can be done by approximating the problem into a graph problem.
 For this reason, we will introduce in the followings how we transform problem~\eqref{eq::IframeSelectionSubProblem} into a \emph{minimum weighted dominating set} problem and solve it through a heuristic algorithm.
 %
@@ -19,13 +19,13 @@ For the sake of simplicity, we assume that the vertex index of $\mathcal{G}$ is 
 We then denote $\mathcal{N}_i$ as the set of all neighbors of a vertex $i \in V$ such that $j \in \mathcal{N}_i$ if and only if $(i,j) \in E$.
 Since our goal in problem~\eqref{eq::IframeSelectionSubProblem} is to minimize the total cost (encoded bits) of the multi-camera network, $\mathcal{G}$ is considered as a weighted graph having both vertices and edges being weighted, where the weight for a vertex $i \in V$ is defined as:
 \begin{equation}
-\omega_i = H(F_i),
+\omega_i = h_{ii},
 \end{equation}
 whereas the weight for an edge $(i,j) \in E$ is:
 \begin{equation}
-\omega_{i,j} = H(F_i|F_j).
+\omega_{i,j} = h_{ij}.
 \end{equation}
-Note that it is not required $\omega_{i,j} = \omega_{j,i}$ due to the reason that $H(F_i|F_j)$ might not equaled to $H(F_j|F_i)$.
+Note that it is not required $\omega_{i,j} = \omega_{j,i}$ due to the reason that $h_{ij}$ might not equaled to $h_{ji}$.
 As an example, the directed graph $\mathcal{G}$ of a simple multi-camera network is shown in Fig.~\ref{fig::mdsGraphExample}.
 %
 

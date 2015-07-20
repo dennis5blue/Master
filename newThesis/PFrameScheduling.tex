@@ -56,13 +56,33 @@ If $\mathbf{X}$ is obtained by our proposed I-frame selection algorithm together
 \label{theorem::IFrameSolalwaysFeasible}
 \end{mythm}
 \textbf{\emph{Proof:}}
-From theorem~\ref{theorem::determineX}, we know that for I-frame camera $i$, $x_{ii}=1$ and ${x_{im} = 0}, {\forall m \neq i}$, while for P-frame camera $j$, we can find a camera $k$, ${k \in U_j}$ in linear time such that ${x_{jk} = 1}$ and ${x_{jm}=0}, \forall m \neq k$.
-Therefore, we can claim that ${\underset{j \in U_i}{\sum} x_{ij}=1},{\forall i \in V}$.
-In order to show constraints~\eqref{eq::PFrameSchedulingSubProb} are satisfied, now we only need to prove ${\underset{j \in U_i}{\sum} x_{ij} = \underset{j \in W_i}{\sum} x_{ij}}$ is true by adjusting proper $\mathbf{Z}$.
+From theorem~\ref{theorem::determineX}, the following two statements are already been proved to be true:
+\begin{enumerate}
+\item For I-frame camera $i$, $x_{ii}=1$ and ${x_{im} = 0}, {\forall m \neq i}$, where we also know that $i \in U_i$ from equation~\eqref{eq::inTransRangeSimple}.
+Therefore, for I-frame camera $i$, ${\underset{m \in U_i}{\sum} x_{im}=1},{\forall i \in \mathcal{I}^*}$ is satisfied.
+\item For P-frame camera $j$, we can find a camera $k$, ${k \in U_j}$ in linear time such that ${x_{jk} = 1}$ and ${x_{jm}=0}, \forall m \neq k$.
+Therefore, for P-frame camera $j$, ${\underset{m \in U_j}{\sum} x_{jm}=1},{\forall j \in \mathcal{P}^*}$ is also satisfied.
+\end{enumerate}
+According to the above two statements, since $\mathcal{I}^* \cup \mathcal{P}^* = V$, we can thus claim that ${\underset{j \in U_i}{\sum} x_{ij}=1},{\forall i \in V}$.
+To proceed, in order to show constraints~\eqref{eq::PFrameSchedulingSubProb} are satisfied, now we only need to prove ${\underset{j \in U_i}{\sum} x_{ij} = \underset{j \in W_i}{\sum} x_{ij}},{\forall i \in V}$ is true by adjusting proper $\mathbf{Z}$.
 Note that there might exist various $\mathbf{Z}$ such that ${\underset{j \in U_i}{\sum} x_{ij} = \underset{j \in W_i}{\sum} x_{ij}}$, however, we only need to show one possible method for adjusting $\mathbf{Z}$ and the proof can be done.
+Note that $W_i \subseteq U_i$, which means that ${\underset{j \in U_i}{\sum} x_{ij} \geq \underset{j \in W_i}{\sum} x_{ij}}$.
+Besides, we have shown that ${\underset{j \in U_i}{\sum} x_{ij}=1}$, therefore, if we can prove that ${k = \underset{j \in U_i}{\arg \max} \quad x_{ij}}$ is also contained in the set $W_i$, then we can claim that ${\underset{j \in U_i}{\sum} x_{ij} = \underset{j \in W_i}{\sum} x_{ij} = 1}$.
 To start, we first calculate the set of I-frame cameras $\mathcal{I}^*$ and P-frame cameras $\mathcal{P}^*$ by equation~\eqref{eq::solIFrameCams} and~\eqref{eq::solPFrameCams}.
 For camera $i \in \mathcal{I}^*$, according to lemma~\ref{lemma::findBestICamEasy}, each P-frame camera is able to find its best reference I-frame camera, which also means that camera $i$ can know the set of P-frame cameras that reference from it.
-If we denote ${\mathcal{R}_i= \{j \in V|x_{ji} = 1\}}$ as the set of P-frame cameras that reference from camera $i$,$\mathsmaller{\mathsmaller{\blacksquare}}$
+If we denote ${D_i= \{j \in V|x_{ji} = 1\}},{i \in \mathcal{I}^*}$ as the set of P-frame cameras that reference from I-frame camera $i$, then ${j \in \{U_i \cap W_i\}},{\forall j \in D_i}$ as long as ${z_i < z_j}, {\forall i \in \mathcal{I}^*},{\forall j \in D_i}$, this is thus equivalent to showing that ${\underset{j \in U_i}{\arg \max} \quad x_{ij} \in W_i}$.
+Consequently, the proof is done, and the policy for adjusting $\mathbf{Z}$ is to ensure ${z_i < z_j}, {\forall i \in \mathcal{I}^*},{\forall j \in D_i}$, which can be achieved by scheduling I-frame camera first, followed by its listeners one by one.
+\hfill$\mathsmaller{\mathsmaller{\blacksquare}}$
+%
+\begin{mythm}
+If $\mathbf{X}^*$ is an optimal solution for Problem~\eqref{eq::IframeSelectionSubProblem}, then its relative $\mathbf{X}$ is also optimal for Problem~\eqref{eq::formulation}.
+\label{theorem::optimalIsOptimal}
+\end{mythm}
+\textbf{\emph{Proof:}}
+According to theorem~\ref{theorem::determineX}, $\mathbf{X}$ can be determined uniquely by $\mathbf{X}^*$.
+Since the objective functions of Problem~\eqref{eq::IframeSelectionSubProblem} and Problem~\eqref{eq::formulation} are equivalent, if $\mathbf{X}^*$ is optimal for Problem~\eqref{eq::IframeSelectionSubProblem}, then $\mathbf{X}$ can lead to the smallest objective value of Problem~\eqref{eq::formulation}.
+Besides, by theorem~\ref{theorem::IFrameSolalwaysFeasible}, we know that $\mathbf{X}$ is feasible for Problem~\eqref{eq::formulation}, and hence it is optimal.
+\hfill$\mathsmaller{\mathsmaller{\blacksquare}}$
 
 As we demonstrate in Fig.~\ref{fig::subProbProcedure} before, the \emph{P-frame scheduling algorithm} is executed after a portion of cameras are selected to encode their images as I-frames.
 Therefore, all P-frame cameras (i.e. cameras that are not be selected as I-frame cameras) can find the most correlated I-frame cameras in polynomial time when the I-frame cameras set is given.

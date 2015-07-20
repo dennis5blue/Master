@@ -105,7 +105,7 @@ Therefore, we can claim that the complexity will increase quadratically as the s
 In this chapter, we show the several evaluation results of the proposed BB algorithm.
 That is, we compare our proposed ``branching'' and ``bounding'' policy with some baseline approaches, and show that our method can outperform those baseline approaches.
 
-\subsubsection{Evaluation of Different Branching method}
+\subsubsection{Evaluation of Different Branching Methods}
 %{\color{red}Show the converged speed of different branching method for BB algorithm.}
 \begin{figure}
 \begin{center}
@@ -119,8 +119,8 @@ For the depth first searching, although this method is popularly being used in t
 Therefore, it might require more iterations to obtain a good enough objective value as shown in Fig.~\ref{fig::compareBranching}.
 Our proposed branching metric, on the other hand, consider the estimated lower bound of each node in the enumeration tree, and hence fewer iteration is needed for converging to the optimal solution.
 
-\subsubsection{Evaluation of Different Lower Bound Estimation Technique}
-{\color{red}Show the converged speed of different lower bound estimation for BB algorithm.}
+\subsubsection{Evaluation of Different Lower Bound Estimation Techniques}
+%{\color{red}Show the converged speed of different lower bound estimation for BB algorithm.}
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.95\columnwidth]{Figures/compareLbEstimation.pdf}
@@ -128,12 +128,12 @@ Our proposed branching metric, on the other hand, consider the estimated lower b
 \end{center}
 \end{figure}
 %
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/evaNumActiveBBNodes.pdf}
-\caption{\label{fig::evaNumActiveBBNodes} Comparison of number of active BB nodes for different lower bound estimation methods}
-\end{center}
-\end{figure}
+%\begin{figure}
+%\begin{center}
+%\includegraphics[width=0.95\columnwidth]{Figures/evaNumActiveBBNodes.pdf}
+%\caption{\label{fig::evaNumActiveBBNodes} Comparison of number of active BB nodes for different lower bound estimation methods}
+%\end{center}
+%\end{figure}
 %
 \begin{figure}
 \begin{center}
@@ -184,9 +184,19 @@ As shown in Fig.~\ref{fig::compareLbEstimation}, although the two algorithms con
 That is, more than $98\%$ of iterations can be further reduced if our proposed lower bound estimation technique is applied.
 The results thus confirm us that the lower bound estimated by algorithm~\ref{alg::lbEstimation} is a tighter bound so that the optimal solution can be found under lower computational complexity.
 
-Fig.~\ref{fig::evaNumActiveBBNodes}
-Fig.~\ref{fig::complexity} further shows that result for required
+%Fig.~\ref{fig::evaNumActiveBBNodes} further shows the number of unpruned nodes for the BB algorithm.
+%We can learn in this figure that although the maximum number of active BB nodes for the two lower bound estimation algorithms are equalled, our proposed method can decrease faster than the baseline approach.
+%More specifically, the number of active BB nodes will first increase exponentially at the beginning of the algorithm, and start to decrease when the objective upper bound becomes smaller.
+%That is, as long as the objective upper bound becomes smaller, more branches can be pruned and hence the number of unpruned nodes will not increase back to the original level.
+%Besides, note that in Fig.~\ref{fig::evaNumActiveBBNodes}, our proposed method decrease faster, this is due to the reason that our estimated lower bound is a tighter bound and hence more branches can be pruned.
 
+For the evaluation results about time complexity, Fig.~\ref{fig::complexity} further shows the required iterations for convergence by changing the number of cameras $|V|$ in the network.
+Note that for the worst case, BB algorithm needs to traverse at most $2^{|V|}$ branches to ensure that the obtained solution is optimal.
+Consequently, the time complexity of BB algorithm will increase exponentially as the network size becomes larger, which is matched as the result in Fig.~\ref{fig::complexity}.
+However, since our proposed lower bound estimation algorithm can achieve a tighter bound, more branches can be pruned in this way, and hence the slope of complexity increment of our method is smaller than both brute force and baseline approach.
+Smaller slope for complexity increment will lead to a considerable performance gain when the network size $|V|$ becomes large.
+That is, when the number of cameras is $30$, our method can reduce $99\%$ compared to brute force approach and reduce $98\%$ compared to baseline lower bound estimation method.
+%
 \subsection{Evaluation of Different I-frame Selection Algorithms}
 {\color{red}Show the evaluation result of different I-frame selection algorithms (BB, proposed MDS, baseline MDS~\cite{MWDS_baseline}).}
 %
@@ -218,43 +228,16 @@ Fig.~\ref{fig::complexity} further shows that result for required
 \caption{\label{fig::refStructure_threeAlgs} Selected I-frame cameras and their member P-frame cameras}
 \end{center}
 \end{figure}
-Fig.~\ref{fig::txBytes_diffAlg}~\ref{fig::refStructure_threeAlgs}
+In this chapter, we show the performance gain of overhearing source coding for different I-frame selection algorithm.
+Our proposed BB algorithm and graph approximation method is compared with a baseline MDS algorithm, where the baseline MDS algorithm is proposed in~\cite{MWDS_baseline}.
+The obtained results in shown in Fig.~\ref{fig::txBytes_diffAlg}, where the reduction of transmission bits is $11\%$ for the BB algorithm and $10\%$ for the graph approximation method.
+However, only $1\%$ of transmission bits can be reduced if the MDS algorithm~\cite{MWDS_baseline} is applied.
+This is because their method only consider the cost of I-frame cameras.
+That is, they aim to select the set of I-frame cameras such that the total amount of encoded bits required to deliver those I-frame can be minimized.
+However, in reality, the cost of P-frame cameras cannot be ignored, and hence the result of~\cite{MWDS_baseline} will lead to sub-optimal in our scenario.
 
-%
-%In this subsection, we present the evaluation results of the branch-and-bound algorithm for overhearing source coding.
-%Through the overhearing source coding mechanism, each camera can leverage the transmitted frame of previous scheduled cameras for reducing the amount of bits needed to be delivered.
-%That is, some correlated information is no longer necessary to be transmitted after processing the overheard frames.
-%Based on this idea, the branch-and-bound algorithm is then applied to determine the I-frame transmitters, and we can obtain $35\%$ transmission bits reduction when the searching range of multiview prediction is 32 pixels.
-%Moreover, the performance gain becomes better ($55\%$) if the searching range is increased to 512 pixels as shown in figure~\ref{fig::evaSearchRng}.
-%Note that the branch-and-bound algorithm is promised to obtained the optimal solution.
+Fig.~\ref{fig::refStructure_threeAlgs}
 
-%Figure~\ref{fig::imageDemo}~and~\ref{fig::imageDemo2} further demonstrates how the multiview encoder really works.
-%Suppose that the original frame in figure~\ref{fig::imageDemo} overhears the reference frame and multiview encoding is provided for reducing the amount of encoded bits.
-%It can be shown in figure~\ref{fig::imageDemo2} that the reconstructed frame is almost the same with the original frame.
-%Actually, the PSNR of the difference between original frame and reconstructed frame is 36, and hence we can claimed that our correlated image gathering scheme is almost lossless.
-%
-
-%\subsection{Evaluation of Convergence}
-{%\color{red}Show the evaluation result of required BB iterations (compare proposed lower bound estimation algorithm with the baseline lower bound estimation method)}
-%\begin{figure}
-%\begin{center}
-%\includegraphics[width=0.95\columnwidth]{Figures/converge2.pdf}
-%\caption{\label{fig::evaBBConvergence}Convergence analysis of BB algorithm}
-%\end{center}
-%\end{figure}
-%In addition to getting the optimal transmission schedule, we are also interested in the time complexity of the branch-and-bound algorithm.
-%Figure~\ref{fig::evaBBConvergence} shows the upper bound and lower bound of the BB algorithm during each iteration.
-%It can be seen that the BB algorithm stops (the optimal solution is obtained) at about  $22000$ iterations, which means that the time complexity is reduced $33\%$ compared to the brute force searching method.
-%Therefore, we can claim that our proposed branch-and-bound algorithm can obtain the optimal scheduling solution in an efficient way.
-%
-%\subsection{Evaluation of P-Frame Scheduling Algorithm}
-%\begin{figure}
-%\begin{center}
-%\includegraphics[width=0.95\columnwidth]{Figures/pFrameScheduling.pdf}
-%\caption{\label{fig::evaPFrameScheduling}Evaluation of different P-frame schedules}
-%\end{center}
-%\end{figure}
-%
 \subsection{Evaluation of Different Overhearing Range}
 {\color{red}Show the evaluation result of different overhearing range.}
 \begin{figure}
@@ -263,14 +246,13 @@ Fig.~\ref{fig::txBytes_diffAlg}~\ref{fig::refStructure_threeAlgs}
 \caption{\label{fig::evaOverRange}Evaluation of different overhearing range parameter $\rho$}
 \end{center}
 \end{figure}
-%\begin{figure}
-%\begin{center}
-%\includegraphics[width=0.95\columnwidth]{Figures/overhearingRange.pdf}
-%\caption{\label{fig::evaOverRange}Evaluation of different overhearing range}
-%\end{center}
-%\end{figure}
 %
-Fig.~\ref{fig::evaOverRange}
+For the overhearing range parameter $\rho$, we are also interested in how this parameter will influence the performance of the overhearing source coding mechanism.
+Note that if the BB algorithm is applied, since optimal solution is promised to obtained through this algorithm, it is thus clearly that the performance gain will becomes larger as $\rho$ increases, which is shown in the red line of Fig.~\ref{fig::evaOverRange}.
+Unfortunately, the graph approximation method does not have this property.
+That is, as shown in the blue line of Fig.~\ref{fig::evaOverRange}, the improvement ratio of $\rho = 0.4$ becomes even worse than $\rho = 0.2$.
+This is because we refer to a heuristic approach when selecting I-frame cameras in the graph approximation algorithm.
+Therefore, when $\rho$ becomes larger, the metric~\eqref{eq::IFrameSelectionMetric} of each cameras will change and hence although sometimes the graph approximation method can perform very well (e.g. $\rho = 0.2,0.6,0.8$), but it might sometimes lead to sub-optimal solution since greedily using metric~\eqref{eq::IFrameSelectionMetric} might select improper I-frame cameras.
 
 \subsection{Evaluation of Multiple Transmission Rounds}
 {\color{red}Show the evaluation results for different transmission round.}

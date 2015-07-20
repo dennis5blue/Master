@@ -73,7 +73,7 @@ That is, camera $k$ is added into the I-frame cameras set $\mathcal{I}_{MWDS}$ s
 \end{equation}
 where
 \begin{equation}
-k = \underset{i \in V \setminus \{ \mathcal{I}_{MWDS} \cup \mathcal{P}_{MWDS} \} }{\arg \min} \mu_i.
+k = \underset{i \in V \setminus \{ \mathcal{I}_{MWDS} \cup \mathcal{P}_{MWDS} \} }{\arg \max} \mu_i.
 \end{equation}
 
 After the insertion of I-frame cameras set, we then check if camera $k$ is the \emph{best} reference camera for those undetermined cameras, if true, those cameras with camera $k$ being its best reference camera will join camera $k$'s group; otherwise, the encoding style still cannot be determined.
@@ -104,7 +104,7 @@ In short, we summarize our proposed grouping algorithm for constructing a minimu
  	{
  		Calculate the I-frame selection metric $\mu_i$ by equation~\eqref{eq::IFrameSelectionMetric} \\
  	}
- 	Select one camera $k$ to become an I-frame camera, where $k \gets \underset{i \in V \setminus \{ \mathcal{I}_{MWDS} \cup \mathcal{P}_{MWDS} \} }{\arg \min} \mu_i$ \\
+ 	Select one camera $k$ to become an I-frame camera, where $k \gets \underset{i \in V \setminus \{ \mathcal{I}_{MWDS} \cup \mathcal{P}_{MWDS} \} }{\arg \max} \mu_i$ \\
  	Update the overall I-frame cameras set as $\mathcal{I}_{MWDS} \gets \mathcal{I}_{MWDS} \cup \{ k \}$ \\
  	Initialize the cameras group for camera $k$ as $g_k \gets \{ k \}$ \\
  	\For{$i \in V \setminus \{ \mathcal{I}_{MWDS} \cup \mathcal{P}_{MWDS} \}$}

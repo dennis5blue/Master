@@ -2,9 +2,8 @@
 \label{sec::protocolDesign}
 %{\color{red} Present how our proposed correlated data gathering scheme is applied to real-world multi-camera networks.}
 As we present in Chapter~\ref{sec::proposedAlgs} about our proposed scheduling algorithms to exploit image correlation among neighboring cameras, we further describe how the proposed correlated data gathering scheme can be applied to real-world multi-camera networks in this chapter.
-First of all, we will briefly introduce some basic ideas about the conventional H.264 video compression used in multi-camera systems.
-Then, we will show our modifications about the system so that our proposed correlated data gathering technique can fit in the system.
-Finally, we will give an overall explanation about the system architecture, including how to get the required control information and when it should be updated.
+First of all, we will show our modifications about the multi-camera networks so that our proposed correlated data gathering scheme can fit in the system.
+Then, we will give an overall explanation about the system architecture, including how to get the required control information and when it should be updated.
 %
 %\subsection{Modified Motion Estimation Technique}
 %\begin{figure}
@@ -35,7 +34,7 @@ Finally, we will give an overall explanation about the system architecture, incl
 %The idea of our modified motion estimation technique is shown in figure~\ref{fig::modifiedME}, where we shift the search region by the value $\kappa$ estimated from equation~\eqref{eq::biasedPixels}.
 %Figure~\ref{fig::biased}
 %
-\subsection{Modified Image Gathering for Multi-Camera Networks}
+\subsection{Correlated Image Gathering for Multi-Camera Networks}
 %
 \begin{figure}
 \begin{center}
@@ -62,7 +61,7 @@ That is, at the beginning of each cameras' GOP, only a portion of cameras are se
 After the selection, the remaining P-frames will reference from its most correlated I-frame for removing redundant information.
 Note that since the captured video frames will vary as the time changed, it is thus necessary for the data aggregator to update the cost matrix $\mathbf{H}$~\eqref{eq::bbCostMatrix} from time to time in order to prevent from using outdated information for the determination of transmission schedule.
 However, frequently recalculate the cost matrix will cause too much computational complexity at the data aggregator, and hence the latency might be increased.
-Therefore, \emph{when} should the aggregator update the cost matrix $\mathbf{H}$ thus become one of the main issue to be discussed when applying the correlated data gathering scheme to real-world applications, and we will introduce our proposed criterion for recalculating $\mathbf{H}$ in the following chapter.
+Therefore, \emph{when} should the aggregator update the cost matrix $\mathbf{H}$ thus become one of the main issue to be discussed when applying the correlated data gathering scheme to real-world applications, and we will introduce our proposed criterion for recalculating $\mathbf{H}$ in the followings.
 %
 \subsection{Overall System Architecture}
 \label{sec::overallSystemArchi}

@@ -122,7 +122,7 @@ We thus propose another algorithm to solve Problem~\eqref{eq::IframeSelectionSub
 \end{figure}
 %\end{figure*}
 %{\color{red}Describe the proposed branch-and-bound algorithm for I-frame selection}
-Note that the decision variables of Problem~\eqref{eq::IframeSelectionSubProblem} are binary integers with value $0$ or $1$, therefore, the  solution set of this problem can be modelled as an enumeration tree as shown in figure~\ref{fig::BBdesgin}, where the root of the enumeration tree is denoted as the whole solution set $\mathcal{S}$.
+Note that the decision variables of Problem~\eqref{eq::IframeSelectionSubProblem} are binary integers with value $0$ or $1$, therefore, the  solution set of this problem can be modelled as an enumeration tree as shown in Fig.~\ref{fig::BBdesgin}, where the root of the enumeration tree is denoted as the whole solution set $\mathcal{S}$.
 The branch-and-bound (BB) algorithm can thus be applied for traversing the enumeration tree in an efficient way.
 The main idea of the BB algorithm is to divide the solution set $\mathcal{S}$ into smaller subsets (i.e. $\mathcal{S}^1, \mathcal{S}^2, \cdots$), and if a subset has no possibility to include the optimal solution, then it is not required to be divided any more.
 Therefore, a proper policy to ``branch'' and ``bound'' must be well designed for the efficiency of the BB algorithm, and we introduce the ``branching'' and ``bounding'' policy in the followings.

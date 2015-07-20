@@ -70,7 +70,7 @@ Note that $W_i \subseteq U_i$, which means that ${\underset{j \in U_i}{\sum} x_{
 Besides, we have shown that ${\underset{j \in U_i}{\sum} x_{ij}=1}$, therefore, if we can prove that ${k = \underset{j \in U_i}{\arg \max} \quad x_{ij}}$ is also contained in the set $W_i$, then we can claim that ${\underset{j \in U_i}{\sum} x_{ij} = \underset{j \in W_i}{\sum} x_{ij} = 1}$.
 To start, we first calculate the set of I-frame cameras $\mathcal{I}^*$ and P-frame cameras $\mathcal{P}^*$ by equation~\eqref{eq::solIFrameCams} and~\eqref{eq::solPFrameCams}.
 For camera $i \in \mathcal{I}^*$, according to lemma~\ref{lemma::findBestICamEasy}, each P-frame camera is able to find its best reference I-frame camera, which also means that camera $i$ can know the set of P-frame cameras that reference from it.
-If we denote ${D_i= \{j \in V|x_{ji} = 1\}},{i \in \mathcal{I}^*}$ as the set of P-frame cameras that reference from I-frame camera $i$, then ${j \in \{U_i \cap W_i\}},{\forall j \in D_i}$ as long as ${z_i < z_j}, {\forall i \in \mathcal{I}^*},{\forall j \in D_i}$, this is thus equivalent to showing that ${\underset{j \in U_i}{\arg \max} \quad x_{ij} \in W_i}$.
+If we denote ${D_i= \{j \in \mathcal{P}^*|x_{ji} = 1\}},{i \in \mathcal{I}^*}$ as the set of P-frame cameras that reference from I-frame camera $i$, then ${j \in \{U_i \cap W_i\}},{\forall j \in D_i}$ as long as ${z_i < z_j}, {\forall i \in \mathcal{I}^*},{\forall j \in D_i}$, this is thus equivalent to showing that ${\underset{j \in U_i}{\arg \max} \quad x_{ij} \in W_i}$.
 Consequently, the proof is done, and the policy for adjusting $\mathbf{Z}$ is to ensure ${z_i < z_j}, {\forall i \in \mathcal{I}^*},{\forall j \in D_i}$, which can be achieved by scheduling I-frame camera first, followed by its listeners one by one.
 \hfill$\mathsmaller{\mathsmaller{\blacksquare}}$
 %
@@ -84,14 +84,13 @@ Since the objective functions of Problem~\eqref{eq::IframeSelectionSubProblem} a
 Besides, by theorem~\ref{theorem::IFrameSolalwaysFeasible}, we know that $\mathbf{X}$ is feasible for Problem~\eqref{eq::formulation}, and hence it is optimal.
 \hfill$\mathsmaller{\mathsmaller{\blacksquare}}$
 
-As we demonstrate in Fig.~\ref{fig::subProbProcedure} before, the \emph{P-frame scheduling algorithm} is executed after a portion of cameras are selected to encode their images as I-frames.
-Therefore, all P-frame cameras (i.e. cameras that are not be selected as I-frame cameras) can find the most correlated I-frame cameras in polynomial time when the I-frame cameras set is given.
-Our algorithm thus make all P-frame cameras join the group of their ``most correlated'' I-frame camera.
-Time slots will be allocated group by group, starting with the I-frame camera in that group and followed by several P-frame cameras.
-The order for P-frame cameras is determined based on a greedy approach, that is, a camera that can make more other P-frames cameras to be able to overhear its transmission will be scheduled first.
+By theorem~\ref{theorem::optimalIsOptimal}, we can learn that letting ${z_i < z_j}, {\forall i \in \mathcal{I}^*},{\forall j \in D_i}$ can make $\mathbf{X}$ and $\mathbf{Z}$ become the optimal solution of Problem~\eqref{eq::formulation} as long as $\mathbf{X}^*$ (i.e. $\mathcal{I}^*$ and $\mathcal{P}^*$) is optimal for Problem~\eqref{eq::IframeSelectionSubProblem}.
+One possible approach to ensure ${z_i < z_j}, {\forall i \in \mathcal{I}^*},{\forall j \in D_i}$ is to allocate transmission time slots group by group, where a group is the cameras set of an I-frame camera and its listeners (i.e. $\{i \cup D_i\},{\forall i \in \mathcal{I}^*}$).
+Within the transmission of one group, the I-frame camera should be scheduled at the beginning, where the order for remaining P-frame cameras does not influence the objective value of Problem~\eqref{eq::formulation}.
+Therefore, in this thesis, we just determine the schedule of P-frame cameras based on a greedy approach, that is, a camera that can make more other P-frames cameras to be able to overhear its transmission will be scheduled first.
 The reason why we use this metric is that the later scheduled P-frame cameras might have the possibility to reference from the previous P-frame camera instead of the first scheduled I-frame camera.
-However, referencing from a P-frame camera will increase the complexity of problem formulation and hence it is leave as a future work of this thesis.
-Besides, we also note that the greedy P-frame scheduling metric presented above can be changed for fitting into application requirements (i.e. camera which is more delay sensitive to be scheduled first).
+However, referencing from a P-frame camera will increase the complexity of the scheduling problem and hence it is leave as a future work of this thesis.
+Besides, we also note that the greedy P-frame scheduling metric can be changed for fitting into any other application requirements (e.g. camera which is more delay sensitive to be scheduled first) since changing the schedule of P-frame cameras does not cause a performance loss of Problem~\eqref{eq::formulation}.
 
 \begin{figure}
 \begin{center}
@@ -101,26 +100,10 @@ Besides, we also note that the greedy P-frame scheduling metric presented above 
 \end{figure}
 %
 Fig.~\ref{fig::pScheOverview} shows an example of the determined transmission schedule.
-Suppose that camera $4$ and $7$ are selected to be I-frame cameras by algorithm~\ref{alg::bbAlgorithm} or~\ref{alg::minWeightDS}, and cameras $1,2,3$ are more correlated with camera $4$ and cameras $5,6$ are more correlated with camera $7$.
-Therefore, cameras $1,2,3$ will join the group of camera $4$ while cameras $5,6$ will join the group of camera $7$.
-Since time slots are allocated group by group, assume that the group of camera $4$ is scheduled first, then slot $1$ will be allocated for camera $4$ since I-frame camera should be scheduled first so that the later P-frame cameras are able to overhear its transmission.
-To proceed, time slots $2,3,4$ will be allocated for the member cameras of camera $4$, and which member camera is scheduled at which time slot is based on the greedy P-frame scheduling metric.
+Suppose that camera $4$ and $7$ are selected to be I-frame cameras (i.e.  ${\mathcal{I}^*=\{4,7\}}$) by algorithm~\ref{alg::bbAlgorithm} or~\ref{alg::minWeightDS}, and cameras $1,2,3$ are more correlated with camera $4$ whereas cameras $5,6$ are more correlated with camera $7$.
+Therefore, cameras $1,2,3$ will join the group of camera $4$ while cameras $5,6$ will join the group of camera $7$ (i.e. ${D_4=\{1,2,3\}}$ and ${D_7=\{5,6\}}$).
+Since time slots are allocated group by group, assume that the group of camera $4$ is scheduled first, then slot $1$ will be allocated for camera $4$ since I-frame camera should be scheduled at the beginning so that the later P-frame cameras are able to overhear its transmission.
+To proceed, time slots $2,3,4$ will be allocated for the member cameras of camera $4$ (i.e. cameras in $D_4$), and which member camera is scheduled at which time slot is based on the greedy P-frame scheduling metric.
 After all member cameras of camera $4$ is scheduled, the next group will continued to be scheduled.
-That is, slot $5$ is for the transmission of camera $7$ (the I-frame camera of the next group), and slots $6,7$ are for the member cameras of camera $7$.
-Our P-frame scheduling algorithm will keep working until all cameras groups are scheduled.
-%
-%\begin{figure}
-%\begin{center}
-%\includegraphics[width=0.95\columnwidth]{Figures/referenceStructure2.pdf}
-%\caption{\label{fig::encodeOrder2}Extended Coding structure of a group of pictures}
-%\end{center}
-%\end{figure}
-%
-%As we describe in chapter~\ref{sec::iFrameSelectionSubProb}, the set of cameras that encode their image as an I-frame can be determined through the proposed branch-and-bound algorithm.
-%Therefore, it is clearly that all the remaining P-frame cameras can decide which camera in the I-frame cameras set is the best one to reference from while encoding their image.
-%However, the schedule for those P-frame cameras is still undetermined yet, and hence we discuss in this chapter that how to determine the schedule of those P-frame cameras.
-%For the P-frame cameras scheduling, we extend the coding structure of a group of pictures from figure~\ref{fig::encodeOrder} to figure~\ref{fig::encodeOrder2}.
-%That is, a P-frame camera can now reference from a previous scheduled I-frame camera or P-frame camera, depends on which one is more correlated.
-%However, if a P-frame camera $i$ aims to reference from another P-frame camera $j$, camera $i$ must be able to reconstruct the image of camera $j$, which means that camera $i$ also needs to overhear the transmission of the reference frame of camera $j$.
-%For example, suppose that the coding structure is shown in figure~\ref{fig::encodeOrder2}, camera $4$ must both overhear the transmission of camera $1$ and $3$ if it aims to reference from the image of camera $3$.
-%
+That is, slot $5$ is for the transmission of camera $7$ (the I-frame camera of the next group), and slots $6,7$ are for the member cameras of camera $7$ (i.e. cameras in $D_7$).
+After all cameras groups are scheduled (i.e. ${\{4,D_4\}}$ and ${\{7,D_7\}}$), our P-frame scheduling algorithm is ended.

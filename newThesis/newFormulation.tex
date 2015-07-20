@@ -28,7 +28,10 @@ Based on the above assumptions, we are now aimed to minimize the total amount of
 %\end{figure}
 In multi-camera networks, image collected from different cameras might eventually produce correlated data streams.
 It is clearly that the amount of data gathered from all cameras within the network is increased together with the number of cameras.
-However, useful data does not increased as much as the data quantity, which means that there exists a portion of data which is not required to be transmitted, and hence motivates us to investigate the idea of correlated data gathering through overhearing source coding.
+However, useful data does not increased as much as the data quantity, which means that there exists a portion of data which is not required to be transmitted.
+Besides, since the data transmission from individual cameras to the data aggregator is through a wireless communication link, there is a chance for cameras to receive and decode the transmission of other cameras.
+With the help of MVC as introduced in Chapter~\ref{sec::MultiviewIntro}, camera can leverage the overheard data and then perform inter-view prediction to reduce the amount of bits that is required to encode its video frames.
+Therefore, this idea thus motivates us to investigate the idea of correlated data gathering through overhearing source coding in this thesis.
 %
 \subsection{Problem Formulation}
 Since the performance of overhearing source coding depends a lot on the sequence of transmission schedule, the goal of our problem formulation is to determine the best schedule so that the later scheduled camera can leverage the image collected by the set of previous scheduled cameras for reducing its amount of data.

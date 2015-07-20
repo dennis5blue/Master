@@ -239,7 +239,7 @@ However, in reality, the cost of P-frame cameras cannot be ignored, and hence th
 Fig.~\ref{fig::refStructure_threeAlgs}
 
 \subsection{Evaluation of Different Overhearing Range}
-{\color{red}Show the evaluation result of different overhearing range.}
+%{\color{red}Show the evaluation result of different overhearing range.}
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.95\columnwidth]{Figures/overRange.pdf}
@@ -252,10 +252,12 @@ Note that if the BB algorithm is applied, since optimal solution is promised to 
 Unfortunately, the graph approximation method does not have this property.
 That is, as shown in the blue line of Fig.~\ref{fig::evaOverRange}, the improvement ratio of $\rho = 0.4$ becomes even worse than $\rho = 0.2$.
 This is because we refer to a heuristic approach when selecting I-frame cameras in the graph approximation algorithm.
-Therefore, when $\rho$ becomes larger, the metric~\eqref{eq::IFrameSelectionMetric} of each cameras will change and hence although sometimes the graph approximation method can perform very well (e.g. $\rho = 0.2,0.6,0.8$), but it might sometimes lead to sub-optimal solution since greedily using metric~\eqref{eq::IFrameSelectionMetric} might select improper I-frame cameras.
+Therefore, when $\rho$ becomes larger, the metrics~\eqref{eq::IFrameSelectionMetric} of each cameras are changed and hence although sometimes the graph approximation method can perform very well (e.g. $\rho = 0.2,0.6,0.8$), but it will also sometimes lead to sub-optimal solution since greedily using metric~\eqref{eq::IFrameSelectionMetric} might select improper I-frame cameras.
+For the baseline MDS algorithm~\cite{MWDS_baseline}, the improvement ratio becomes saturated very quickly since it only considers the cost of I-frame cameras.
+Therefore, increasing $\rho$ does not benefit the performance of this algorithm due to the reason that it tends to select less I-frame cameras, and hence the selected I-frame cameras might not be correlated with the remaining P-frame cameras.
 
 \subsection{Evaluation of Multiple Transmission Rounds}
-{\color{red}Show the evaluation results for different transmission round.}
+%{\color{red}Show the evaluation results for different transmission round.}
 \ignore{
 \begin{figure}
 \begin{center}
@@ -357,7 +359,16 @@ However, as long as the improvement ratio decrease badly at round $2$, the long 
 The decrease of $\bar{\eta}$ will trigger the reestimation of $\mathbf{H}$ so that the performance can be recovered at round $3$.
 For the same reason, the result in Fig.~\ref{fig::evaMultiSlots} indicates that the performance will recover to the ``best'' performance in the next transmission round if the improvement ratio becomes lower than a threshold.
 
-Fig.~\ref{fig::evaExecTime}
+In addition to comparing the improvement ratio for the three criteria, we are also interested in the computational cost of these approaches.
+Clearly, the computational cost for the case of static cost matrix is the lowest, since it only requires calculating the cost matrix $\mathbf{H}$ once.
+Therefore, only the cases that use dynamic cost matrix are taken into comparison in this chapter.
+Fig.~\ref{fig::evaExecTime} thus shows the cumulative execution time of the two approaches using dynamic cost matrix, where both BB algorithm and graph approximation method are considered.
+For the two baseline approaches (i.e. red lines in Fig.~\ref{fig::evaExecTime}), since the cost matrix is updated after each time a transmission round is ended, the cumulative execution time will increase for every transmission round.
+Our proposed methods (i.e. blue lines in Fig.~\ref{fig::evaExecTime}), on the other hand, does not recalculate the cost matrix that often.
+Therefore, the cumulative execution time only increases when the TS phase is triggered by the long term improvement ratio $\bar{\eta}$.
+Since only round $3$ and $7$ performs the TS phase, the cumulative execution thus increases twice in these two transmission rounds as shown in Fig.~\ref{fig::evaExecTime}.
+Note that although the BB algorithm is thought to be more complicated than the graph approximation method, the result in Fig.~\ref{fig::evaExecTime} shows that the cumulative execution time of using BB algorithm together with the proposed reestimation criterion is even smaller than using graph approximation together with updating the cost matrix every transmission round.
+Therefore, we can thus claim that it is necessary to use a proper reestimation criterion instead of greedily updating the cost matrix.
 
 \subsection{Evaluation of Received Image Quality}
 {\color{red}Show the evaluation results for image quality of different transmission round.}

@@ -4,16 +4,17 @@ figure;
 
 %% Parameters setting
 addpath('../Utility/');
-load('../mat/BBBetterPruneOutput2_test10_cam30_rng512.mat');
-%load('../mat/MDSoutput2_test10_cam30_rng512.mat');
-%load('../mat/MDSProposedOutput2_test10_cam30_rng512.mat');
+%load('../mat/BBBetterPruneOutput2_test10_cam30_rng512.mat');
+%load('../mat/MDSBaselineOutput_test10_cam30_rng512_rho1.mat');
+load('../mat/MDSProposedOutput2_test10_cam30_rng512_rho1.mat');
+improveRatio
 vecDirection = dlmread('../../SourceData/test10/plotTopo/dir.txt');
 vecPosition = dlmread('../../SourceData/test10/plotTopo/pos.txt');
 radius = 250;
 r = 50; % parameter for arrow.m
 %pos = vecPosition;
 
-iFrames = find(bestSelection == 1);
+iFrames = find(bestSelection == 1)
 %iFrames = bestSelection; % use for MDS only
 numClusters = length(iFrames);
 vecRefStruc = zeros(1,N);
@@ -180,7 +181,7 @@ CAMPOS = plot(inf,inf, ...
     'Marker', 's',...
     'LineStyle','none', ...
     'MarkerSize', 10, ...
-    'DisplayName','P-frame camera');
+    'DisplayName','I-frame camera');
 set( get(get(CAMPOS,'Annotation'),'LegendInformation'),...
     'IconDisplayStyle','on');
 

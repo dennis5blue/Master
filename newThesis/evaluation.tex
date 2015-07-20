@@ -198,7 +198,7 @@ Smaller slope for complexity increment will lead to a considerable performance g
 That is, when the number of cameras is $30$, our method can reduce $99\%$ compared to brute force approach and reduce $98\%$ compared to baseline lower bound estimation method.
 %
 \subsection{Evaluation of Different I-frame Selection Algorithms}
-{\color{red}Show the evaluation result of different I-frame selection algorithms (BB, proposed MDS, baseline MDS~\cite{MWDS_baseline}).}
+%{\color{red}Show the evaluation result of different I-frame selection algorithms (BB, proposed MDS, baseline MDS~\cite{MWDS_baseline}).}
 %
 \begin{figure}
 \begin{center}
@@ -211,32 +211,41 @@ That is, when the number of cameras is $30$, our method can reduce $99\%$ compar
 \begin{center}
 %
 \begin{subfigure}[b]{\columnwidth}
-\includegraphics[width=0.95\columnwidth]{Figures/refStructure_BB.pdf}
-\caption{\label{fig::refStructure_BB} Proposed BB algorithm}
-\end{subfigure}
-%
-\begin{subfigure}[b]{\columnwidth}
-\includegraphics[width=0.95\columnwidth]{Figures/refStructure_MDSbaseline.pdf}
+\includegraphics[width=0.95\columnwidth]{Figures/struMDS_b.pdf}
 \caption{\label{fig::refStructure_MDSbaseline} Baseline MDS algorithm}
 \end{subfigure}
 %
 \begin{subfigure}[b]{\columnwidth}
-\includegraphics[width=0.95\columnwidth]{Figures/refStructure_MDSproposed.pdf}
+\includegraphics[width=0.95\columnwidth]{Figures/struMDS_p.pdf}
 \caption{\label{fig::refStructure_MDSproposed} Proposed MDS algorithm}
+\end{subfigure}
+%
+\begin{subfigure}[b]{\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/struBB.pdf}
+\caption{\label{fig::refStructure_BB} Proposed BB algorithm}
 \end{subfigure}
 %
 \caption{\label{fig::refStructure_threeAlgs} Selected I-frame cameras and their member P-frame cameras}
 \end{center}
 \end{figure}
-In this chapter, we show the performance gain of overhearing source coding for different I-frame selection algorithm.
-Our proposed BB algorithm and graph approximation method is compared with a baseline MDS algorithm, where the baseline MDS algorithm is proposed in~\cite{MWDS_baseline}.
+In this chapter, we show the evaluation results of different I-frame selection algorithms, including the proposed BB algorithm, proposed graph approximation algorithm, and the baseline MDS algorithm~\cite{MWDS_baseline}.
+To start, we first show the performance gain of overhearing source coding for the three algorithms above.
+That is, our proposed BB algorithm and graph approximation method is compared with a baseline MDS algorithm, where the baseline MDS algorithm is proposed in~\cite{MWDS_baseline}.
 The obtained results in shown in Fig.~\ref{fig::txBytes_diffAlg}, where the reduction of transmission bits is $11\%$ for the BB algorithm and $10\%$ for the graph approximation method.
 However, only $1\%$ of transmission bits can be reduced if the MDS algorithm~\cite{MWDS_baseline} is applied.
 This is because their method only consider the cost of I-frame cameras.
 That is, they aim to select the set of I-frame cameras such that the total amount of encoded bits required to deliver those I-frame can be minimized.
 However, in reality, the cost of P-frame cameras cannot be ignored, and hence the result of~\cite{MWDS_baseline} will lead to sub-optimal in our scenario.
 
-Fig.~\ref{fig::refStructure_threeAlgs}
+Fig.~\ref{fig::refStructure_threeAlgs} further demonstrates the I-frame cameras sets and their corresponding P-frame camera members obtained by the three algorithms, where different color in Fig.~\ref{fig::refStructure_threeAlgs} indicates different cameras group.
+According to the results of Fig.~\ref{fig::refStructure_threeAlgs}, it seems that the baseline MDS approach obtains a good result since it tends to select neighboring cameras into the same group.
+However, note that the inherent difference between camera devices and scalar sensor devices is that not only their position but also their sensing direction will affect the correlation among camera devices.
+Therefore, grouping nearby cameras might not be a good choice.
+For example, camera $22$ and $28$ are within the same group if the baseline MDS algorithm is applied.
+However, these two cameras are observing opposite directions and hence their captured images are thought to be definitely different.
+Our two proposed I-frame selection algorithms, on the other hand, will divide camera $22$ and $28$ into different groups.
+From the results of Fig.~\ref{fig::txBytes_diffAlg}, both these two proposed methods can outperform baseline MDS algorithm, and hence confirm us the sensing direction of each camera cannot be neglected in the scenario of multi-camera networks.
+
 
 \subsection{Evaluation of Different Overhearing Range}
 %{\color{red}Show the evaluation result of different overhearing range.}
@@ -370,8 +379,8 @@ Since only round $3$ and $7$ performs the TS phase, the cumulative execution thu
 Note that although the BB algorithm is thought to be more complicated than the graph approximation method, the result in Fig.~\ref{fig::evaExecTime} shows that the cumulative execution time of using BB algorithm together with the proposed reestimation criterion is even smaller than using graph approximation together with updating the cost matrix every transmission round.
 Therefore, we can thus claim that it is necessary to use a proper reestimation criterion instead of greedily updating the cost matrix.
 
-\subsection{Evaluation of Received Image Quality}
-{\color{red}Show the evaluation results for image quality of different transmission round.}
+\subsection{Evaluation of Received Video Quality}
+%{\color{red}Show the evaluation results for image quality of different transmission round.}
 \begin{figure}
 \begin{center}
 \begin{subfigure}[b]{\columnwidth}
@@ -386,4 +395,21 @@ Therefore, we can thus claim that it is necessary to use a proper reestimation c
 \end{center}
 \end{figure}
 %
-Fig.~\ref{fig::evaMultiRunPSNR}
+As we shown in Fig.~\ref{fig::multiViewImageDemo} before, multiview encoding can be regard as a near lossless video compression technique.
+Therefore, in this chapter, we show the evaluation results about the average quality of received videos at the data aggregator with and without the use of overhearing source coding, where the scenario we considered is the same with Fig.~\ref{fig::evaMultiSlots}~and~\ref{fig::evaExecTime}.
+For the independent encoding (i.e. without the use of overhearing source coding), each camera will transmit the original sequence of video frames.
+Therefore, the GOP of all cameras will start with an I-frame, and we calculate the average PSNR of those I-frames reconstructed at the data aggregator to represent the video quality of the independent encoding scheme, where PSNR is a commonly used metric for evaluating the video quality defined as:
+\begin{equation}
+\text{PSNR} = 10 \cdot \log \left( \frac{\text{MAX}^2_i}{\text{MSE}} \right),
+\end{equation}
+where $\text{MAX}_i$ is the maximum pixel value of the image and $\text{MSE}$ is the mean-squared error.
+%
+For the overhearing encoding, some cameras have the possibility to encode their I-frames as P-frames.
+Therefore, we use a multiview encoder and decoder to experimentally obtain the reconstructed PSNR of those I-frames.
+More specifically, if a camera is selected as an I-frame camera, then its reconstructed PSNR is equalled to using the independent encoding scheme.
+However, if a camera is not selected as an I-frame camera (i.e. encode as a P-frame), then we will first reconstruct its reference I-frame and then use JMVC~\cite{JMVC} to reconstruct this P-frame and calculate its PSNR.
+
+Using the above method, the average PSNR of each transmission round is shown in Fig.~\ref{fig::evaMultiRunPSNR}, where we can learn in this figure that the video quality of overhearing encoding is very closed to the independent encoding scheme.
+If we take a more detailed observation, the gap of PSNR of those two approaches is less than $0.01$.
+Therefore, we can claim that although the amount of encoded bits in our proposed scheme is much more smaller than independent source coding, the overhearing source coding method does not decrease the quality of received video.
+As a consequence, this result thus motivates us to apply the overhearing source coding scheme into the applications of multi-camera networks, especially when the network is under \emph{tight radio resource constraints}. 

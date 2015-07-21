@@ -180,13 +180,7 @@ Therefore, we will show how to decompose problem~\eqref{eq::formulation} into th
 %
 \subsection{Problem Analysis and Decomposition}
 \label{sec::OverallProbAnalysis}
-%{\color{red} Analyze problem~\eqref{eq::formulation} and show how we decompose it.}
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/procedureOfSubproblems.pdf}
-\caption{\label{fig::subProbProcedure}Procedure for sub-problems division}
-\end{center}
-\end{figure}
+%
 As we mentioned before, Problem~\eqref{eq::formulation} belongs to a nonlinear integer programming (NIP) problem.
 In addition, the determination of $\mathbf{X}$ is highly related to $\mathbf{Z}$ due to the reason that choosing $\mathbf{X}$ is restricted by the value of $\mathbf{Z}$ as shown in equation~\eqref{eq::prevSet} and~\eqref{eq::xConstraintForNonoverheard}.
 Therefore, in order to reduce the high complexity for solving Problem~\eqref{eq::formulation} directly, we decompose it into two sub-problems such that the determination of $\mathbf{X}$ and $\mathbf{Z}$ does not correlated with each other any more.
@@ -197,6 +191,14 @@ According to equation~\eqref{eq::referenceOnlyIframe}, every P-frames will refer
 That is, as long as a portion of cameras are determined to encoded their images as I-frames, the remaining P-frame cameras can find their most correlated I-frame camera and reference from it in polynomial time, which means that the determination of transmission schedule can be reduced to selecting I-frame cameras.
 Consequently, we can decompose Problem~\eqref{eq::formulation} into two sub-problems, including (a) the \emph{I-frame selection sub-problem} and (b) the \emph{P-frame scheduling sub-problem}, and these two sub-problems will be solved sequentially.
 That is, the solution of \emph{I-frame selection sub-problem} will become the input of the \emph{P-frame scheduling sub-problem} as shown in Fig.~\ref{fig::subProbProcedure}, where the goal of the \emph{I-frame selection sub-problem} is to select some cameras to encode their images as I-frames so that the other cameras can encode their images by referencing those I-frames.
+%
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/procedureOfSubproblems.pdf}
+\caption{\label{fig::subProbProcedure}Procedure for sub-problems division}
+\end{center}
+\end{figure}
+%
 
 Note that since we assume that only I-frame can become the reference frame as illustrated in equation~\eqref{eq::referenceOnlyIframe}, the \emph{I-frame selection sub-problem} is the most important part for maximizing the performance of overhearing source coding.
 Therefore, we aim to find the optimal solution of the \emph{I-frame selection sub-problem} by a proposed branch-and-bound approach as presented in Chapter~\ref{sec::proposedBBAlg}.

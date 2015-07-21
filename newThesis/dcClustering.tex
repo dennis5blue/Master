@@ -1,15 +1,16 @@
 \subsection{Data-Centric Clustering}
 \label{sec::dcClustering}
 %
+For the multi-camera networks, cameras are deployed for collecting data around a neighboring area, and thus video streams of those cameras are correlated in nature.
+Therefore, for the sake of using the radio resource in an efficient way, we should therefore focus on the quality of the gathered data at the base station instead of the data rate of individual cameras especially when the radio resource (e.g. channel bandwidth, allocated time slot) is limited.
+In order to achieve such a ``data-centirc'' approach, we apply a hierarchical \emph{two-hop relay} communication model for uplink transmission in our previous works~\cite{steven} for the sake of exploiting spatial reuse as shown in Fig.~\ref{fig::dcModel}.
+%
 \begin{figure}
 \centering
 \includegraphics[width=0.95\columnwidth]{Figures/model}
 \caption{\label{fig::dcModel}System model for clustered communication}
 \end{figure}
 %
-For the multi-camera networks, cameras are deployed for collecting data around a neighboring area, and thus video streams of those cameras are correlated in nature.
-Therefore, for the sake of using the radio resource in an efficient way, we should therefore focus on the quality of the gathered data at the base station instead of the data rate of individual cameras especially when the radio resource (e.g. channel bandwidth, allocated time slot) is limited.
-In order to achieve such a ``data-centirc'' approach, we apply a hierarchical \emph{two-hop relay} communication model for uplink transmission in our previous works~\cite{steven} for the sake of exploiting spatial reuse as shown in Fig.~\ref{fig::dcModel}.
 More specifically, suppose that there has a set of cameras deployed over a city for gathering multimedia data from different intersections, where a base station with limited radio resource (e.g. time slots in TDMA or resource block in OFDMA) is deployed in the city for collecting data from those cameras through wireless communication links.
 Data collected from individual cameras is to be periodically transmitted back to the base station for forwarding to a back-end server.
 We then divide cameras into several clusters and each cluster will select one camera to act as cluster head for relaying data of its member to the base station.

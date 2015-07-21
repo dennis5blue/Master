@@ -35,6 +35,8 @@ Then, we will give an overall explanation about the system architecture, includi
 %Figure~\ref{fig::biased}
 %
 \subsection{Correlated Image Gathering for Multi-Camera Networks}
+As we mentioned before, the encoding structure for a camera is presented in Chapter~\ref{sec::H264CompressionIntro}, and the timeline for GOPs is also shown in Fig.~\ref{fig::baselineGOP}.
+Therefore, the encoding structure for multi-camera networks can thus be extended directly from Fig.~\ref{fig::baselineGOP}, which is shown in Fig.~\ref{fig::multiCamGOP_original}.
 %
 \begin{figure}
 \begin{center}
@@ -43,6 +45,10 @@ Then, we will give an overall explanation about the system architecture, includi
 \end{center}
 \end{figure}
 %
+Note that we assume that the time slot for transmitting I-frames of each cameras is synchronized in this thesis, where this assumption can be done by any existing synchronization mechanisms in LTE or LTE-A.
+However, there has no cooperation between nearby cameras when encoding video streams if the encoding structure shown in Fig.~\ref{fig::multiCamGOP_original} is used for multi-camera networks, and hence some redundant data might still be encoded.
+In order to remove such redundancy, we modify the encoding structure and show our proposed cooperative encoding structure in Fig.~\ref{fig::multiCamGOP}.
+%
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.95\columnwidth]{Figures/multiCamGOP.pdf}
@@ -50,11 +56,6 @@ Then, we will give an overall explanation about the system architecture, includi
 \end{center}
 \end{figure}
 %
-As we mentioned before, the encoding structure for a camera is presented in Chapter~\ref{sec::H264CompressionIntro}, and the timeline for GOPs is also shown in Fig.~\ref{fig::baselineGOP}.
-Therefore, the encoding structure for multi-camera networks can thus be extended directly from Fig.~\ref{fig::baselineGOP}, which is shown in Fig.~\ref{fig::multiCamGOP_original}.
-Note that we assume that the time slot for transmitting I-frames of each cameras is synchronized in this thesis, where this assumption can be done by any existing synchronization mechanisms in LTE or LTE-A.
-However, there has no cooperation between nearby cameras when encoding video streams if the encoding structure shown in Fig.~\ref{fig::multiCamGOP_original} is used for multi-camera networks, and hence some redundant data might still be encoded.
-In order to remove such redundancy, we modify the encoding structure and show our proposed cooperative encoding structure in Fig.~\ref{fig::multiCamGOP}.
 
 In our proposed method, it is not required for all GOP to start with an I-frame.
 That is, at the beginning of each cameras' GOP, only a portion of cameras are selected to encode it video frame as an I-frame, where the selection are done by our proposed \emph{I-frame selection algorithms} as presented in Chapter~\ref{sec::proposedBBAlg} and~\ref{sec::graphApprox}.
@@ -98,6 +99,14 @@ The determined camera schedule will last for several rounds of transmission, and
 %
 \subsubsection{Data Transmission Phase}
 \label{sec::dataTransmissionPhase}
+The \emph{data transmission phase} of our scheme is partitioned into several rounds of transmission due to the reason that frequently calculating $\mathbf{H}$ will lead to very high computational complexity.
+In this thesis, the definition of ``one transmission round'' is to deliver one GOP of all cameras to the data aggregator, where a GOP may consists of several video frames.
+Therefore, partitioning the data transmission phase into several transmission rounds means that the estimated $\mathbf{H}$ will last for the transmission of more than one GOPs, and only be reestimated until it is thought to be outdated.
+Note that since we assume that the I-frames of each camera is perfectly synchronized, the number of video frames contained in one GOP of each camera is also equalled.
+Therefore, one transmission round can further be separated into several parts, start with the transmission of the GOP of first scheduled camera and end up with the transmission of the GOP of the last scheduled camera as shown in Fig.~\ref{fig::txOverview}.
+For the transmission of each camera, all the video frames of GOP will be delivered to the data aggregator sequentially.
+
+%
 \begin{figure}
 \begin{center}
 \begin{subfigure}[b]{0.65\columnwidth}
@@ -111,13 +120,7 @@ The determined camera schedule will last for several rounds of transmission, and
 \caption{\label{fig::txRoundExample}A three cameras example}
 \end{center}
 \end{figure}
-The \emph{data transmission phase} of our scheme is partitioned into several rounds of transmission due to the reason that frequently calculating $\mathbf{H}$ will lead to very high computational complexity.
-In this thesis, the definition of ``one transmission round'' is to deliver one GOP of all cameras to the data aggregator, where a GOP may consists of several video frames.
-Therefore, partitioning the data transmission phase into several transmission rounds means that the estimated $\mathbf{H}$ will last for the transmission of more than one GOPs, and only be reestimated until it is thought to be outdated.
-Note that since we assume that the I-frames of each camera is perfectly synchronized, the number of video frames contained in one GOP of each camera is also equalled.
-Therefore, one transmission round can further be separated into several parts, start with the transmission of the GOP of first scheduled camera and end up with the transmission of the GOP of the last scheduled camera as shown in Fig.~\ref{fig::txOverview}.
-For the transmission of each camera, all the video frames of GOP will be delivered to the data aggregator sequentially.
-
+%
 Fig.~\ref{fig::txRoundExample} gives an example of how video frames are scheduled within one transmission round.
 Suppose that the network now contains three cameras, and the GOP of each cameras all have four video frames, where the reference structure is shown in Fig.~\ref{fig::txRoundExampleGOP}.
 In our example, camera $1$ is selected as I-frame camera whereas camera $2$ and $3$ are P-frame camera and they both reference from camera $1$.

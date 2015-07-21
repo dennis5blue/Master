@@ -1,5 +1,7 @@
 \section{Performance Evaluation}
 \label{sec::evaluation}
+In this chapter, we show the evaluation results in terms of various observation points of our proposed approaches for correlated data gathering.
+In order to evaluate the proposed approaches for multi-camera networks, we resort to a 3D modeling software~\cite{Suicidator,Blender} for rendering ``semi-realistic'' city views as the data source.
 %
 \begin{figure}
 \begin{center}
@@ -8,6 +10,9 @@
 \end{center}
 \end{figure}
 %
+An example of the rendered city is shown in Fig.~\ref{fig::cityView}.
+We then deployed $30$ cameras with different view angles in the ``virtual'' city to capture different but correlated views of the city, where the position and sensing direction of those $30$ cameras are shown in Fig.~\ref{fig::deploy30}.
+%
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.95\columnwidth]{Figures/deploy30_2.pdf}
@@ -15,15 +20,34 @@
 \end{center}
 \end{figure}
 %
-In this chapter, we show the evaluation results in terms of various observation points of our proposed approaches for correlated data gathering.
-In order to evaluate the proposed approaches for multi-camera networks, we resort to a 3D modeling software~\cite{Suicidator,Blender} for rendering ``semi-realistic'' city views as the data source.
-An example of the rendered city is shown in Fig.~\ref{fig::cityView}.
-We then deployed $30$ cameras with different view angles in the ``virtual'' city to capture different but correlated views of the city, where the position and sensing direction of those $30$ cameras are shown in Fig.~\ref{fig::deploy30}.
 
 Each camera deployed is configured to take the city snapshot as a $1280 \times 720$ HD image.
 To find the amount of encoded bits $H(F_i)$ of each camera, we use a multi-view video coding reference software~\cite{JMVC} to process the image (treated as an I-frame) of each camera's view.
 Afterwards, we perform the multi-view encoding (treated as a P-frame) for each pair of cameras and experimentally create the cost matrix $\mathbf{H}$~\eqref{eq::bbCostMatrix}.
 We note that the multi-view encoding does not decrease the image quality as shown in Fig.~\ref{fig::multiViewImageDemo}, where we can learn in this figure that the reconstructed frame is almost equalled to the original frame.
+%
+\begin{figure}
+\begin{center}
+\begin{subfigure}[b]{0.45\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/org.pdf}
+\caption{Original frame}
+\end{subfigure}
+\begin{subfigure}[b]{0.45\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/ref.pdf}
+\caption{Reference frame}
+\end{subfigure}
+\begin{subfigure}[b]{0.45\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/rec.pdf}
+\caption{Reconstructed frame}
+\end{subfigure}
+\begin{subfigure}[b]{0.45\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/diff.pdf}
+\caption{Reconstructed error}
+\end{subfigure}
+\caption{\label{fig::multiViewImageDemo} Illustration of multiview encoding}
+\end{center}
+\end{figure}
+%
 Therefore, we can claim that our proposed correlated data gathering scheme is almost ``lossless'' with the advantage for reducing the amount of encoded bits.
 The other parameters for our simulation is listed in table~\ref{tab::evaParameters}.
 %
@@ -59,33 +83,6 @@ The other parameters for our simulation is listed in table~\ref{tab::evaParamete
 \caption{\label{tab::evaParameters}Parameters for evaluation}
 \end{table*}
 %
-%
-\begin{figure}
-\begin{center}
-\begin{subfigure}[b]{0.45\columnwidth}
-\includegraphics[width=0.95\columnwidth]{Figures/org.pdf}
-\caption{Original frame}
-\end{subfigure}
-%
-\begin{subfigure}[b]{0.45\columnwidth}
-\includegraphics[width=0.95\columnwidth]{Figures/ref.pdf}
-\caption{Reference frame}
-\end{subfigure}
-%
-\begin{subfigure}[b]{0.45\columnwidth}
-\includegraphics[width=0.95\columnwidth]{Figures/rec.pdf}
-\caption{Reconstructed frame}
-\end{subfigure}
-%
-\begin{subfigure}[b]{0.45\columnwidth}
-\includegraphics[width=0.95\columnwidth]{Figures/diff.pdf}
-\caption{Reconstructed error}
-\end{subfigure}
-%
-\caption{\label{fig::multiViewImageDemo} Illustration of multiview encoding}
-\end{center}
-\end{figure}
-%
 
 \subsection{Evaluation of Different Search Range}
 %
@@ -107,26 +104,22 @@ That is, we compare our proposed ``branching'' and ``bounding'' policy with some
 
 \subsubsection{Evaluation of Different Branching Methods}
 %{\color{red}Show the converged speed of different branching method for BB algorithm.}
+To start, we first show the benefit of using our proposed metric compared to applying the depth first searching method in this chapter.
+Note that as we mentioned in Chapter~\ref{sec::proposedBBBranchingPolicy}, the determination of which branch in the enumeration tree should be traverse first can be decided by our proposed branching metric~\eqref{eq::branchingMetric}.
+For the depth first searching, although this method is popularly being used in the BB algorithm, it does not consider which node has the higher probability to contain a better solution.
+Therefore, it might require more iterations to obtain a good enough objective value as shown in Fig.~\ref{fig::compareBranching}.
+%
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.95\columnwidth]{Figures/compareBranching.pdf}
 \caption{\label{fig::compareBranching} Comparison of convergence speed for different branching approach}
 \end{center}
 \end{figure}
-To start, we first show the benefit of using our proposed metric compared to applying the depth first searching method in this chapter.
-Note that as we mentioned in Chapter~\ref{sec::proposedBBBranchingPolicy}, the determination of which branch in the enumeration tree should be traverse first can be decided by our proposed branching metric~\eqref{eq::branchingMetric}.
-For the depth first searching, although this method is popularly being used in the BB algorithm, it does not consider which node has the higher probability to contain a better solution.
-Therefore, it might require more iterations to obtain a good enough objective value as shown in Fig.~\ref{fig::compareBranching}.
+%
 Our proposed branching metric, on the other hand, consider the estimated lower bound of each node in the enumeration tree, and hence fewer iteration is needed for converging to the optimal solution.
 
 \subsubsection{Evaluation of Different Lower Bound Estimation Techniques}
 %{\color{red}Show the converged speed of different lower bound estimation for BB algorithm.}
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/compareLbEstimation.pdf}
-\caption{\label{fig::compareLbEstimation} Comparison of convergence speed for different lower bound estimation methods}
-\end{center}
-\end{figure}
 %
 %\begin{figure}
 %\begin{center}
@@ -134,14 +127,6 @@ Our proposed branching metric, on the other hand, consider the estimated lower b
 %\caption{\label{fig::evaNumActiveBBNodes} Comparison of number of active BB nodes for different lower bound estimation methods}
 %\end{center}
 %\end{figure}
-%
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/complexity2.pdf}
-\caption{\label{fig::complexity} Required iterations for convergence}
-\end{center}
-\end{figure}
-%
 In this chapter, we compare the computational complexity of our proposed BB algorithm with a baseline BB approach.
 The pruning stage of the baseline BB approach is based on a greedy approach, and we briefly introduce how it works as follows.
 Suppose that we are now considering a sub solution set $\mathcal{S}^t$, cameras are separated into two categories by the baseline lower bound estimation method, including I-frame cameras $\mathcal{I}^t$ and ``not'' I-frame cameras $V \setminus \mathcal{I}^t$.
@@ -180,6 +165,14 @@ As a summary, the baseline lower bound estimation method is shown in algorithm~\
 
 Note that the lower bound obtained by algorithm~\ref{alg::lbEstimation_baseline} is a loose bound, since the obtained cost might refer to an infeasible reference structure (i.e. $i$ reference $j$ together with $j$ reference $i$).
 Therefore, we can claim that our proposed lower bound estimation method can reduce more computational complexity than the baseline approach.
+%
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/compareLbEstimation.pdf}
+\caption{\label{fig::compareLbEstimation} Comparison of convergence speed for different lower bound estimation methods}
+\end{center}
+\end{figure}
+%
 As shown in Fig.~\ref{fig::compareLbEstimation}, although the two algorithms converge to the same optimal objective value, the required iterations for convergence for those two approaches are definitely different.
 That is, more than $98\%$ of iterations can be further reduced if our proposed lower bound estimation technique is applied.
 The results thus confirm us that the lower bound estimated by algorithm~\ref{alg::lbEstimation} is a tighter bound so that the optimal solution can be found under lower computational complexity.
@@ -190,6 +183,14 @@ The results thus confirm us that the lower bound estimated by algorithm~\ref{alg
 %That is, as long as the objective upper bound becomes smaller, more branches can be pruned and hence the number of unpruned nodes will not increase back to the original level.
 %Besides, note that in Fig.~\ref{fig::evaNumActiveBBNodes}, our proposed method decrease faster, this is due to the reason that our estimated lower bound is a tighter bound and hence more branches can be pruned.
 
+%
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/complexity2.pdf}
+\caption{\label{fig::complexity} Required iterations for convergence}
+\end{center}
+\end{figure}
+%
 For the evaluation results about time complexity, Fig.~\ref{fig::complexity} further shows the required iterations for convergence by changing the number of cameras $|V|$ in the network.
 Note that for the worst case, BB algorithm needs to traverse at most $2^{|V|}$ branches to ensure that the obtained solution is optimal.
 Consequently, the time complexity of BB algorithm will increase exponentially as the network size becomes larger, which is matched as the result in Fig.~\ref{fig::complexity}.
@@ -199,6 +200,9 @@ That is, when the number of cameras is $30$, our method can reduce $99\%$ compar
 %
 \subsection{Evaluation of Different I-frame Selection Algorithms}
 %{\color{red}Show the evaluation result of different I-frame selection algorithms (BB, proposed MDS, baseline MDS~\cite{MWDS_baseline}).}
+In this chapter, we show the evaluation results of different I-frame selection algorithms, including the proposed BB algorithm, proposed graph approximation algorithm, and the baseline MDS algorithm~\cite{MWDS_baseline}.
+To start, we first show the performance gain of overhearing source coding for the three algorithms above.
+That is, our proposed BB algorithm and graph approximation method is compared with a baseline MDS algorithm, where the baseline MDS algorithm is proposed in~\cite{MWDS_baseline}.
 %
 \begin{figure}
 \begin{center}
@@ -207,36 +211,31 @@ That is, when the number of cameras is $30$, our method can reduce $99\%$ compar
 \end{center}
 \end{figure}
 %
-\begin{figure}
-\begin{center}
-%
-\begin{subfigure}[b]{\columnwidth}
-\includegraphics[width=0.95\columnwidth]{Figures/struMDS_b.pdf}
-\caption{\label{fig::refStructure_MDSbaseline} Baseline MDS algorithm}
-\end{subfigure}
-%
-\begin{subfigure}[b]{\columnwidth}
-\includegraphics[width=0.95\columnwidth]{Figures/struMDS_p.pdf}
-\caption{\label{fig::refStructure_MDSproposed} Proposed MDS algorithm}
-\end{subfigure}
-%
-\begin{subfigure}[b]{\columnwidth}
-\includegraphics[width=0.95\columnwidth]{Figures/struBB.pdf}
-\caption{\label{fig::refStructure_BB} Proposed BB algorithm}
-\end{subfigure}
-%
-\caption{\label{fig::refStructure_threeAlgs} Selected I-frame cameras and their member P-frame cameras}
-\end{center}
-\end{figure}
-In this chapter, we show the evaluation results of different I-frame selection algorithms, including the proposed BB algorithm, proposed graph approximation algorithm, and the baseline MDS algorithm~\cite{MWDS_baseline}.
-To start, we first show the performance gain of overhearing source coding for the three algorithms above.
-That is, our proposed BB algorithm and graph approximation method is compared with a baseline MDS algorithm, where the baseline MDS algorithm is proposed in~\cite{MWDS_baseline}.
 The obtained results in shown in Fig.~\ref{fig::txBytes_diffAlg}, where the reduction of transmission bits is $11\%$ for the BB algorithm and $10\%$ for the graph approximation method.
 However, only $1\%$ of transmission bits can be reduced if the MDS algorithm~\cite{MWDS_baseline} is applied.
 This is because their method only consider the cost of I-frame cameras.
 That is, they aim to select the set of I-frame cameras such that the total amount of encoded bits required to deliver those I-frame can be minimized.
 However, in reality, the cost of P-frame cameras cannot be ignored, and hence the result of~\cite{MWDS_baseline} will lead to sub-optimal in our scenario.
 
+%
+\begin{figure}
+\begin{center}
+\begin{subfigure}[b]{\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/struMDS_b.pdf}
+\caption{\label{fig::refStructure_MDSbaseline} Baseline MDS algorithm}
+\end{subfigure}
+\begin{subfigure}[b]{\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/struMDS_p.pdf}
+\caption{\label{fig::refStructure_MDSproposed} Proposed MDS algorithm}
+\end{subfigure}
+\begin{subfigure}[b]{\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/struBB.pdf}
+\caption{\label{fig::refStructure_BB} Proposed BB algorithm}
+\end{subfigure}
+\caption{\label{fig::refStructure_threeAlgs} Selected I-frame cameras and their member P-frame cameras}
+\end{center}
+\end{figure}
+%
 Fig.~\ref{fig::refStructure_threeAlgs} further demonstrates the I-frame cameras sets and their corresponding P-frame camera members obtained by the three algorithms, where different color in Fig.~\ref{fig::refStructure_threeAlgs} indicates different cameras group.
 According to the results of Fig.~\ref{fig::refStructure_threeAlgs}, it seems that the baseline MDS approach obtains a good result since it tends to select neighboring cameras into the same group.
 However, note that the inherent difference between camera devices and scalar sensor devices is that not only their position but also their sensing direction will affect the correlation among camera devices.
@@ -249,6 +248,8 @@ From the results of Fig.~\ref{fig::txBytes_diffAlg}, both these two proposed met
 
 \subsection{Evaluation of Different Overhearing Range}
 %{\color{red}Show the evaluation result of different overhearing range.}
+For the overhearing range parameter $\rho$, we are also interested in how this parameter will influence the performance of the overhearing source coding mechanism.
+%
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.95\columnwidth]{Figures/overRange.pdf}
@@ -256,7 +257,6 @@ From the results of Fig.~\ref{fig::txBytes_diffAlg}, both these two proposed met
 \end{center}
 \end{figure}
 %
-For the overhearing range parameter $\rho$, we are also interested in how this parameter will influence the performance of the overhearing source coding mechanism.
 Note that if the BB algorithm is applied, since optimal solution is promised to obtained through this algorithm, it is thus clearly that the performance gain will becomes larger as $\rho$ increases, which is shown in the red line of Fig.~\ref{fig::evaOverRange}.
 Unfortunately, the graph approximation method does not have this property.
 That is, as shown in the blue line of Fig.~\ref{fig::evaOverRange}, the improvement ratio of $\rho = 0.4$ becomes even worse than $\rho = 0.2$.
@@ -318,21 +318,7 @@ Therefore, increasing $\rho$ does not benefit the performance of this algorithm 
 \end{center}
 \end{figure}
 } % end ignore
-%
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/evaMultiSlots2.pdf}
-\caption{\label{fig::evaMultiSlots}Evaluation of improvement ratio for different transmission round}
-\end{center}
-\end{figure}
-%
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/cmuExecTime.pdf}
-\caption{\label{fig::evaExecTime}Evaluation of cumulative execution time for different algorithms}
-\end{center}
-\end{figure}
-%
+
 For real-world multi-camera applications, each camera will transmit video streams instead of only one isolated video frame.
 As a consequence, in this chapter, we consider the scenario that each camera will transmit its video frames sequentially for multiple transmission round, where the definition of ``one transmission round'' is presented in Chapter~\ref{sec::overallSystemArchi}.
 Assume that the scenario we considered has $10$ transmission round, which means that each camera is required to deliver $10$ I-frames to the data aggregator.
@@ -358,6 +344,14 @@ Indicate the case that the cost matrix is dynamically being modified at some tra
 Intuitively speaking, this case can achieve better performance than static cost matrix and also has lower computational complexity compared to baseline dynamic cost matrix.
 \end{itemize}
 
+%
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/evaMultiSlots2.pdf}
+\caption{\label{fig::evaMultiSlots}Evaluation of improvement ratio for different transmission round}
+\end{center}
+\end{figure}
+%
 Fig.~\ref{fig::evaMultiSlots} thus confirms our claim of advantages and disadvantages for the above three cases.
 Both the results of branch-and-bound algorithm and graph approximation algorithm are shown in this figure.
 For the graph approximation algorithm, since it is a heuristic approach and hence it is not promised to obtain the optimal solution.
@@ -371,6 +365,14 @@ For the same reason, the result in Fig.~\ref{fig::evaMultiSlots} indicates that 
 In addition to comparing the improvement ratio for the three criteria, we are also interested in the computational cost of these approaches.
 Clearly, the computational cost for the case of static cost matrix is the lowest, since it only requires calculating the cost matrix $\mathbf{H}$ once.
 Therefore, only the cases that use dynamic cost matrix are taken into comparison in this chapter.
+%
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/cmuExecTime.pdf}
+\caption{\label{fig::evaExecTime}Evaluation of cumulative execution time for different algorithms}
+\end{center}
+\end{figure}
+%
 Fig.~\ref{fig::evaExecTime} thus shows the cumulative execution time of the two approaches using dynamic cost matrix, where both BB algorithm and graph approximation method are considered.
 For the two baseline approaches (i.e. red lines in Fig.~\ref{fig::evaExecTime}), since the cost matrix is updated after each time a transmission round is ended, the cumulative execution time will increase for every transmission round.
 Our proposed methods (i.e. blue lines in Fig.~\ref{fig::evaExecTime}), on the other hand, does not recalculate the cost matrix that often.
@@ -381,20 +383,6 @@ Therefore, we can thus claim that it is necessary to use a proper reestimation c
 
 \subsection{Evaluation of Received Video Quality}
 %{\color{red}Show the evaluation results for image quality of different transmission round.}
-\begin{figure}
-\begin{center}
-\begin{subfigure}[b]{\columnwidth}
-\includegraphics[width=0.95\columnwidth]{Figures/evaAllPSNR.pdf}
-\caption{\label{fig::evaAllPSNR}}
-\end{subfigure}
-\begin{subfigure}[b]{\columnwidth}
-\includegraphics[width=\columnwidth]{Figures/evaPartialPSNR.pdf}
-\caption{\label{fig::evaPartialPSNR}}
-\end{subfigure}
-\caption{\label{fig::evaMultiRunPSNR} PSNR for reconstructed video frames}
-\end{center}
-\end{figure}
-%
 As we shown in Fig.~\ref{fig::multiViewImageDemo} before, multiview encoding can be regard as a near lossless video compression technique.
 Therefore, in this chapter, we show the evaluation results about the average quality of received videos at the data aggregator with and without the use of overhearing source coding, where the scenario we considered is the same with Fig.~\ref{fig::evaMultiSlots}~and~\ref{fig::evaExecTime}.
 For the independent encoding (i.e. without the use of overhearing source coding), each camera will transmit the original sequence of video frames.
@@ -409,7 +397,31 @@ Therefore, we use a multiview encoder and decoder to experimentally obtain the r
 More specifically, if a camera is selected as an I-frame camera, then its reconstructed PSNR is equalled to using the independent encoding scheme.
 However, if a camera is not selected as an I-frame camera (i.e. encode as a P-frame), then we will first reconstruct its reference I-frame and then use JMVC~\cite{JMVC} to reconstruct this P-frame and calculate its PSNR.
 
+%
+\begin{figure}
+\begin{center}
+\begin{subfigure}[b]{\columnwidth}
+\includegraphics[width=0.95\columnwidth]{Figures/evaAllPSNR.pdf}
+\caption{\label{fig::evaAllPSNR}}
+\end{subfigure}
+\begin{subfigure}[b]{\columnwidth}
+\includegraphics[width=\columnwidth]{Figures/evaPartialPSNR.pdf}
+\caption{\label{fig::evaPartialPSNR}}
+\end{subfigure}
+\caption{\label{fig::evaMultiRunPSNR} PSNR for reconstructed video frames}
+\end{center}
+\end{figure}
+%
 Using the above method, the average PSNR of each transmission round is shown in Fig.~\ref{fig::evaMultiRunPSNR}, where we can learn in this figure that the video quality of overhearing encoding is very closed to the independent encoding scheme.
 If we take a more detailed observation, the gap of PSNR of those two approaches is less than $0.01$.
 Therefore, we can claim that although the amount of encoded bits in our proposed scheme is much more smaller than independent source coding, the overhearing source coding method does not decrease the quality of received video.
-As a consequence, this result thus motivates us to apply the overhearing source coding scheme into the applications of multi-camera networks, especially when the network is under \emph{tight radio resource constraints}. 
+As a consequence, this result thus motivates us to apply the overhearing source coding scheme into the applications of multi-camera networks, especially when the network is under \emph{tight radio resource constraints}.
+
+\subsection{Evaluation of Modified Motion Estimation}
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/biased.pdf}
+\caption{\label{fig::biased}Evaluation result for modified motion estimation}
+\end{center}
+\end{figure}
+Fig.~\ref{fig::biased}

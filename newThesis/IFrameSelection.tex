@@ -58,7 +58,7 @@ However, if camera $i$ is encoded as a P-frame, the amount of encoded bits shoul
 An intuitive method to determine the reference frame is to select the most correlated I-frame, and the amount of encoded bits can be written as $\underset{u_{ij}x_{jj} = 1}{\min} h_{ij}$, where $u_{ij}x_{jj} = 1$ indicates the I-frame camera that camera $i$ can overhear.
 Therefore, if we denote ${\hat{h}_i = \underset{u_{ij}x_{jj} = 1}{\min} h_{ij}}$ as the smallest amount of encoded bits if camera $i$ is a P-frame camera, Problem~\eqref{eq::formulationSimplifiedAsGraph} can be transformed into:
 \begin{align}
-\underset{\mathbf{X}}{\text{minimize}} & & \nonumber \\
+\underset{x_{ii},i \in V}{\text{minimize}} & & \nonumber \\
 	&\sum_{i=1}^{|V|} x_{ii}h_{ii} + \sum_{i=1}^{|V|} (1-x_{ii}) \hat{h}_i, & \nonumber \\
 \text{subject to} & & \nonumber \\
 	&\sum_{j=1}^{|V|} u_{ij} x_{jj} \geq 1, &\forall i \in V, \nonumber \\
@@ -121,7 +121,6 @@ We thus propose another algorithm to solve Problem~\eqref{eq::IframeSelectionSub
 \end{center}
 \end{figure}
 %\end{figure*}
-%{\color{red}Describe the proposed branch-and-bound algorithm for I-frame selection}
 Note that the decision variables of Problem~\eqref{eq::IframeSelectionSubProblem} are binary integers with value $0$ or $1$, therefore, the  solution set of this problem can be modelled as an enumeration tree as shown in Fig.~\ref{fig::BBdesgin}, where the root of the enumeration tree is denoted as the whole solution set $\mathcal{S}$.
 The branch-and-bound (BB) algorithm can thus be applied for traversing the enumeration tree in an efficient way.
 The main idea of the BB algorithm is to divide the solution set $\mathcal{S}$ into smaller subsets (i.e. $\mathcal{S}^1, \mathcal{S}^2, \cdots$), and if a subset has no possibility to include the optimal solution, then it is not required to be divided any more.

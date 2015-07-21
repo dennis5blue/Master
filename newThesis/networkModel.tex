@@ -11,12 +11,6 @@ Note that we finish discussing our target network scenario in Chapter~\ref{sec::
 %where $\Gamma$ is a constant to model the gap between the achievable data rate of the selected modulation/coding scheme and the theoretic Shannon channel capacity~\cite{MQAM}.
 %
 \subsubsection{Camera Sensing Model}
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/pinHoleCamera.pdf}
-\caption{\label{fig::fov}Field of view of a camera}
-\end{center}
-\end{figure}
 Different from scalar sensor networks, the multimedia data collected by cameras depends on the field of view (FoV) of the camera.
 \begin{mydef}[\textbf{Field of View}]
 In photography, a field of view (FoV)~\cite{szeliski2010computer} is the extent of the observable world that is seen by a camera at any time instance, which is characterised by the angle of view of this camera.
@@ -31,6 +25,14 @@ In general, the AoV of a camera depends on the focal length $f$ and sensor size 
 \end{equation}
 \label{def::AoV}
 \end{mydef}
+%
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/pinHoleCamera.pdf}
+\caption{\label{fig::fov}Field of view of a camera}
+\end{center}
+\end{figure}
+%
 Suppose we only consider pin hole cameras in this thesis, the FoV of a camera can be illustrated as Fig.~\ref{fig::fov} shows.
 That is, the FoV of a camera can be described by its sensing direction and its angular extent of a given scene, where the angular extent is the angle of view $\theta$ of this camera as defined in definition~\ref{def::AoV}.
 Note that the angle of view (AoV) of a camera can be measured horizontally or vertically, however, we only present the horizontal measurement of AoV in this chapter, and the vertical measurement can be done by following the same idea.

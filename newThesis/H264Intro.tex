@@ -1,13 +1,6 @@
 \subsubsection{H.264 Video Compression Technique}
 \label{sec::H264CompressionIntro}
 %
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{Figures/baselineGOP.pdf}
-\caption{\label{fig::baselineGOP}Group of pictures of H.264 baseline profile}
-\end{center}
-\end{figure}
-%
 H.264 (or MPEG-4 Part~10) is a video coding format that is currently one of the most commonly used formats for the recording, compression, and distribution of video content~\cite{H264Book}.
 Its main idea for compressing video content is to remove redundant video data so that the compressed file can be efficiently transmitted through the internet.
 Usually, the compression is done by encoding the source video stream at the transmitter side, where the encoding technique can be known as a ``difference coding'' method.
@@ -37,6 +30,14 @@ Therefore, although encoding video frames as B-frames can improve the encoding e
 Since B-frame is an extension from P-frame, we do not consider the appearance of B-frames in this thesis, however, note that our proposed scheme can still be extend to video streams containing  B-frames.
 \end{itemize}
 
+%
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/baselineGOP.pdf}
+\caption{\label{fig::baselineGOP}Group of pictures of H.264 baseline profile}
+\end{center}
+\end{figure}
+%
 In this thesis, we assume that all video frames are encoded as either I-frames or P-frames as shown in Fig.~\ref{fig::baselineGOP} (which is the baseline profile in H.264 and has been widely used for mobile devices~\cite{h264Recommendation}), where a P-frame will reference from its preceding frame (can be either an I-frame or a P-frame).
 An I-frame will be repeatedly inserted after a give number of P-frames, and we denote an I-frame together with its following P-frames as a group of pictures (GOP) in this thesis.
 In the following chapters, we will explain more detailed about how the \emph{inter prediction} is done, and we will also introduce the idea of extending H.264 video compression technique into the scenario of multi-camera networks by the multiview encoding procedure.

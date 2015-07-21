@@ -267,7 +267,7 @@ Therefore, increasing $\rho$ does not benefit the performance of this algorithm 
 
 \subsection{Evaluation of Multiple Transmission Rounds}
 %{\color{red}Show the evaluation results for different transmission round.}
-\ignore{
+%\ignore{
 \begin{figure}
 \begin{center}
 \begin{subfigure}[b]{0.4\columnwidth}
@@ -317,7 +317,7 @@ Therefore, increasing $\rho$ does not benefit the performance of this algorithm 
 \caption{\label{fig::imgCapMultiSlots} Image captured at different transmission round}
 \end{center}
 \end{figure}
-} % end ignore
+%} % end ignore
 
 For real-world multi-camera applications, each camera will transmit video streams instead of only one isolated video frame.
 As a consequence, in this chapter, we consider the scenario that each camera will transmit its video frames sequentially for multiple transmission round, where the definition of ``one transmission round'' is presented in Chapter~\ref{sec::overallSystemArchi}.
@@ -326,8 +326,8 @@ Since different transmission rounds mean we make observation at different time i
 In addition, the exact cost matrix will also be changed for different transmission round.
 Due to the reasons described above, the improvement ratio of our proposed correlated data gathering scheme (either the branch-and-bound method or the graph approximation approach) will vary as the transmission round changes.
 
-We now consider a scenario having $10$ cameras deployed at intersections of a city.
-%where the captured video snapshots of two cameras at different transmission round is shown in figure~\ref{fig::imgCapMultiSlots}.
+We now consider a scenario having $10$ cameras deployed at intersections of a city,
+where the captured video snapshots of two cameras at different transmission round is shown in Fig.~\ref{fig::imgCapMultiSlots}.
 Three different criteria for dealing with the cost matrix $\mathbf{H}$~\eqref{eq::bbCostMatrix} are now compared in this chapter.
 The idea of three different criteria are listed below:
 \begin{itemize}

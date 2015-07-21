@@ -398,11 +398,11 @@ Therefore, we can thus claim that it is necessary to use a proper reestimation c
 As we shown in Fig.~\ref{fig::multiViewImageDemo} before, multiview encoding can be regard as a near lossless video compression technique.
 Therefore, in this chapter, we show the evaluation results about the average quality of received videos at the data aggregator with and without the use of overhearing source coding, where the scenario we considered is the same with Fig.~\ref{fig::evaMultiSlots}~and~\ref{fig::evaExecTime}.
 For the independent encoding (i.e. without the use of overhearing source coding), each camera will transmit the original sequence of video frames.
-Therefore, the GOP of all cameras will start with an I-frame, and we calculate the average PSNR of those I-frames reconstructed at the data aggregator to represent the video quality of the independent encoding scheme, where PSNR is a commonly used metric for evaluating the video quality defined as:
+Therefore, the GOP of all cameras will start with an I-frame, and we calculate the average PSNR of those I-frames reconstructed at the data aggregator to represent the video quality of the independent encoding scheme, where PSNR is a commonly used metric for evaluating the video quality defined as~\cite{PSNRDef}:
 \begin{equation}
 \text{PSNR} = 10 \cdot \log \left( \frac{\text{MAX}^2_i}{\text{MSE}} \right),
 \end{equation}
-where $\text{MAX}_i$ is the maximum pixel value of the image and $\text{MSE}$ is the mean-squared error.
+with $\text{MAX}_i$ being the maximum pixel value of the image and $\text{MSE}$ being the mean-squared error.
 %
 For the overhearing encoding, some cameras have the possibility to encode their I-frames as P-frames.
 Therefore, we use a multiview encoder and decoder to experimentally obtain the reconstructed PSNR of those I-frames.

@@ -116,6 +116,14 @@
 \begin{document}
 
 \begin{preliminary}
+\begin{CJK*}{UTF8}{bsmi}
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{\texorpdfstring{\Makeuppercase{CHAbstract}}{CHAbstract}}
+\chapter*{{\CJKfamily{bkai}\fontsize{16pt}{30pt}摘要}}
+\vskip 0.5in
+\fontsize{12pt}{50pt}\input{abstractCH.tex}
+\clearpage\end{CJK*}
 \begin{abstract}
 \input{abstract.tex}
 \end{abstract}
@@ -141,7 +149,6 @@
 \bibliographystyle{IEEEtran}
 \references
 \end{postliminary}
-\bibliographystyle{abbrv}
 
 
 \end{document}

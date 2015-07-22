@@ -1,4 +1,4 @@
-\section{Transmission Scheduling under Overhearing Source Coding}
+\section{Correlated Data Gathering under Overhearing Source Coding}
 \label{sec::OSC}
 % Begin motivation
 In multi-camera networks, image collected from different cameras might eventually produce correlated data streams.
@@ -6,7 +6,7 @@ It is clearly that the amount of data gathered from all cameras within the netwo
 However, useful data does not increased as much as the data quantity, which means that there exists a portion of data which is not required to be transmitted.
 Besides, since the data transmission from individual cameras to the data aggregator is through a wireless communication link, there is a chance for cameras to receive and decode the transmission of other cameras.
 With the help of MVC as introduced in Chapter~\ref{sec::MultiviewIntro}, camera can leverage the overheard data and then perform inter-view prediction to reduce the amount of bits that is required to encode its video frames.
-Therefore, this idea thus motivates us to investigate the idea of correlated data gathering through overhearing source coding in this thesis.
+Therefore, this idea thus motivates us to investigate the idea of correlated data gathering through overhearing source coding.
 % End motivation
 
 Denote ${V=\{ 1,2,\cdots,|V| \}}$ as the set of cameras deployed for data gathering in a city, where camera $i$ will produce the video frame $F_i$.
@@ -26,7 +26,7 @@ h_{|V|1} &h_{|V|2} &\cdots &h_{|V||V|}
 where $\mathbf{h}_k$ is the $k^{th}$ column of $\mathbf{H}$ and ${h_{ij} = H(F_i|F_j)},{\forall i,j \in V}$ if ${i \neq j}$ and ${h_{ii}=H(F_i|F_i)=H(F_i)},{\forall i \in V}$.
 Note that the cost matrix defined by equation~\eqref{eq::bbCostMatrix} will be calculated as a beforehand information for our problem formulation.
 
-Based on the above assumptions, we are now aimed to minimize the total amount of bits required to be transmitted to the data aggregator, and we show in the followings our motivation and how the resource allocation solution can be obtained through overhearing source coding.
+Based on the above assumptions, we are now aimed to minimize the total amount of bits required to be transmitted to the data aggregator under the constraint that images captured by all cameras are necessary to be delivered, and we show in the followings our target problem formulation in this thesis.
 
 %
 \subsection{Problem Formulation}
@@ -153,7 +153,7 @@ x_{ij} = 0, \forall i \in V, \forall j \in V \setminus W_i.
 %
 %
 
-Recall that the objective for the scheduling problem is to minimize the total amount of bits that needed to be delivered.
+Recall that the objective for our target problem is to minimize the total amount of bits that needed to be delivered.
 The overall problem formulation can now be written as follows:
 \begin{align}
 \underset{\mathbf{X},\mathbf{Z}}{\text{minimize}} & & \nonumber \\
@@ -172,5 +172,5 @@ The overall problem formulation can now be written as follows:
 where the set of all cameras $V$, position of each cameras (i.e. the set $U_i, i \in V$), and the amount of encoded bits (i.e. $h_{ij}, i,j \in V$) are given inputs parameters of problem~\eqref{eq::formulation}.
 The elements in $\mathbf{X}$ and $\mathbf{Z}$ are unknown decision variables to be solved.
 Since both the variables in $\mathbf{X}$ and $\mathbf{Z}$ are positive integers, problem~\eqref{eq::formulation} is thus in the form of a nonlinear integer programming problem, and solving the nonlinear integer programming is usually a $\mathcal{NP}$-hard problem~\cite{NIP}.
-Therefore, we will show how to decompose problem~\eqref{eq::formulation} into the \emph{I-frame selection sub-problem} and the \emph{P-frame attachment sub-problem} in the following chapter.
+Therefore, we will show how to decompose problem~\eqref{eq::formulation} into the \emph{I-frame selection sub-problem} and the \emph{P-frame associate sub-problem} in the following chapter.
 %

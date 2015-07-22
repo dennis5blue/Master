@@ -266,58 +266,7 @@ For the baseline MDS algorithm~\cite{MWDS_baseline}, the improvement ratio becom
 Therefore, increasing $\rho$ does not benefit the performance of this algorithm due to the reason that it tends to select less I-frame cameras, and hence the selected I-frame cameras might not be correlated with the remaining P-frame cameras.
 
 \subsection{Evaluation of Multiple Transmission Rounds}
-%{\color{red}Show the evaluation results for different transmission round.}
-%\ignore{
-\begin{figure}
-\begin{center}
-\begin{subfigure}[b]{0.4\columnwidth}
-\includegraphics[width=\columnwidth]{Figures/multiSlots/cam3Slot1}
-\caption{Camera 1, round 1}
-\end{subfigure}
-\begin{subfigure}[b]{0.4\columnwidth}
-\includegraphics[width=\columnwidth]{Figures/multiSlots/cam4Slot1}
-\caption{Camera 2, round 1}
-\end{subfigure}
 %
-\begin{subfigure}[b]{0.4\columnwidth}
-\includegraphics[width=\columnwidth]{Figures/multiSlots/cam3Slot7}
-\caption{Camera 1, round 2}
-\end{subfigure}
-\begin{subfigure}[b]{0.4\columnwidth}
-\includegraphics[width=\columnwidth]{Figures/multiSlots/cam4Slot7}
-\caption{Camera 2, round 2}
-\end{subfigure}
-%
-\begin{subfigure}[b]{0.4\columnwidth}
-\includegraphics[width=\columnwidth]{Figures/multiSlots/cam3Slot3}
-\caption{Camera 1, round 3}
-\end{subfigure}
-\begin{subfigure}[b]{0.4\columnwidth}
-\includegraphics[width=\columnwidth]{Figures/multiSlots/cam4Slot3}
-\caption{Camera 2, round 3}
-\end{subfigure}
-%
-\begin{subfigure}[b]{0.4\columnwidth}
-\includegraphics[width=\columnwidth]{Figures/multiSlots/cam3Slot5}
-\caption{Camera 1, round 4}
-\end{subfigure}
-\begin{subfigure}[b]{0.4\columnwidth}
-\includegraphics[width=\columnwidth]{Figures/multiSlots/cam4Slot5}
-\caption{Camera 2, round 4}
-\end{subfigure}
-%
-\begin{subfigure}[b]{0.4\columnwidth}
-\includegraphics[width=\columnwidth]{Figures/multiSlots/cam3Slot4}
-\caption{Camera 1, round 5}
-\end{subfigure}
-\begin{subfigure}[b]{0.4\columnwidth}
-\includegraphics[width=\columnwidth]{Figures/multiSlots/cam4Slot4}
-\caption{Camera 2, round 5}
-\end{subfigure}
-\caption{\label{fig::imgCapMultiSlots} Image captured at different transmission round}
-\end{center}
-\end{figure}
-%} % end ignore
 
 For real-world multi-camera applications, each camera will transmit video streams instead of only one isolated video frame.
 As a consequence, in this chapter, we consider the scenario that each camera will transmit its video frames sequentially for multiple transmission round, where the definition of ``one transmission round'' is presented in Chapter~\ref{sec::overallSystemArchi}.
@@ -326,6 +275,49 @@ Since different transmission rounds mean we make observation at different time i
 In addition, the exact cost matrix will also be changed for different transmission round.
 Due to the reasons described above, the improvement ratio of our proposed correlated data gathering scheme (either the branch-and-bound method or the graph approximation approach) will vary as the transmission round changes.
 
+%
+\ignore{
+\begin{figure}
+\begin{center}
+\begin{subfigure}[b]{\columnwidth}
+\includegraphics[width=0.32\columnwidth]{Figures/multiSlots/cam3Slot1}
+\includegraphics[width=0.32\columnwidth]{Figures/multiSlots/cam4Slot1}
+\includegraphics[width=0.32\columnwidth]{Figures/multiSlots/cam5Slot1}
+\caption{Round 1}
+\end{subfigure}
+%
+\begin{subfigure}[b]{\columnwidth}
+\includegraphics[width=0.32\columnwidth]{Figures/multiSlots/cam3Slot7}
+\includegraphics[width=0.32\columnwidth]{Figures/multiSlots/cam4Slot7}
+\includegraphics[width=0.32\columnwidth]{Figures/multiSlots/cam5Slot7}
+\caption{Round 2}
+\end{subfigure}
+%
+\begin{subfigure}[b]{\columnwidth}
+\includegraphics[width=0.32\columnwidth]{Figures/multiSlots/cam3Slot3}
+\includegraphics[width=0.32\columnwidth]{Figures/multiSlots/cam4Slot3}
+\includegraphics[width=0.32\columnwidth]{Figures/multiSlots/cam5Slot3}
+\caption{Round 3}
+\end{subfigure}
+%
+\begin{subfigure}[b]{\columnwidth}
+\includegraphics[width=0.32\columnwidth]{Figures/multiSlots/cam3Slot5}
+\includegraphics[width=0.32\columnwidth]{Figures/multiSlots/cam4Slot5}
+\includegraphics[width=0.32\columnwidth]{Figures/multiSlots/cam5Slot5}
+\caption{Round 4}
+\end{subfigure}
+%
+\begin{subfigure}[b]{\columnwidth}
+\includegraphics[width=0.32\columnwidth]{Figures/multiSlots/cam3Slot4}
+\includegraphics[width=0.32\columnwidth]{Figures/multiSlots/cam4Slot4}
+\includegraphics[width=0.32\columnwidth]{Figures/multiSlots/cam5Slot4}
+\caption{Round 5}
+\end{subfigure}
+\caption{\label{fig::imgCapMultiSlots} Image captured at different transmission round}
+\end{center}
+\end{figure}
+}
+%
 We now consider a scenario having $10$ cameras deployed at intersections of a city,
 where the captured video snapshots of two cameras at different transmission round is shown in Fig.~\ref{fig::imgCapMultiSlots}.
 Three different criteria for dealing with the cost matrix $\mathbf{H}$~\eqref{eq::bbCostMatrix} are now compared in this chapter.

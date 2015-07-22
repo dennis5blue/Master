@@ -1,9 +1,9 @@
 %\subsection{Proposed P-frame Scheduling Algorithm}
-\subsection{Analysis of P-Frame Attachment Sub-Problem}
+\subsection{Analysis of P-Frame Associate Sub-Problem}
 \label{sec::PFrameScheduling}
-As Fig.~\ref{fig::subProbProcedure} shows, the input for the \emph{P-frame scheduling sub-problem} is the output of the \emph{I-frame selection sub-problem}.
-Besides, we also note that after Problem~\eqref{eq::IframeSelectionSubProblem} is solved by either BB algorithm or graph approximation algorithm, all the diagonal elements of $\mathbf{X}$ are determined.
-If we denote ${\mathbf{X}^* = \{ x_{11}^* \cdots x_{|V||V|}^* \}}$ as the solution vector of the \emph{I-frame selection sub-problem} consists of the diagonal elements of $\mathbf{X}$, then the set of determined I-frame cameras can be well defined as:
+As Fig.~\ref{fig::subProbProcedure} shows, the input for the \emph{P-frame associate sub-problem} is the output of the \emph{I-frame selection sub-problem}.
+Besides, we also note that after Problem~\eqref{eq::IframeSelectionSubProblem} is solved, all the elements in $diag(\mathbf{X})$ are determined.
+If we denote ${diag^*(\mathbf{X}) = \left[ x_{11}^*, \cdots, x_{|V||V|}^* \right]}$ as the solution of the \emph{I-frame selection sub-problem}, then the set of determined I-frame cameras can be well defined as:
 \begin{equation}
 \mathcal{I}^* = \{ i \in V | x_{ii}^* = 1\},
 \label{eq::solIFrameCams}
@@ -15,7 +15,7 @@ and the set of remaining P-frame cameras will be
 \end{equation} 
 %
 \begin{mylem}
-By the solution vector of I-frame selection sub-problem $\mathbf{X}^*$, $\mathcal{I}^*$ and $\mathcal{P}^*$ can be well defined, and the best reference I-frame camera in $\mathcal{I}^*$ of all remaining P-frame cameras in $\mathcal{P}^*$ can be found in linear time.
+By the solution vector of I-frame selection sub-problem $diag^*(\mathbf{X})$, the two sets $\mathcal{I}^*$ and $\mathcal{P}^*$ can be well defined, and the best reference I-frame camera in $\mathcal{I}^*$ of all remaining P-frame cameras in $\mathcal{P}^*$ can be found in linear time.
 \label{lemma::findBestICamEasy}
 \end{mylem}
 \textbf{\emph{Proof:}}
@@ -26,21 +26,21 @@ In this way, finding the best reference I-frame camera of all remaining P-frame 
 Consequently, it can be solved in linear time.\hfill$\mathsmaller{\mathsmaller{\blacksquare}}$
 
 \begin{mythm}
-The determination of $\mathbf{X}^*$ (i.e. diagonal elements of $\mathbf{X}$) is equivalent to the determination of all elements in $\mathbf{X}$.
+The determination of $diag(\mathbf{X})$ is equivalent to the determination of all elements in $\mathbf{X}$, which means that $\mathbf{X}$ can be obtained uniquely through the solution vector $diag^*(\mathbf{X})$.
 \label{theorem::determineX}
 \end{mythm}
 \textbf{\emph{Proof:}}
 For camera $i$, if $x_{ii}^* =1$, it means that camera $i$ is an I-frame camera and hence by constraint~\eqref{eq::referenceConstraint} and~\eqref{eq::xConstraintForNonoverheard}, $x_{im}=0, \forall m \neq i$, which means that the $i^{th}$ row of $\mathbf{X}$ is determined.
 For camera $j$, if $x_{jj}^* =0$, it means that camera $j$ is a P-frame camera.
-By lemma~\ref{lemma::findBestICamEasy}, we know that with the help of $\mathbf{X}^*$, the best reference I-frame camera in $\mathcal{I}^*$ of all remaining P-frame cameras in $\mathcal{P}^*$ can be found in linear time, where we assume that the best reference I-frame camera for camera $j$ is camera $k$.
+By lemma~\ref{lemma::findBestICamEasy}, we know that with the help of $diag^*(\mathbf{X})$, the best reference I-frame camera in $\mathcal{I}^*$ of all remaining P-frame cameras in $\mathcal{P}^*$ can be found in linear time, where we assume that the best reference I-frame camera for camera $j$ is camera $k$.
 In this way, $x_{jk}=1$, and by constraint~\eqref{eq::referenceConstraint} and~\eqref{eq::xConstraintForNonoverheard}, we know that $x_{jm}=0, \forall m \neq k$, which means that the $j^{th}$ row of $\mathbf{X}$ is also determined.
-As a consequence, both the rows for camera in $\mathcal{I}^*$ and $\mathcal{P}^*$ are all determined, and hence all elements in $\mathbf{X}$ can be determined by $\mathbf{X}^*$.\hfill$\mathsmaller{\mathsmaller{\blacksquare}}$
+As a consequence, both the rows for camera in $\mathcal{I}^*$ and $\mathcal{P}^*$ are all determined, and hence all elements in $\mathbf{X}$ can be determined by $diag^*(\mathbf{X})$ due to the reason that $\mathcal{I}^* \cup \mathcal{P}^* = V$.\hfill$\mathsmaller{\mathsmaller{\blacksquare}}$
 
-According to theorem~\ref{theorem::determineX}, we know that $\mathbf{X}$ can be determined after the \emph{I-frame selection sub-problem} is solved.
+According to theorem~\ref{theorem::determineX}, we know that $\mathbf{X}$ can be uniquely determined after the \emph{I-frame selection sub-problem} is solved.
 Therefore, the remaining unsolved decision variable in the original Problem~\eqref{eq::formulation} is $\mathbf{Z}$.
 However, note that $\mathbf{Z}$ has not been considered in the objective function of Problem~\eqref{eq::formulation}.
 Moreover, the objective value of Problem~\eqref{eq::formulation} is only affected by $\mathbf{X}$, which means that Problem~\eqref{eq::formulation} can be transform from an ``optimization problem'' into a ``decision problem'' after $\mathbf{X}$ is determined.
-For this reason, we formulate the \emph{P-frame scheduling sub-problem} as a decision problem such that we need to check whether $\mathbf{X}$ obtained by the \emph{I-frame selection sub-problem} is feasible under the following constraints:
+For this reason, we consider the \emph{P-frame associate sub-problem} as a decision problem such that we only need to check whether $\mathbf{X}$ obtained by the \emph{I-frame selection sub-problem} is feasible under the following constraints:
 \begin{align}
 	&U_i = \{ j \in V | d_{ij} \leq \rho d_{j0} \}, &\forall i \in V, \nonumber \\
 	&W_i = \{ j \in U_i | z_j \leq z_i \}, &\forall i \in V, \nonumber \\
@@ -52,11 +52,11 @@ For this reason, we formulate the \emph{P-frame scheduling sub-problem} as a dec
 As long as constraints~\eqref{eq::PFrameSchedulingSubProb} are satisfied, we can claim that Problem~\eqref{eq::formulation} is solved, and its objective value can be calculated directly through $\mathbf{X}$.
 %
 \begin{mythm}
-If $\mathbf{X}$ is obtained by our proposed I-frame selection algorithm together with theorem~\ref{theorem::determineX}, then constraints~\eqref{eq::PFrameSchedulingSubProb} can always be satisfied by adjusting proper value of $\mathbf{Z}$.
+If $diag^*(\mathbf{X})$ is a feasible solution of Problem~\eqref{eq::IframeSelectionSubProblem}, and $\mathbf{X}$ is generated by $diag^*(\mathbf{X})$ together with theorem~\ref{theorem::determineX}, then constraints~\eqref{eq::PFrameSchedulingSubProb} can always be satisfied by adjusting proper value of $\mathbf{Z}$.
 \label{theorem::IFrameSolalwaysFeasible}
 \end{mythm}
 \textbf{\emph{Proof:}}
-From theorem~\ref{theorem::determineX}, the following two statements are already been proved to be true:
+From theorem~\ref{theorem::determineX}, the following two statements of elements in $\mathbf{X}$ are already been proved to be true:
 \begin{enumerate}
 \item For I-frame camera $i$, $x_{ii}=1$ and ${x_{im} = 0}, {\forall m \neq i}$, where we also know that $i \in U_i$ from equation~\eqref{eq::inTransRangeSimple}.
 Therefore, for I-frame camera $i$, ${\underset{m \in U_i}{\sum} x_{im}=1},{\forall i \in \mathcal{I}^*}$ is satisfied.
@@ -71,20 +71,20 @@ Besides, we have shown that ${\underset{j \in U_i}{\sum} x_{ij}=1}$, therefore, 
 To start, we first calculate the set of I-frame cameras $\mathcal{I}^*$ and P-frame cameras $\mathcal{P}^*$ by equation~\eqref{eq::solIFrameCams} and~\eqref{eq::solPFrameCams}.
 For camera $i \in \mathcal{I}^*$, according to lemma~\ref{lemma::findBestICamEasy}, each P-frame camera is able to find its best reference I-frame camera, which also means that camera $i$ can know the set of P-frame cameras that reference from it.
 If we denote ${D_i= \{j \in \mathcal{P}^*|x_{ji} = 1\}},{i \in \mathcal{I}^*}$ as the set of P-frame cameras that reference from I-frame camera $i$, then ${j \in \{U_i \cap W_i\}},{\forall j \in D_i}$ as long as ${z_i < z_j}, {\forall i \in \mathcal{I}^*},{\forall j \in D_i}$, this is thus equivalent to showing that ${\underset{j \in U_i}{\arg \max} \quad x_{ij} \in W_i}$.
-Consequently, the proof is done, and the policy for adjusting $\mathbf{Z}$ is to ensure ${z_i < z_j}, {\forall i \in \mathcal{I}^*},{\forall j \in D_i}$, which can be achieved by scheduling I-frame camera first, followed by its listeners one by one.
+Consequently, the proof is done, and the policy for adjusting $\mathbf{Z}$ is to ensure ${z_i < z_j}, {\forall i \in \mathcal{I}^*},{\forall j \in D_i}$, which can be achieved by scheduling I-frame camera first, followed by its listener P-frame cameras one by one.
 \hfill$\mathsmaller{\mathsmaller{\blacksquare}}$
 %
 \begin{mythm}
-If $\mathbf{X}^*$ is an optimal solution for Problem~\eqref{eq::IframeSelectionSubProblem}, then its relative $\mathbf{X}$ is also optimal for Problem~\eqref{eq::formulation}.
+If $diag^*(\mathbf{X})$ is an optimal solution for Problem~\eqref{eq::IframeSelectionSubProblem}, then its relative $\mathbf{X}$ is also optimal for Problem~\eqref{eq::formulation}.
 \label{theorem::optimalIsOptimal}
 \end{mythm}
 \textbf{\emph{Proof:}}
-According to theorem~\ref{theorem::determineX}, $\mathbf{X}$ can be determined uniquely by $\mathbf{X}^*$.
-Since the objective functions of Problem~\eqref{eq::IframeSelectionSubProblem} and Problem~\eqref{eq::formulation} are equivalent, if $\mathbf{X}^*$ is optimal for Problem~\eqref{eq::IframeSelectionSubProblem}, then $\mathbf{X}$ can lead to the smallest objective value of Problem~\eqref{eq::formulation}.
+According to theorem~\ref{theorem::determineX}, $\mathbf{X}$ can be determined uniquely by $diag^*(\mathbf{X})$.
+Since the objective functions of Problem~\eqref{eq::IframeSelectionSubProblem} and Problem~\eqref{eq::formulation} are equivalent, if $diag^*(\mathbf{X})$ is optimal for Problem~\eqref{eq::IframeSelectionSubProblem}, then it relative $\mathbf{X}$ can lead to the smallest objective value of Problem~\eqref{eq::formulation}.
 Besides, by theorem~\ref{theorem::IFrameSolalwaysFeasible}, we know that $\mathbf{X}$ is feasible for Problem~\eqref{eq::formulation}, and hence it is optimal.
 \hfill$\mathsmaller{\mathsmaller{\blacksquare}}$
 
-By theorem~\ref{theorem::optimalIsOptimal}, we can learn that letting ${z_i < z_j}, {\forall i \in \mathcal{I}^*},{\forall j \in D_i}$ can make $\mathbf{X}$ and $\mathbf{Z}$ become the optimal solution of Problem~\eqref{eq::formulation} as long as $\mathbf{X}^*$ (i.e. $\mathcal{I}^*$ and $\mathcal{P}^*$) is optimal for Problem~\eqref{eq::IframeSelectionSubProblem}.
+By theorem~\ref{theorem::optimalIsOptimal}, we can learn that letting ${z_i < z_j}, {\forall i \in \mathcal{I}^*},{\forall j \in D_i}$ can make $\mathbf{X}$ and $\mathbf{Z}$ become the optimal solution of Problem~\eqref{eq::formulation} as long as $diag^*(\mathbf{X})$ (i.e. $\mathcal{I}^*$ and $\mathcal{P}^*$) is optimal for Problem~\eqref{eq::IframeSelectionSubProblem}.
 One possible approach to ensure ${z_i < z_j}, {\forall i \in \mathcal{I}^*},{\forall j \in D_i}$ is to allocate transmission time slots group by group, where a group is the cameras set of an I-frame camera and its listeners (i.e. $\{i \cup D_i\},{\forall i \in \mathcal{I}^*}$).
 Within the transmission of one group, the I-frame camera should be scheduled at the beginning, where the order for remaining P-frame cameras does not influence the objective value of Problem~\eqref{eq::formulation}.
 Therefore, in this thesis, we just determine the schedule of P-frame cameras based on a greedy approach, that is, a camera that can make more other P-frames cameras to be able to overhear its transmission will be scheduled first.
@@ -106,4 +106,4 @@ Since time slots are allocated group by group, assume that the group of camera $
 To proceed, time slots $2,3,4$ will be allocated for the member cameras of camera $4$ (i.e. cameras in $D_4$), and which member camera is scheduled at which time slot is based on the greedy P-frame scheduling metric.
 After all member cameras of camera $4$ is scheduled, the next group will continued to be scheduled.
 That is, slot $5$ is for the transmission of camera $7$ (the I-frame camera of the next group), and slots $6,7$ are for the member cameras of camera $7$ (i.e. cameras in $D_7$).
-After all cameras groups are scheduled (i.e. ${\{4,D_4\}}$ and ${\{7,D_7\}}$), our P-frame scheduling algorithm is ended.
+After all cameras groups are scheduled (i.e. ${\{4,D_4\}}$ and ${\{7,D_7\}}$), the P-frame association is done.

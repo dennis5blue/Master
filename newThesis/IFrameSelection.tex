@@ -1,10 +1,17 @@
-\section{Proposed Algorithms}
+\section{Proposed Algorithms for I-Frame Selection Sub-Problem}
 \label{sec::proposedAlgs}
 %
-In this chapter, we present our proposed algorithms for solving Problem~\eqref{eq::formulation}, and we will follow the decomposition idea shown in Chapter~\ref{sec::OverallProbAnalysis}.
-That is, we first show the procedure for translating Problem~\eqref{eq::formulation} into the \emph{I-frame selection sub-problem} by relaxing scheduling constraints.
-After that, two proposed algorithms is introduced for solving the \emph{I-frame selection sub-problem}.
-Finally, we give a heuristic approach for scheduling the remaining P-frame cameras by a given subset of I-frame cameras.
+According to the discussion in the previous chapters, we show that Problem~\eqref{eq::formulation} can be reduced to selecting P-frame cameras as formulated in Problem~\eqref{eq::IframeSelectionSubProblem}.
+Therefore, in this chapter, we further present our proposed algorithms for solving Problem~\eqref{eq::formulation}.
+More specifically, we propose two algorithms for solving
+%and we will follow the decomposition idea shown in Chapter~\ref{sec::OverallProbAnalysis}.
+%That is, we first show the procedure for translating Problem~\eqref{eq::formulation} into the \emph{I-frame selection sub-problem} by relaxing scheduling constraints.
+%After that, two proposed algorithms is introduced for solving the \emph{I-frame selection sub-problem}.
+%Finally, we give a heuristic approach for scheduling the remaining P-frame cameras by a given subset of I-frame cameras.
+Note that since $\mathbf{X}$ are the only decision variables that influence the objective value of Problem~\eqref{eq::formulation}, the \emph{I-frame selection sub-problem} is thus the most important part for enlarging the performance of overhearing source coding.
+Therefore, we aim to find the optimal solution of the \emph{I-frame selection sub-problem} by a proposed branch-and-bound approach as presented in Chapter~\ref{sec::proposedBBAlg}.
+Besides, we also propose a heuristic approach based on graph approximation for the time efficient determination of the set of I-frame cameras in Chapter~\ref{sec::graphApprox}.
+After the selection of I-frame cameras, the performance of our proposed data gathering scheme is almost determined, where the association of P-frame cameras will follow by the idea presented in Chapter~\ref{sec::PFrameScheduling}.
 
 \subsection{Branch-and-Bound I-Frame Selection Algorithm}
 \label{sec::proposedBBAlg}

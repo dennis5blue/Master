@@ -1,76 +1,147 @@
-\documentclass[a4paper, 12pt]{book}
-
-\usepackage{times}
-\usepackage{verbatim}
-\usepackage{color}
-\usepackage{url}
+%\documentclass[notitlepage, 12pt, a4paper]{report}
+%\documentclass{eethesis}
+%\documentclass[12pt,oneandahalfspaced]{tonic-thesis}%oneandahalfspaced,doublespaced
+\documentclass[a4paper, 12pt, oneandahalfspaced]{tonic-thesis}
+% Some useful LaTeX packages
+\usepackage{type1cm}
+\usepackage{textcomp}
+\usepackage{relsize}
+\usepackage{epsfig}
+\usepackage{booktabs}
+\usepackage{rotating}
+\usepackage{cite}
+\usepackage{bm}
 \usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{CJKutf8}
+
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+%\usepackage{psfrag}
+\usepackage{url}
 \usepackage{array}
+\usepackage{indentfirst}
 
-% uncomment this if you want to indent the first paragraph
-%\usepackage{indentfirst}
+\newtheorem{mydef}{Definition}
+\newtheorem{mythm}{Theorem}
+\newtheorem{myCor}{Corollary}
+\newtheorem{mylem}{Lemma}
+%%
+%%Different height for single rows
+%%
+\newlength{\myVSpace}% the height of the box
+\setlength{\myVSpace}{1ex}% the default,
+\newcommand\xstrut{\raisebox{-.5\myVSpace}% symmetric behaviour,
+  {\rule{0pt}{\myVSpace}}%
+}
 
-% uncomment this if you want to make pdf file with hyperlink
-% \usepackage[dvipdf,colorlinks=false,unicode]{hyperref}
+%% fancyhdr
+  \usepackage{fancyhdr}
+  \pagestyle{fancy}
+  \setfrontpagestyle{fancy}
+  \setbackpagestyle{fancy}
+  \setbodypagestyle{fancy}
 
-% uncomment the following and correct them if you want to set 
-% set the pdf properties
-%\hypersetup{
-%	pdfauthor={Tz-Huan Huang},
-%	pdftitle={A Benchmark for Region-of-Interest Detection in Images},
-%	pdfsubject={Master Thesis}
-%}
+  \fancyhead{}
+  \fancyfoot{}
+  \fancyhead[LE]{\sffamily\bfseries\thepage}
+  \fancyhead[RE]{\sffamily\small{\nouppercase{\leftmark}}}
+  \fancyhead[RO]{\sffamily\bfseries\thepage}
+  \fancyhead[LO]{\sffamily\small{\uppercase{\rightmark}}}
+  \renewcommand{\headrulewidth}{0.4pt}
 
-\usepackage{ntu}
+  \fancypagestyle{plain}{%
+    \fancyhf{}
+    \fancyfoot[C]{\sffamily\bfseries\thepage}
+    \renewcommand\headrulewidth{0pt}
+    \renewcommand\footrulewidth{0pt}
+  }
+%% end fancyhdr
+%%
 
-\setcounter{tocdepth}{2}
+\usepackage{tabularx}
+%--word side color:--
+%\usepackage{contour}
+%--font color:----
+%\usepackage{color}
+%--word type:----
+%\usepackage{txfonts}
+%Package: 	Description:
+%avant 	AvantGarde font as default sans
+%avantgar	ITC Avant Garde
+%bookman 	Bookman font as default roman. Avant Garde as default sans
+%chancery 	Zapf Chancery font as default roman
+%charter 	default roman
+%courier 	default ttdefault
+%helvet 	Helvetica font as default sans
+%helvetic 	Helvetica-Oblique font as default sans
+%mathpazo 	Palatino font as default roman. Math in Palatino where possible
+%mathptmx 	Times font as default roman. Math in Times where possible.
+%ncntrsbk 	NewCenturySchlbk-Roman
+%newcent 	NewCenturySchoolbook font as default roman
+%palatcm 	Palatino + Computer Modern math fonts
+%pifont 	Pi font support (special characters)
+%utopia 	Utopia font as default roman
+%zapfchan 	ITC Zapf Chancery as default roman
+%times		Times, Helvetica, Courier
+%pslatex	same as Times, but uses a specially narrowed Courier. This is preferred over Times because of the way it 			handles Courier.
+%palatino	Palatino, Helevetica, Courier
+%txfonts
+%--end-----
+%\usepackage[margin=2cm]{geometry}
+\setlength{\oddsidemargin}{1.125in}
+%\renewcommand{\thechapter}{\thegtchapter}
+\renewcommand{\thegtchapter}{\thechapter} %table of content-->chapter: 1,2...
 
-\pagestyle{plain}
+
+\numberwithin{equation}{chapter}
+\renewcommand{\arraystretch}{1.2}
+\title{Exploiting Inter-View Correlation for Bandwidth Efficient Data Gathering in Wireless Multi-Camera Networks}
+\author{Chang-Yu, Song}
+\department{Graduate Institute of Communication Engineering}
+\degree{Master of Science}
+\submitdate{July 2015}
+\copyrightyear{2015}
+
+
+\bibpagetrue
 
 \begin{document}
 
-% cover page
-\maketitle
+\begin{preliminary}
+\begin{abstract}
+\input{abstract.tex}
+\end{abstract}
+\contents
+\end{preliminary}
 
-% side page, used for printing on spline.
-\makeside
 
-\frontmatter
+\input{introduction.tex}
+\input{background.tex}
+\input{newScenarioAndModel.tex}
+\input{newFormulation.tex}
+\input{ProbAnalysis.tex}
+\input{PFrameScheduling.tex}
+\input{IFrameSelection.tex}
+\input{graphApproximation.tex}
+\input{ProtocolDesign.tex}
+\input{evaluation.tex}
+\input{conclusion.tex}
 
-\begin{CJK}{UTF8}{nkai}
-\CJKhorz
-\makecertification
 
-% comment one of the following unless you are sure you want to 
-% have both english and chinese acknowledgements in your thesis
-\input{acknowledgementsEN}
-\input{acknowledgementsCH}
-
-\input{abstractCH}
-\input{abstractEN}
-\tableofcontents
-\end{CJK}
-\listoffigures
-\listoftables
-
-\mainmatter
-
-% input your thesis here
-\input{introduction}
-%\input{related}
-%\input{photoshoot}
-%\input{modeling}
-%\input{application}
-%\input{conclusion}
-
-\backmatter
-
-\addcontentsline{toc}{chapter}{\bibname}
+\begin{postliminary}
+\bibfiles{reference}
+\bibliographystyle{IEEEtran}
+\references
+\end{postliminary}
 \bibliographystyle{abbrv}
 
-% input your reference here
-% \bibliography{thesis}
-
-\appendix
 
 \end{document}

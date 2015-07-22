@@ -1,0 +1,9 @@
+In this thesis, we investigate the problem of correlated data gathering in the wireless multi-camera networks by considering the I-frame selection problem and the P-frame association problem.
+It is required that cameras periodically send back the collected images back to the data aggregator through direct wireless communications links.
+Since multiple cameras may be deployed in a neighborhood area with overlapping perspectives of the street views, we exploit the capability of transmission overhearing among cameras.
+If a camera can overhear transmissions from previous scheduled nearby cameras, it can reference the image and reduce the amount of bits required to be delivered to the aggregator by performing the multiview encoding technique.
+We thus propose an I-frame selection algorithm and a P-frame associate algorithm to determine the order of transmissions for all cameras such that the amount of transmission bits can be minimized.
+Besides, for real-world applications, it requires multiple transmission rounds for delivering the collected images back to the data aggregator.
+Therefore, in this thesis, we also describe how to apply the correlated data gathering scheme under overhearing source coding for more than one transmission rounds.
+To evaluate the proposed algorithms, we resort to a 3D modeling software to generate quasi-realistic city views for all cameras and use H.264 multiview video encoding reference software to encode collected images.
+Based on the evaluation for a semi-realistic multi-camera network, our proposed approaches can result in lower amount of transmission bits under the resource-constrained multimedia applications, and thus motivate further investigation along this direction.

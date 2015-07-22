@@ -1,0 +1,39 @@
+\section{Introduction}
+\label{sec::introduction}
+Multimedia machine-to-machine (M2M) communications have been typically envisioned to leverage the infrastructure of the mainstream cellular networks for enabling {\em ambient intelligence} in the Internet of things.
+For instance, cameras deployment in the traffic surveillance systems gives the possibility to automatically analyze the urban traffic density~\cite{Kapsch,Traficon,Citilog}.
+%
+Unlike conventional wireless sensor networks with dedicated network deployment, one challenging problem for those multimedia M2M applications is to share the precious cellular radio resource with existing cellular users.
+%
+In addition, multimedia data often generate larger packets size and hence the limited wireless radio resource might become insufficient to support the {\em real-time transportation of the multimedia data}.
+
+Fortunately, since the deployment of cameras often has overlapped region of interest, to be able to transport a large amount of data from cameras to the back-end server, correlated data gathering has been considered as one effective technology for leveraging data correlation.
+On the one hand, multiple cameras observing the same area from different point of view will produce correlated video streams. 
+On the other hand, multiview video encoding technique can allow us to reduce the packet size required to encode frames collected from different neighborhood cameras.
+Therefore, in this thesis, we exploit the idea of correlated data gathering via overhearing in wireless multi-camera networks for the sake of reducing the amount of encoded bits required to be transmitted through the wireless communication links.
+%
+While correlated data gathering has been popularly investigated in the literature, most related works has modeled the correlation between cameras from a theoretic perspective using their predefined position.
+As we describe in Section~\ref{sec::relatedWork}, such an assumption fails to consider the realistic correlation level in the multimedia devices.
+Therefore, the theoretic correlation model may lead to sub-optimal solution in the context of wireless multi-camera networks with {\em tight radio resource constraints.}
+
+In this thesis, we investigate the problem of correlated data gathering from a set of cameras deployed in a city.
+It is required that these cameras periodically send their data back to a back-end server through direct wireless communications (e.g. LTE).
+To exploit data correlation among cameras, we allow cameras to overhear nearby transmissions and perform multiview video encoding (e.g. as a P-frame) to reduced the amount of encoded bits.
+We take the communication constraint into consideration to determine the transmission schedule of cameras such that the limited wireless radio resource can be utilized in a more efficient way through the overhearing source coding technique.
+%Unlike related work on similar problems, our goal is not to maximize the link quality (sum data rate) or the amount of cameras that can be served.
+%Instead, realizing the fact that cameras are typically deployed to perform one task collectively, we {\em prioritize data over camera} and allow cameras with less important data to be dropped from support under resource limitation.
+Afterwards, we propose two algorithms to select I-frame cameras and determine the overall transmission schedule according to those selected I-frame cameras.
+The first algorithm for selecting I-frame cameras is based on the branch-and-bound method so that the optimal solution is promised to be obtained.
+The second algorithm for choosing I-frame cameras is through a graph approximation approach for the sake of reducing computational complexity.
+%The second algorithm for determining the transmission schedule is a heuristic approach such that the order of transmission can be determined with less overhead of control message.
+To proceed, note that in general cameras are deployed for observing moving objects, and hence the correlation among cameras might vary as the time changes.
+For this reason, we also propose a centralized approach so that the overhearing source coding technique can be applied even though the correlation becomes different.
+To evaluate the proposed algorithms, we resort to a 3D modeling software to generate quasi-realistic city views for all cameras and use H.264 multiview video coding (MVC) reference software to encode collected images.
+Evaluation results show that the proposed algorithms can outperform baseline approaches, thus motivating further investigation along this direction.
+
+The rest of this thesis is organized as follows:
+Chapter~\ref{sec::backgroundAndRelatedWork} describes the background of this thesis and some related works.
+Our target network scenario and relative models are then introduced in Chapter~\ref{sec::scenarioAndModel}.
+According to the relative models, we further formulate our problem in Chapter~\ref{sec::OSC} and present in Chapter~\ref{sec::proposedAlgs} how we solve the formulated problem through decoupling it into the {\em I-frame selection} sub-problem and the {\em P-frame associate} sub-problem. 
+Based on the proposed algorithms, we describe in Chapter~\ref{sec::protocolDesign} how the proposed scheme can be applied for real-world multi-camera applications.
+Evaluation results in Chapter~\ref{sec::evaluation} show that compared to the baseline approaches, our proposed approach can result in better performance in terms of various observation point of view, and finally, Chapter~\ref{sec::conclusion} concludes our work.

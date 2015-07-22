@@ -1,0 +1,176 @@
+\section{Correlated Data Gathering under Overhearing Source Coding}
+\label{sec::OSC}
+% Begin motivation
+In multi-camera networks, image collected from different cameras might eventually produce correlated data streams.
+It is clearly that the amount of data gathered from all cameras within the network is increased together with the number of cameras.
+However, useful data does not increased as much as the data quantity, which means that there exists a portion of data which is not required to be transmitted.
+Besides, since the data transmission from individual cameras to the data aggregator is through a wireless communication link, there is a chance for cameras to receive and decode the transmission of other cameras.
+With the help of MVC as introduced in Chapter~\ref{sec::MultiviewIntro}, camera can leverage the overheard data and then perform inter-view prediction to reduce the amount of bits that is required to encode its video frames.
+Therefore, this idea thus motivates us to investigate the idea of correlated data gathering through overhearing source coding.
+% End motivation
+
+Denote ${V=\{ 1,2,\cdots,|V| \}}$ as the set of cameras deployed for data gathering in a city, where camera $i$ will produce the video frame $F_i$.
+To process and transmit the image observed by each camera, we assume that $F_i$ can be encoded as an I-frame or a P-frame, where we denote the amount of bits needed to encode $F_i$ as $H(F_i)$ (if $F_i$ is encoded as an I-frame) or $H(F_i|F_j)$ (if $F_i$ is encoded as a P-frame with the reference frame $F_j$).
+For the sake of notation simplicity, we define the cost matrix that records the amount of encoded bits of each camera as follows:
+\begin{align}
+\mathbf{H}
+&= \left[ \mathbf{h}_1 \quad \mathbf{h}_2 \quad \cdots \quad \mathbf{h}_{|V|} \right], \nonumber \\
+&= \left[ \begin{array}{cccc}
+h_{11} &h_{12} &\cdots &h_{1|V|} \\
+h_{21} &h_{22} &\cdots &h_{2|V|} \\
+\vdots &\vdots &\vdots &\vdots \\
+h_{|V|1} &h_{|V|2} &\cdots &h_{|V||V|}
+\end{array} \right],
+\label{eq::bbCostMatrix}
+\end{align}
+where $\mathbf{h}_k$ is the $k^{th}$ column of $\mathbf{H}$ and ${h_{ij} = H(F_i|F_j)},{\forall i,j \in V}$ if ${i \neq j}$ and ${h_{ii}=H(F_i|F_i)=H(F_i)},{\forall i \in V}$.
+Note that the cost matrix defined by equation~\eqref{eq::bbCostMatrix} will be calculated as a beforehand information for our problem formulation.
+
+Based on the above assumptions, we are now aimed to minimize the total amount of bits required to be transmitted to the data aggregator under the constraint that images captured by all cameras are necessary to be delivered, and we show in the followings our target problem formulation in this thesis.
+
+%
+\subsection{Problem Formulation}
+Since the performance of overhearing source coding depends a lot on the sequence of transmission schedule, the goal of our problem formulation is to determine the best schedule so that the later scheduled camera can leverage the image collected by the set of previous scheduled cameras for reducing its amount of data.
+Besides, communication constraints such as transmission range must also be taken into consideration to ensure a camera can successfully decode its overheard data.
+%
+To start, assume that every cameras need to deliver its image to the aggregator once (either encoded as an I-frame or a P-frame), and the number of available time slots $N$ is equivalent to number of cameras, that is ${N=|V|}$.
+Note that whether a camera $i$ can overhear the transmission of camera $j$ or not should depend on if camera $i$ falls in the transmission range of camera $j$.
+In this thesis, we do not assume a constant, given overhearing distance for all cameras when determining their overhearing range.
+Instead, we take a general approach by assuming the set of cameras that can overhear a transmission to be determined based on the amount of transmitted data and the channel capacity.
+Specifically, for camera $i$ to overhear transmission from camera $j \in V$, the amount of data to overhear cannot be larger than the maximum channel capacity $C_{ji}$ multiplied by the time slot duration $\tau$.
+In this way, the set of cameras $U_i$ that camera $i$ has the possibility to overhear can be expressed as follows:
+\begin{equation}
+U_i = \{ j \in V | \tau C_{ji} \geq h_{jj} \},
+\label{eq::inTransRange}
+\end{equation}
+where $\tau$ is the duration of time slot and $C_{ji}$ is the achievable rate from camera $j$ to camera $i$ defined as:
+\begin{equation}
+C_{ji} = W \log_2 \left( 1+\frac{1}{\Gamma} \frac{p_j G_{ji}}{WN_0} \right),
+\label{eq::capacity}
+\end{equation}
+with $p_j$ being the transmission power, $G_{ji}$ being the channel gain, $W$ begin the channel bandwidth, $N_0$ being the background noise, and $\Gamma$ being the Shannon gap as introduced in~\cite{MQAM}.
+Note that for the special case when the channel gain $G_{ji}$ between camera $j$ and camera $i$ is uniquely determined by the distance $d_{ji}$ between them (e.g. no fading), transmission of camera $j$ can be overheard by cameras that are inside the circle of radius $d_{j0}$ (distance between camera $j$ and the aggregator) around camera $j$.
+For a more simple approach, we define the overhearing gap ${\rho, \rho \geq 0}$ such that all cameras fall in the range of $\rho d_{i0}$ are able to overhear the transmission of camera $i$.
+In this way, $U_i$ can be simplified as:
+\begin{equation}
+U_i = \{ j \in V | d_{ij} \leq \rho d_{j0} \}.
+\label{eq::inTransRangeSimple}
+\end{equation}
+In the followings of this thesis, we use equation~\eqref{eq::inTransRangeSimple} instead of equation~\eqref{eq::inTransRange} to define the set $U_i$.
+
+In addition to considering the transmission range of each cameras, we note that whether a camera $i$ can overhear the transmission of camera $j$ or not should also depend on the transmission schedule (can only overhear previous transmissions).
+For this reason, it is necessary for us to define the transmission order, and hence we denote the scheduling vector ${\mathbf{Z} = [z_1, z_2, \cdots, z_{|V|}]}$, ${1 \leq z_i \leq N}$, ${i=1,\cdots,|V|}$ such that ${z_i = n}$, ${1 \leq n \leq N}$, ${n \in \mathbb{Z}}$ if camera $i$ is scheduled at the $n^{th}$ time slot.
+Note that we require
+\begin{equation}
+|z_i - z_j| > 0, \forall i,j \in V, i \neq j,
+\label{eq::oneSlotOneCam}
+\end{equation}
+since only one camera can transmit its data within the same time slot.
+Based on the scheduling vector $\mathbf{Z}$, we can define the subset of cameras that transmit before camera $i$ (including camera $i$) and camera $i$ can overhear together with constraint~\eqref{eq::inTransRangeSimple} as: 
+\begin{equation}
+W_i = \{ j \in U_i | z_j \leq z_i \}.
+\label{eq::prevSet}
+\end{equation}
+After overhearing transmissions from the set $W_i$, camera $i$ can perform multi-view video encoding for removing redundant information from its data.
+
+To proceed, we further 
+%denote the vector ${\mathbf{X} = [x_1, x_2, \cdots, x_{|V|}]}$, ${x_i = \{0,1\}}$, ${\forall i \in V}$ as the I-frame indicator variable such that
+%\begin{equation*}
+%\left\{ \begin{array}{ll}
+%x_i = 1, &\text{if camera $i$ is encoded as an I-frame}, \\
+%x_i = 0, &\text{if camera $i$ is encoded as a P-frame}.
+%\end{array} \right.
+%\end{equation*}
+%For some cameras, it is possible for them to encode its image as a P-frame by overhearing nearby transmissions, therefore, we further
+define the referencing matrix ${\mathbf{X} = [x_{ij}]_{|V| \times |V|}}$ as
+\begin{equation*}
+\left\{ \begin{array}{ll}
+x_{ij} = 1, &\text{ if image $F_i$ produced by camera $i$ is} \\
+                   &\text{ referenced from frame $F_j$,} \\
+x_{ij} = 0, &\text{ if image $F_i$ does not reference from $F_j$.}
+\end{array} \right.
+\end{equation*}
+Note that we assume $x_{ii}=1$ if camera $i$ is encoded as an I-frame for the sake of notation simplicity.
+Since we do not consider B-frame encoding in this thesis, which means that each camera must encode its image either as an I-frame or a P-frame, therefore, we require
+\begin{equation}
+\sum_{j \in W_i} x_{ij} = 1, \forall i \in V,
+\label{eq::referenceConstraint}
+\end{equation}
+which means that the frame captured by each camera can either reference from one previous overheard frame or encode independently.
+Also note that we assume every cameras encoded its image as a P-frame should reference from an overheard I-frame, therefore
+\begin{equation}
+x_{ij} \leq x_{jj}, \forall i \in V, \forall j \in W_i.
+\label{eq::referenceOnlyIframe}
+\end{equation}
+Besides, a camera $i$ cannot overhear another camera which is located too far or is scheduled later than the transmission of camera $i$ , that is,
+\begin{equation}
+x_{ij} = 0, \forall i \in V, \forall j \in V \setminus W_i.
+\label{eq::xConstraintForNonoverheard}
+\end{equation}
+%
+%
+\begin{table*}[htb]
+\footnotesize
+\centering
+\begin{tabularx}{0.9\textwidth}{c|c|X}
+  \hline
+  Type &Notation &Description \\
+  \hline
+  \hline
+  \multirow{3}{*}
+  {Sets} &$V$ &Set of all cameras \\
+       &$U_i$ &Set of cameras whose transmission range cover camera $i$ \\
+       &$W_i$ &Set of cameras that camera $i$ is able to overhear \\
+       
+  \hline
+  \multirow{2}{*}
+  {Decision variables} &$x_{ij} \in \{0,1\}$ &Binary indicator for the reference camera of camera $i$ \\
+  	&$z_i \in \{1,\cdots,N\}$ &The scheduled slot for camera $i$ \\
+  \hline
+  \multirow{12}{*}
+  {Parameters} &$F_i$ &Image captured by camera $i$ \\ 
+   &$N$ &Number of total available time slots\\ 
+   &$C_{ij}$ &Channel capacity from camera $i$ to camera $j$ \\ 
+   &$G_{ij}$ &Channel gain from camera $i$ to camera $j$ \\
+   &$\tau$ &Duration for a time slot \\
+   &$d_{ij}$ &Distance between camera $i$ and camera $j$ \\
+   &$d_{i0}$ &Distance between camera $i$ and data aggregator \\
+   &$p_i$ &Transmission power of camera $i$ \\
+   &$W$ &Channel bandwidth \\
+   &$N_0$ &Spectral density of background noise \\
+   &$\Gamma$ &SINR gap between Shannon capacity \\
+   &$\rho$ &Overhearing gap \\
+  \hline
+  \multirow{3}{*}
+  {Functions} &$|\cdot|$ &Return the size of a set \\
+  	&$H(\cdot)$ &Return the amount of encoded bits for I-frame cameras\\
+  	&$H(\cdot|\cdot)$ &Return the amount of encoded bits for P-frame cameras \\
+  \hline
+\end{tabularx}
+\\
+\caption{\label{tab::optSymbols}Notations used in problem formulation}
+\end{table*}
+%
+%
+
+Recall that the objective for our target problem is to minimize the total amount of bits that needed to be delivered.
+The overall problem formulation can now be written as follows:
+\begin{align}
+\underset{\mathbf{X},\mathbf{Z}}{\text{minimize}} & & \nonumber \\
+	&\sum_{i=1}^{|V|} \sum_{j \in W_i}  x_{ij} h_{ij}, & \nonumber \\
+\text{subject to} & & \nonumber \\
+	&U_i = \{ j \in V | d_{ij} \leq \rho d_{j0} \}, &\forall i \in V, \nonumber \\
+	&W_i = \{ j \in U_i | z_j \leq z_i \}, &\forall i \in V, \nonumber \\
+	&\sum_{j \in W_i} x_{ij} = 1, &\forall i \in V, \nonumber \\
+	&x_{ij} \leq x_{jj}, &\forall i \in V, \forall j \in W_i, \nonumber \\
+	&x_{ij} = 0, &\forall i \in V, \forall j \in V \setminus W_i, \nonumber \\
+	&x_{ij} = \{0,1\}, &\forall i,j \in V, \nonumber \\
+	&|z_i - z_j| > 0, &\forall i,j \in V, i \neq j, \nonumber \\
+	&1 \leq z_i \leq N, &\forall i \in V, z_i \in \mathbb{Z},
+\label{eq::formulation}
+\end{align}
+where the set of all cameras $V$, position of each cameras (i.e. the set $U_i, i \in V$), and the amount of encoded bits (i.e. $h_{ij}, i,j \in V$) are given inputs parameters of problem~\eqref{eq::formulation}.
+The elements in $\mathbf{X}$ and $\mathbf{Z}$ are unknown decision variables to be solved.
+Since both the variables in $\mathbf{X}$ and $\mathbf{Z}$ are positive integers, problem~\eqref{eq::formulation} is thus in the form of a nonlinear integer programming problem, and solving the nonlinear integer programming is usually a $\mathcal{NP}$-hard problem~\cite{NIP}.
+Therefore, we will show how to decompose problem~\eqref{eq::formulation} into the \emph{I-frame selection sub-problem} and the \emph{P-frame associate sub-problem} in the following chapter.
+%

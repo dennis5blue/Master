@@ -1,0 +1,43 @@
+\subsubsection{H.264 Video Compression Technique}
+\label{sec::H264CompressionIntro}
+%
+H.264 (or MPEG-4 Part~10) is a video coding format that is currently one of the most commonly used formats for the recording, compression, and distribution of video content~\cite{H264Book}.
+Its main idea for compressing video content is to remove redundant video data so that the compressed file can be efficiently transmitted through the internet.
+Usually, the compression is done by encoding the source video stream at the transmitter side, where the encoding technique can be known as a ``difference coding'' method.
+To start the encoding procedure, a frame will be divided into several macroblocks, and then the encoder will form a prediction of the current encoding macroblock based on previously encoded data, either from the current frame using \emph{intra prediction} or from other frames that have already been encoded using \emph{inter prediction}.
+
+For \emph{intra prediction}, the encoder performs some lossless or lossy compression techniques relative to information that is contained only within the current frame, and not relative to any other frame in the video sequence.
+In other words, no prediction is performed outside of the current encoding frame, and hence its compression ratio is thought to be lower than \emph{inter prediction}.
+For \emph{inter prediction}, on the other hand, in order to have a higher compressed performance (e.g. by ensuring that the redundant information such as static background is not repeatedly encoded), the video encoder will compare the difference between the current video frame with the previously encoded frame and perform differential encoding for the sake of removing the redundant part of the current video frame.
+When encoding video frames under the \emph{inter prediction} mode, the three following types are defined in the standard of H.264:
+\begin{itemize}
+\item \textbf{I-frame}:
+An I-frame is a video frame which has been encoded independently under the intra prediction mode (i.e. without referencing from any other frame).
+Therefore, an I-frame can be decoded at the receiver side without any help of other frames.
+Due to this reason, any video streams will always start with a frame encoded as an I-frame and will have subsequent I-frames added after encoding several frames.
+The interval between successive I-frames is an important issue in the H.264 video compression technique.
+On one hand, I-frames are necessary for random accessing different parts of the video files since they are the only frame type which can be decoded independently.
+On the other hand, encoding video frames as I-frames has the drawback that they are the largest in terms of frame size since only intra-frame redundancy can be removed for this type of frames.
+\item \textbf{P-frame}:
+A P-frame is a video frame that exploits preceding I or P-frame as its reference when encoding.
+That is, the video encoder will perform a searching algorithm on the reference I or P-frame when encoding a P-frame.
+As long as some areas are found to be unchanged between a P-frame and its reference, only the movement of these areas are required to be encoded.
+Therefore, the frame size of a P-frame is smaller than an I-frame since the redundant data is removed after the encoding procedure.
+However, the receiver should refer to the reference frame when decoding a P-frame and it cannot be decoded if the preceding reference frame is missed at the receiver side.
+\item \textbf{B-frame}:
+A B-frame is a video frame that is able to reference from both a preceding reference frame as well as a future reference frame.
+Therefore, although encoding video frames as B-frames can improve the encoding efficiency, it will also increase the processing time.
+Since B-frame is an extension from P-frame, we do not consider the appearance of B-frames in this thesis, however, note that our proposed scheme can still be extend to video streams containing  B-frames.
+\end{itemize}
+
+%
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{Figures/baselineGOP.pdf}
+\caption{\label{fig::baselineGOP}Group of pictures of H.264 baseline profile}
+\end{center}
+\end{figure}
+%
+In this thesis, we assume that all video frames are encoded as either I-frames or P-frames as shown in Fig.~\ref{fig::baselineGOP} (which is the baseline profile in H.264 and has been widely used for mobile devices~\cite{h264Recommendation}), where a P-frame will reference from its preceding frame (can be either an I-frame or a P-frame).
+An I-frame will be repeatedly inserted after a give number of P-frames, and we denote an I-frame together with its following P-frames as a group of pictures (GOP) in this thesis.
+In the following chapters, we will explain more detailed about how the \emph{inter prediction} is done, and we will also introduce the idea of extending H.264 video compression technique into the scenario of multi-camera networks by the multiview encoding procedure.

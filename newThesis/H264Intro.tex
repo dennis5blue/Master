@@ -3,7 +3,7 @@
 %
 H.264 (or MPEG-4 Part~10) is a video coding format that is currently one of the most commonly used formats for the recording, compression, and distribution of video content~\cite{H264Book}.
 Its main idea for compressing video content is to remove redundant video data so that the compressed file can be efficiently transmitted through the internet.
-Usually, the compression is done by encoding the source video stream at the transmitter side, where the encoding technique can be known as a ``difference coding'' method.
+Usually, the compression is done by encoding the source video stream at the transmitter side, where the encoding technique can be known as a ``differential coding'' method.
 To start the encoding procedure, a frame will be divided into several macroblocks, and then the encoder will form a prediction of the current encoding macroblock based on previously encoded data, either from the current frame using \emph{intra prediction} or from other frames that have already been encoded using \emph{inter prediction}.
 
 For \emph{intra prediction}, the encoder performs some lossless or lossy compression techniques relative to information that is contained only within the current frame, and not relative to any other frame in the video sequence.
@@ -20,7 +20,7 @@ On one hand, I-frames are necessary for random accessing different parts of the 
 On the other hand, encoding video frames as I-frames has the drawback that they are the largest in terms of frame size since only intra-frame redundancy can be removed for this type of frames.
 \item \textbf{P-frame}:
 A P-frame is a video frame that exploits preceding I or P-frame as its reference when encoding.
-That is, the video encoder will perform a searching algorithm on the reference I or P-frame when encoding a P-frame.
+That is, the video encoder will perform a searching algorithm on one reference I or P-frame when encoding a P-frame.
 As long as some areas are found to be unchanged between a P-frame and its reference, only the movement of these areas are required to be encoded.
 Therefore, the frame size of a P-frame is smaller than an I-frame since the redundant data is removed after the encoding procedure.
 However, the receiver should refer to the reference frame when decoding a P-frame and it cannot be decoded if the preceding reference frame is missed at the receiver side.
@@ -39,5 +39,5 @@ Since B-frame is an extension from P-frame, we do not consider the appearance of
 \end{figure}
 %
 In this thesis, we assume that all video frames are encoded as either I-frames or P-frames as shown in Fig.~\ref{fig::baselineGOP} (which is the baseline profile in H.264 and has been widely used for mobile devices~\cite{h264Recommendation}), where a P-frame will reference from its preceding frame (can be either an I-frame or a P-frame).
-An I-frame will be repeatedly inserted after a give number of P-frames, and we denote an I-frame together with its following P-frames as a group of pictures (GOP) in this thesis.
-In the following chapters, we will explain more detailed about how the \emph{inter prediction} is done, and we will also introduce the idea of extending H.264 video compression technique into the scenario of multi-camera networks by the multiview encoding procedure.
+An I-frame will be repeatedly inserted after a given number of P-frames, and we denote an I-frame together with its following P-frames as a group of pictures (GOP) in this thesis.
+In the following of this chapter, we will explain more detailed about how the \emph{inter prediction} is done, and we will also introduce the idea of extending H.264 video compression technique into the scenario of multi-camera networks by the multiview encoding procedure.

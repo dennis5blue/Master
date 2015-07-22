@@ -1,7 +1,7 @@
 \subsubsection{Multiview Video Coding}
 \label{sec::MultiviewIntro}
 %
-In order to achieve a higher compression ratio for mutli-camera networks, Multiview Video Coding (MVC)~\cite{MVCoverview} has been popularly investigated in literatures.
+In order to achieve a higher compression ratio for multi-camera networks, Multiview Video Coding (MVC)~\cite{MVCoverview} has been popularly investigated in literatures.
 Multiview videos are the video data that observe the same scene from different position or different sensing directions simultaneously.
 %
 \begin{figure}
@@ -12,7 +12,7 @@ Multiview videos are the video data that observe the same scene from different p
 \end{figure}
 %
 An example of multiview videos can be shown in Fig.~\ref{fig::multiCam}, where we can learn in this figure that the captured video streams of the two cameras are similar to each other but with a little bit different.
-More specifically, camera $i$ and camera $j$ in Fig.~\ref{fig::multiCam} are both observing the same object but from different positions and having different sensing directions, there will cause some overlapped regions between the collected views from the two cameras.
+More specifically, camera $i$ and camera $j$ in Fig.~\ref{fig::multiCam} are both observing the same object but from different positions and having different sensing directions, therefore, it will cause some overlapped regions between the collected frames from the two cameras.
 This spatial correlation from neighboring cameras can thus help to reduce the amount of data needed to be delivered.
 In order to exploit the spatial correlation between these views for the delivery of efficient compression, MVC allows the idea of \emph{interview prediction}.
 That is, the MVC encoder is able to reference from views captured from nearby cameras during the stage of inter prediction as shown in Fig.~\ref{fig::MVC}.

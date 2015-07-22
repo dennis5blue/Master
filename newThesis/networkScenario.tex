@@ -1,8 +1,8 @@
 \subsection{Network Scenario}
 \label{sec::networkScenario}
 %
-As we mentioned in Chapter~\ref{sec::dcClustering}, we focus on the problem of transmission scheduling in a cluster for the sake of realizing the idea of correlated data gathering.
-That is, we aim to determine the transmission schedule of each cluster so that the benefit of correlated data gathering can be maximized through the overhearing source coding.
+As we mentioned in Chapter~\ref{sec::dcClustering}, we focus on the problem of data gathering \emph{within one cluster} for the sake of exploiting inter-view correlation among neighboring cameras.
+More specifically, we leverage the idea of overhearing source coding to achieve such a \emph{bandwidth efficient} data gathering scheme.
 %
 \begin{figure}
 \centering
@@ -12,7 +12,7 @@ That is, we aim to determine the transmission schedule of each cluster so that t
 %
 Fig.~\ref{fig::sysModel} shows our target scenario by reduction from Fig.~\ref{fig::dcModel}, where the cluster heads in Fig.~\ref{fig::dcModel} is now considered as data aggregators in the following of this thesis.
 Note that since we require ``lossless'' data delivery, each camera within the cluster is thus responsible to deliver its data to the aggregator once, and we also assume that each camera has the capability to overhear transmissions form nearby cameras that belong to the same cluster.
-After a camera overhear nearby transmissions, it can apply the MVC mechanism as described in Chapter~\ref{sec::MultiviewIntro} for the sake of reducing the amount of data that is required to be delivered to the data aggregator (i.e. the serving cluster head of this camera).
+After a camera overhear nearby transmissions, it can apply the MVC mechanism as described in Chapter~\ref{sec::MultiviewIntro} for the sake of reducing the amount of encoded bits that is required to be delivered to the data aggregator (i.e. the serving cluster head of this camera).
 In order to overhear the transmission from nearby cameras, it is clearly that the below two conditions must be satisfied:
 \begin{itemize}
 \item The listener camera must be scheduled after the transmitter camera.

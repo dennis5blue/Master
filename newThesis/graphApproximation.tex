@@ -5,7 +5,7 @@ One possible approach to reduce complexity can be done by approximating the prob
 For this reason, we will introduce in the followings how we transform problem~\eqref{eq::IframeSelectionSubProblem} into a \emph{minimum weighted dominating set} problem and solve it through a heuristic algorithm.
 %
 \subsubsection{Minimum Weighted Dominating Set}
-To start, we model the multi-camera network into a directed graph $\mathcal{G}=(V,E)$, where $V$ is the set of all vertices (same as the set of all cameras) and there exists a directed edge $(i,j) \in E$ (note that the edge $(i,j)$ is considered to be directed from $i$ to $j$) if and only if camera $i$ has the possibility for overhearing the transmission of camera $j$ (i.e. $j \in U_i$~\eqref{eq::inTransRange}).
+To start, we model the multi-camera network into a directed graph $\mathcal{G}=(V,E)$, where $V$ is the set of all vertices (same as the set of all cameras) and there exists a directed edge $(i,j) \in E$ (note that the edge $(i,j)$ is considered to be directed from $i$ to $j$) if and only if camera $i$ has the possibility for overhearing the transmission of camera $j$ (i.e. $j \in U_i$~\eqref{eq::inTransRangeSimple}).
 For the sake of simplicity, we assume that the vertex index of $\mathcal{G}$ is the same with the camera index, that is, vertex $i \in V$ represents camera $i$ and it aims to transmit $F_i$ to the aggregator.
 We then denote $\mathcal{N}_i$ as the set of all neighbors of a vertex $i \in V$ such that $j \in \mathcal{N}_i$ if and only if $(i,j) \in E$.
 Since our goal in problem~\eqref{eq::IframeSelectionSubProblem} is to minimize the total cost (encoded bits) of the multi-camera network, $\mathcal{G}$ is considered as a weighted graph having both vertices and edges being weighted, where the weight for a vertex $i \in V$ is defined as:
@@ -17,7 +17,7 @@ whereas the weight for an edge $(i,j) \in E$ is:
 \omega_{i,j} = h_{ij}.
 \end{equation}
 Note that it is not required $\omega_{i,j} = \omega_{j,i}$ due to the reason that $h_{ij}$ might not equaled to $h_{ji}$.
-As an example, the directed graph $\mathcal{G}$ of a simple multi-camera network is shown in Fig.~\ref{fig::mdsGraphExample}.
+As an example, the directed graph $\mathcal{G}$ of a simple multi-camera network containing $7$ cameras is shown in Fig.~\ref{fig::mdsGraphExample}.
 %
 \begin{figure}
 \begin{center}
@@ -38,7 +38,7 @@ In order to meet the requirement that all cameras must encode its frame as eithe
 The first two properties can also be regarded as the dominance properties, while the third property is for minimizing the weight of the grouping structure.
 Therefore, the problem for forming camera groups is similar to finding a minimum weighted dominating set of a directed graph.
 The authors in~\cite{MWDS_baseline} also investigated the problem of finding a minimum weighted dominating set, however, the weight of edges (i.e. cost for P-frame cameras) is not considered in their work and hence their proposed algorithm will lead to sub-optimal solution in our target scenario.
-For this reason, we take both vertex weight and edge weight into consideration during the formation of camera groups, where our proposed algorithm is presented in the following chapter.
+For this reason, we take both vertex weight and edge weight into consideration during the formation of camera groups, where our proposed algorithm is presented in the following of this chapter.
 %
 \subsubsection{Proposed Cameras Grouping Algorithm}
 Before introducing our proposed algorithm, we first note that there has a trade-off for a camera $i$ to determine whether it should be an I-frame camera or not.

@@ -1,7 +1,6 @@
 \section{Centralized Correlated Data Gathering for Wireless Multi-Camera Networks}
 \label{sec::protocolDesign}
-%{\color{red} Present how our proposed correlated data gathering scheme is applied to real-world multi-camera networks.}
-As we present in Chapter~\ref{sec::proposedAlgs} about our proposed scheduling algorithms to exploit image correlation among neighboring cameras, we further describe how the proposed correlated data gathering scheme can be applied to real-world multi-camera networks in this chapter.
+As we present in Chapter~\ref{sec::OSC} and Chapter~\ref{sec::proposedAlgs} about our proposed data gathering scheme to exploit inter-view correlation among neighboring cameras, we further describe how the proposed scheme can be applied to real-world multi-camera networks in this chapter.
 First of all, we will show our modifications about the multi-camera networks so that our proposed correlated data gathering scheme can fit in the system.
 Then, we will give an overall explanation about the system architecture, including how to get the required control information and when it should be updated.
 %
@@ -77,7 +76,7 @@ Therefore, \emph{when} should the aggregator update the cost matrix $\mathbf{H}$
 Before presenting our proposed recalculation criteria, we first show the timeline of the overall system architecture in Fig.~\ref{fig::txOverview}.
 Our proposed data gathering scheme consists of three different phases, which includes the \emph{correlation estimation phase} (CE), \emph{transmission scheduling phase} (TS) and \emph{data transmission phase}.
 Note that the first two phases (correlation estimation phase and transmission scheduling phase) are done by the data aggregator, and the determined cameras schedule can maintain for several rounds.
-Since Fig.~\ref{fig::txOverview} only gives a big picture of our proposed data gathering scheme, we will thus illustrate these three phases more detailed in the following chapters. 
+Since Fig.~\ref{fig::txOverview} only gives a big picture of our proposed data gathering scheme, we will thus illustrate these three phases more detailed in the followings.
 %
 \subsubsection{Correlation Estimation (CE) Phase}
 During the \emph{correlation estimation phase}, the data aggregator is responsible for calculating the cost matrix $\mathbf{H}$~\eqref{eq::bbCostMatrix} by the received video frames of the preceding data transmission phase.
@@ -87,13 +86,13 @@ Therefore, the calculation of $\mathbf{H}$ should based on the received I-frames
 To start, we will reconstruct those I-frames (or ``used to'' be I-frames) received from the preceding transmission.
 Then, the estimation of $\mathbf{H}$ can be divided into the following two parts.
 For diagonal elements $h_{11},\cdots,h_{|V||V|}$, their value can be obtained directly by the I-frame size of the video frame of each camera.\
-For non-diagonal elements, for instance, $h_{ij}$, the value is calculated by using the I-frame of camera $j$ for reference to encode the I-frame of camera $i$.
+For non-diagonal elements, for instance, $h_{ij}$, ${i \neq j}$, the value is calculated by using the I-frame of camera $j$ for reference to encode the I-frame of camera $i$.
 This is done by the multiview encoder at the data aggregator, and ${(|V|-1) \times (|V|-1)}$ times of multiview encoding procedure is required for obtaining all elements of $\mathbf{H}$.
-Therefore, it in not efficient for the data aggregator to perform correlation estimation too frequently, and we will describe in Chapter~\ref{sec::dataTransmissionPhase} when the data aggregator will estimate correlation among cameras.
+Therefore, it is not efficient for the data aggregator to perform correlation estimation too frequently, and we will describe in Chapter~\ref{sec::dataTransmissionPhase} when the data aggregator will estimate correlation among cameras.
 %
 \subsubsection{Transmission Scheduling (TS) Phase}
-During the \emph{transmission scheduling phase}, the data aggregator will refer to either the branch-and-bound I-frame selection algorithm (present in Chapter~\ref{sec::proposedBBAlg}) or the graph approximation I-frame selection algorithm (introduce in Chapter~\ref{sec::graphApprox}) for the determination of I-frame cameras.
-After that, the P-frame scheduling algorithm describe in Chapter~\ref{sec::PFrameScheduling} will be applied for attaching and scheduling P-frame cameras.
+During the \emph{transmission scheduling phase}, the data aggregator will refer to either the branch-and-bound I-frame selection algorithm (presented in Chapter~\ref{sec::proposedBBAlg}) or the graph approximation I-frame selection algorithm (introduced in Chapter~\ref{sec::graphApprox}) for the determination of I-frame cameras.
+After that, the idea of P-frame association described in Chapter~\ref{sec::PFrameScheduling} will be applied for choosing reference frame for those P-frame cameras.
 As long as the transmission scheduling phase is done, each camera will allocate one dedicated time slot for delivering its data to the aggregator as shown in the bottom of Fig.~\ref{fig::txOverview}.
 The determined camera schedule will last for several rounds of transmission, and the schedule will only be changed when the cost matrix $\mathbf{H}$ becomes different.
 %
@@ -139,7 +138,7 @@ Two extreme cases for reestimating $\mathbf{H}$ are listed below:
 \item Estimate $\mathbf{H}$ only at the end of first transmission round (i.e use the same $\mathbf{H}$ for delivering all GOPs).
 \end{itemize}
 However, the two cases above both have significant drawback.
-For the former case, the data aggregator will suffer from too much computational complexity, whereas for the later one, outdated cost matrix $\mathbf{H}$ will decrease the performance for overhearing source coding technique.
+For the former case, the data aggregator will suffer from too much computational complexity, whereas for the later one, outdated cost matrix $\mathbf{H}$ will decrease the performance of the overhearing source coding technique.
 Our proposed criteria, on the other hand, is a more balanced method so that we can prevent from having those two disadvantages listed above.
 
 Denote $\eta_i^k$ as the improvement ratio of camera $i$ at transmission round $k$ as:

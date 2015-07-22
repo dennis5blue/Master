@@ -16,5 +16,6 @@ One possible techniques for motion estimation in H.264 is the block-matching alg
 
 For an encoder using block-matching algorithm, each frame will be divided into blocks, and then a search region will be defined for finding the most matched block from a reference frame.
 As long as the most matched block is found, its position is recorded using a motion vector.
-Afterwards, the encoding block is subtracted from the prediction of the reference frame. As a Consequent, the motion vector and the resulting subtracted difference can be transmitted instead of the original encoding block, and hence inter-frame redundancy has been removed and data compression is achieved.
+Afterwards, the encoding block is subtracted from the prediction of the reference frame.
+As a Consequence, the motion vector and the resulting subtracted difference can be transmitted instead of the original encoding block, and hence inter-frame redundancy has been removed and data compression is achieved.
 At the receiver side, a H.264 decoder will reconstruct the block by adding the difference signal to the most matched block of the reference frame.

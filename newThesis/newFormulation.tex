@@ -23,20 +23,19 @@ h_{|V|1} &h_{|V|2} &\cdots &h_{|V||V|}
 \end{array} \right],
 \label{eq::bbCostMatrix}
 \end{align}
-where $\mathbf{h}_k$ is the $k^{th}$ column of $\mathbf{H}$ and ${h_{ij} = H(F_i|F_j)},{\forall i,j \in V}$ if ${i \neq j}$ and ${h_{ii}=H(F_i|F_i)=H(F_i)},{\forall i \in V}$.
+where $\mathbf{h}_k$ is the $k^{th}$ column of $\mathbf{H}$ and ${h_{ij} = H(F_i|F_j)}$, ${\forall i,j \in V}$ if ${i \neq j}$ and ${h_{ii}=H(F_i|F_i)=H(F_i)}$, ${\forall i \in V}$.
 Note that the cost matrix defined by equation~\eqref{eq::bbCostMatrix} will be calculated as a beforehand information for our problem formulation.
 
 Based on the above assumptions, we are now aimed to minimize the total amount of bits required to be transmitted to the data aggregator under the constraint that images captured by all cameras are necessary to be delivered, and we show in the followings our target problem formulation in this thesis.
 
 %
 \subsection{Problem Formulation}
-Since the performance of overhearing source coding depends a lot on the sequence of transmission schedule, the goal of our problem formulation is to determine the best schedule so that the later scheduled camera can leverage the image collected by the set of previous scheduled cameras for reducing its amount of data.
+Since the performance of overhearing source coding depends a lot on the sequence of transmission schedule, the goal of our problem formulation is to determine one cameras schedule such that the later scheduled camera can leverage the image collected by the set of previous scheduled cameras for reducing its amount of data.
 Besides, communication constraints such as transmission range must also be taken into consideration to ensure a camera can successfully decode its overheard data.
 %
 To start, assume that every cameras need to deliver its image to the aggregator once (either encoded as an I-frame or a P-frame), and the number of available time slots $N$ is equivalent to number of cameras, that is ${N=|V|}$.
 Note that whether a camera $i$ can overhear the transmission of camera $j$ or not should depend on if camera $i$ falls in the transmission range of camera $j$.
-In this thesis, we do not assume a constant, given overhearing distance for all cameras when determining their overhearing range.
-Instead, we take a general approach by assuming the set of cameras that can overhear a transmission to be determined based on the amount of transmitted data and the channel capacity.
+In this thesis, we take a general approach by assuming the set of cameras that can overhear a transmission to be determined based on the amount of transmitted data and the channel capacity.
 Specifically, for camera $i$ to overhear transmission from camera $j \in V$, the amount of data to overhear cannot be larger than the maximum channel capacity $C_{ji}$ multiplied by the time slot duration $\tau$.
 In this way, the set of cameras $U_i$ that camera $i$ has the possibility to overhear can be expressed as follows:
 \begin{equation}
@@ -50,8 +49,8 @@ C_{ji} = W \log_2 \left( 1+\frac{1}{\Gamma} \frac{p_j G_{ji}}{WN_0} \right),
 \end{equation}
 with $p_j$ being the transmission power, $G_{ji}$ being the channel gain, $W$ begin the channel bandwidth, $N_0$ being the background noise, and $\Gamma$ being the Shannon gap as introduced in~\cite{MQAM}.
 Note that for the special case when the channel gain $G_{ji}$ between camera $j$ and camera $i$ is uniquely determined by the distance $d_{ji}$ between them (e.g. no fading), transmission of camera $j$ can be overheard by cameras that are inside the circle of radius $d_{j0}$ (distance between camera $j$ and the aggregator) around camera $j$.
-For a more simple approach, we define the overhearing gap ${\rho, \rho \geq 0}$ such that all cameras fall in the range of $\rho d_{i0}$ are able to overhear the transmission of camera $i$.
-In this way, $U_i$ can be simplified as:
+For a more simple approach, we define the overhearing gap parameter ${\rho, \rho \geq 0}$ such that all cameras fall in the range of $\rho d_{i0}$ are able to overhear the transmission of camera $i$.
+In this way, $U_i$~\eqref{eq::inTransRange} can be simplified as:
 \begin{equation}
 U_i = \{ j \in V | d_{ij} \leq \rho d_{j0} \}.
 \label{eq::inTransRangeSimple}
@@ -71,18 +70,9 @@ Based on the scheduling vector $\mathbf{Z}$, we can define the subset of cameras
 W_i = \{ j \in U_i | z_j \leq z_i \}.
 \label{eq::prevSet}
 \end{equation}
-After overhearing transmissions from the set $W_i$, camera $i$ can perform multi-view video encoding for removing redundant information from its data.
+After overhearing transmissions from the set $W_i$, camera $i$ can perform multiview video encoding for removing redundant information from its data.
 
-To proceed, we further 
-%denote the vector ${\mathbf{X} = [x_1, x_2, \cdots, x_{|V|}]}$, ${x_i = \{0,1\}}$, ${\forall i \in V}$ as the I-frame indicator variable such that
-%\begin{equation*}
-%\left\{ \begin{array}{ll}
-%x_i = 1, &\text{if camera $i$ is encoded as an I-frame}, \\
-%x_i = 0, &\text{if camera $i$ is encoded as a P-frame}.
-%\end{array} \right.
-%\end{equation*}
-%For some cameras, it is possible for them to encode its image as a P-frame by overhearing nearby transmissions, therefore, we further
-define the referencing matrix ${\mathbf{X} = [x_{ij}]_{|V| \times |V|}}$ as
+To proceed, we further define the referencing matrix ${\mathbf{X} = [x_{ij}]_{|V| \times |V|}}$ as:
 \begin{equation*}
 \left\{ \begin{array}{ll}
 x_{ij} = 1, &\text{ if image $F_i$ produced by camera $i$ is} \\
@@ -172,5 +162,5 @@ The overall problem formulation can now be written as follows:
 where the set of all cameras $V$, position of each cameras (i.e. the set $U_i, i \in V$), and the amount of encoded bits (i.e. $h_{ij}, i,j \in V$) are given inputs parameters of problem~\eqref{eq::formulation}.
 The elements in $\mathbf{X}$ and $\mathbf{Z}$ are unknown decision variables to be solved.
 Since both the variables in $\mathbf{X}$ and $\mathbf{Z}$ are positive integers, problem~\eqref{eq::formulation} is thus in the form of a nonlinear integer programming problem, and solving the nonlinear integer programming is usually a $\mathcal{NP}$-hard problem~\cite{NIP}.
-Therefore, we will show how to decompose problem~\eqref{eq::formulation} into the \emph{I-frame selection sub-problem} and the \emph{P-frame associate sub-problem} in the following chapter.
+Therefore, we will show how to decompose problem~\eqref{eq::formulation} into the \emph{I-frame selection sub-problem} and the \emph{P-frame association sub-problem} in the following of this chapter.
 %

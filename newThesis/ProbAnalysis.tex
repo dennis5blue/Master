@@ -10,8 +10,8 @@ We now present ``why'' and ``how'' we make such decomposition.
 Note that since we assume that a P-frame can only reference from one I-frame as equation~\eqref{eq::referenceOnlyIframe} shows.
 According to this constraint, every P-frames will reference from one previous scheduled I-frame to reduce its encoded bits.
 That is, as long as a portion of cameras are determined to encoded their images as I-frames, the remaining P-frame cameras can find their \emph{most correlated} I-frame camera in polynomial time and then reference from its captured image, which means that the determination of transmission schedule can be reduced to selecting the subset of I-frame cameras.
-Consequently, we can decompose Problem~\eqref{eq::formulation} into two sub-problems, including (a) the \emph{I-frame selection sub-problem} and (b) the \emph{P-frame associate sub-problem}, and these two sub-problems will be solved sequentially.
-That is, the solution of \emph{I-frame selection sub-problem} will become the input of the \emph{P-frame associate sub-problem} as shown in Fig.~\ref{fig::subProbProcedure}, where the goal of the \emph{I-frame selection sub-problem} is to select some cameras to encode their images as I-frames so that the remaining P-frame cameras can encode their images by referencing from those selected I-frames.
+Consequently, we can decompose Problem~\eqref{eq::formulation} into two sub-problems, including (a) the \emph{I-frame selection sub-problem} and (b) the \emph{P-frame association sub-problem}, and these two sub-problems will be solved sequentially.
+That is, the solution of \emph{I-frame selection sub-problem} will become the input of the \emph{P-frame association sub-problem} as shown in Fig.~\ref{fig::subProbProcedure}, where the goal of the \emph{I-frame selection sub-problem} is to select some cameras to encode their images as I-frames so that the remaining P-frame cameras can encode their images by referencing from those selected I-frames.
 %
 \begin{figure}
 \begin{center}
@@ -25,15 +25,15 @@ That is, the solution of \emph{I-frame selection sub-problem} will become the in
 %\label{sec::iFrameSelectionSubProb}
 %In this chapter, we show how we derive Problem~\eqref{eq::formulation} into the \emph{I-frame selection sub-problem}, and we will also give a comprehensive analysis about the formulated \emph{I-frame selection sub-problem}.
 %
-\subsubsection{Problem Decomposition}
+\subsubsection{Decomposed I-Frame Selection Sub-Problem}
 \label{sec::iFrameSelectionSubProbFormulation}
 As we mentioned before, the goal of \emph{I-frame selection sub-problem} is to select some cameras to act as I-frame cameras, therefore, the decision variables of this sub-problem are the diagonal elements of $\mathbf{X}$.
-In this thesis, for the sake of notation simplicity, we thus define
+For the sake of notation simplicity, we thus define
 \begin{equation}
 diag(\mathbf{X}) = \left[ x_{11}, x_{22}, \cdots, x_{|V||V|} \right],
 \end{equation}
 as a $1 \times |V|$ vector to represent the diagonal elements of $\mathbf{X}$.
-To proceed, note that our goal is to figure out whether ${x_{ii},i \in V}$ equals to $0$ or $1$ so that the total amount of encoded bits can be minimized, where the other scheduling constraints (i.e. constraints about $\mathbf{Z}$) are ignore during the phase of selecting I-frame cameras for the sake of problem simplification.
+To proceed, note that our goal is to figure out whether ${x_{ii},i \in V}$ equals to $0$ or $1$ so that the total amount of encoded bits can be minimized, where the other scheduling constraints (i.e. constraints about $\mathbf{Z}$) are ignored during the phase of selecting I-frame cameras in order to simplify the sub-problem.
 Therefore, the simplified problem without scheduling constraints can be written as:
 \begin{align}
 \underset{\mathbf{X}}{\text{minimize}} & & \nonumber \\
@@ -46,15 +46,15 @@ Therefore, the simplified problem without scheduling constraints can be written 
 	&x_{ij} = \{0,1\}, &\forall i,j \in V.
 \label{eq::formulationSimplified}
 \end{align}
-For the formulation in Problem~\eqref{eq::formulationSimplified}, the mathematical form is also complicated, therefore, we define a new variable $u_{ij}$ such that $u_{ij} = 1$ if $j \in U_i$, otherwise, $u_{ij} = 0$.
-Note that the meanings about the following three constraints
+For the formulation in Problem~\eqref{eq::formulationSimplified}, the mathematical form is still complicated, therefore, we define a new variable $u_{ij}$ such that $u_{ij} = 1$ if $j \in U_i$, otherwise, $u_{ij} = 0$.
+To proceed, note that the meanings about the following three constraints
 \begin{align}
 &\sum_{j \in U_i} x_{ij} = 1, &\forall i \in V, \nonumber \\
 &x_{ij} \leq x_{jj}, &\forall i \in V, \forall j \in W_i, \nonumber \\
 &x_{ij} = 0, &\forall i \in V, \forall j \in V \setminus U_i,
 \label{eq::threeConstraintsToSimplfied}
 \end{align}
-is to ensure that only I-frame cameras can be referenced and each P-frame camera should reference from an overheard I-frame camera.
+are to ensure that only I-frame cameras can be referenced and each P-frame camera should reference from exactly one overheard I-frame camera.
 In order to further simply Problem~\eqref{eq::formulationSimplified}, we use a simple constraint to express the three constraints in~\eqref{eq::threeConstraintsToSimplfied}, which is written as:
 \begin{equation}
 \sum_{j=1}^{|V|} u_{ij} x_{jj} \geq 1, \forall i \in V.
@@ -86,11 +86,14 @@ Therefore, if we denote ${\hat{h}_i = \underset{u_{ij}x_{jj} = 1}{\min} h_{ij}}$
 	&x_{jj} = \{0,1\}, &\forall j \in V.  
 \label{eq::IframeSelectionSubProblem}
 \end{align}
-Problem~\eqref{eq::IframeSelectionSubProblem} thus describes the decomposed \emph{I-frame selection sub-problem}, and we will further give an analysis of this sub-problem, where the solution algorithms of this sub-problem is shown in Chapter~\ref{sec::proposedAlgs}.
+Problem~\eqref{eq::IframeSelectionSubProblem} thus describes the decomposed \emph{I-frame selection sub-problem}, whose solution will become an input of the \emph{P-frame association sub-problem} as presented in the followings.
+%
+
+\input{PFrameScheduling.tex}
 
 %
 \subsubsection{Analysis of I-Frame Selection Sub-Problem}
-In this chapter, we will give a comprehensive analysis of Problem~\eqref{eq::IframeSelectionSubProblem} formulated in Chapter~\ref{sec::iFrameSelectionSubProbFormulation}.
+Before solving the decomposed sub-problems, we first give a comprehensive analysis of the formulated \emph{I-frame selection sub-problem}~\eqref{eq::IframeSelectionSubProblem} described in Chapter~\ref{sec::iFrameSelectionSubProbFormulation}.
 First, we will prove the $\mathcal{NP}$-hardness of Problem~\eqref{eq::IframeSelectionSubProblem}, and then we will point out some possible directions for solving this problem.
 To start proving the $\mathcal{NP}$-hardness, we first give a definition of the well-known \emph{set covering problem} as:
 \begin{mydef}[\textbf{Set Covering Problem}]
@@ -130,5 +133,5 @@ Due to the $\mathcal{NP}$-hardness of Problem~\eqref{eq::IframeSelectionSubProbl
 Therefore, some policy must be included for reducing the complexity.
 Since all the decision variables ${x_{jj},j \in V}$ are binary integers, Problem~\eqref{eq::IframeSelectionSubProblem} belongs to a \emph{binary integer programming problem}, and one possible method for solving binary integer programming problem without losing the optimality is through the branch-and-bound (BB) algorithm~\cite{BB} as presented in Chapter~\ref{sec::proposedBBAlg}.
 However, sometimes the applications for multi-camera networks does not concern the optimality due to real-time requirements.
-We thus propose another algorithm to solve Problem~\eqref{eq::IframeSelectionSubProblem} in a more time efficient way by modeling it into a graph problem, where the proposed method will be described in Chapter~\ref{sec::graphApprox}.
+We thus propose another algorithm to solve Problem~\eqref{eq::IframeSelectionSubProblem} in a more efficient way by modeling it into a graph problem, where the proposed method will be described in Chapter~\ref{sec::graphApprox}.
 %

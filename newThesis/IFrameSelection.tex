@@ -1,9 +1,8 @@
 \section{Proposed Algorithms for I-Frame Selection Sub-Problem}
 \label{sec::proposedAlgs}
 %
-According to the discussion in the previous chapters, we show that Problem~\eqref{eq::formulation} can be reduced to selecting P-frame cameras as formulated in Problem~\eqref{eq::IframeSelectionSubProblem}.
-Therefore, in this chapter, we further present our proposed algorithms for solving Problem~\eqref{eq::formulation}.
-More specifically, we propose two algorithms for solving
+According to the discussion in the previous chapters, we show that Problem~\eqref{eq::formulation} can be reduced to selecting I-frame cameras as formulated in Problem~\eqref{eq::IframeSelectionSubProblem}.
+Therefore, in this chapter, we further propose two algorithms for solving Problem~\eqref{eq::IframeSelectionSubProblem}.
 %and we will follow the decomposition idea shown in Chapter~\ref{sec::OverallProbAnalysis}.
 %That is, we first show the procedure for translating Problem~\eqref{eq::formulation} into the \emph{I-frame selection sub-problem} by relaxing scheduling constraints.
 %After that, two proposed algorithms is introduced for solving the \emph{I-frame selection sub-problem}.
@@ -36,14 +35,14 @@ Therefore, the time complexity of the BB algorithm is highly correlated to the g
 For this reason, a smart algorithm is thus necessary to be designed for finding a tighter lower bound.
 
 Note that for an arbitrary sub solution set $\mathcal{S}^t$, some decision variables are fixed to either $0$ or $1$ while the others are still undetermined.
-We thus denote the partial determined selection vector ${\tilde{\mathbf{X}}^t = \{ \tilde{x}_{11}^t,\cdots, \tilde{x}_{|V||V|}^t \} }$ such that
+We thus denote the partial determined selection vector ${\tilde{\mathbf{X}}^t = \left[ \tilde{x}_{11}^t,\cdots, \tilde{x}_{|V||V|}^t \right] }$ such that
 \begin{equation*}
 \left\{ \begin{array}{ll}
 \tilde{x}_{ii}^t = 1,  &\text{ if camera $i$ is determined to encode as an} \\
                    	   &\text{ I-frame for $\mathcal{S}^t$ and all its sub solution set,} \\
 \tilde{x}_{ii}^t = 0,  &\text{ if camera $i$ is determined to encode as a} \\
                    	   &\text{ P-frame for $\mathcal{S}^t$ and all its sub solution set,} \\
-\tilde{x}_{ii}^t = -1, &\text{ if the camera $i$'s encoding style is not decided} \\
+\tilde{x}_{ii}^t = -1, &\text{ if camera $i$'s encoding style is not decided} \\
                        &\text{ until the division of sub solution set $\mathcal{S}^t$.}
 \end{array} \right.
 \end{equation*}
@@ -60,7 +59,7 @@ and the determined P-frame set can also be written as:
 \end{equation}
 where the set of undetermined encoded style cameras at $\mathcal{S}^t$ is $V \setminus \{ \mathcal{I}^t \cup \mathcal{P}^t \}$.
 
-For camera $i \in \mathcal{I}^t$, it is clearly that the amount of bits required to encoded $F_i$ equals $H(F_i)$.
+For camera $i \in \mathcal{I}^t$, it is clearly that the amount of bits required to encoded $F_i$ equals $h_{ii}$.
 On the other hand, if $k \in V \setminus \mathcal{I}^t$, camera $k$ has the possibility to encode its image as a P-frame.
 As a consequence, the amount of bits required to encode $F_k$ must be less than or equal to $h_{kk}$.
 Since our goal is to find the \emph{lower bound} of required encoded bits and undetermined encoded style cameras have the possibility to become I-frame cameras, we can thus relaxed the constraints of P-frame reference from an I-frame so that the obtained result will become a weak lower bound.
@@ -85,7 +84,7 @@ j,  &\text{ if $\Delta_i > \Delta_j$,} \\
 \end{array} \right.
 \label{eq::selectionFunctionQ}
 \end{equation}
-where $Q(i,j) = i$ means that the reference camera of camera $i$ is changed from camera $j$ to camera $\underset{u_{ik}=1, k \notin \{\mathcal{P}^t \cup\{j\}\}}{\arg \min} h_{ik}$ due to the reason that changing camera $i$'s reference camera has lower cost.
+where $Q(i,j) = i$ means that the reference camera of camera $i$ is changed from camera $j$ to camera $\underset{u_{ik}=1, k \notin \{\mathcal{P}^t \cup\{j\}\}}{\arg \min} h_{ik}$ due to the reason that changing camera $i$'s reference camera has lower incremental cost.
 
 To start the lower bound estimation algorithm for sub solution set $\mathcal{S}^t$, we first initialize its cost matrix as
 \begin{align}
@@ -122,7 +121,7 @@ i,  &\text{ if $i \in \mathcal{I}^t$,} \\
 \end{array} \right.
 \label{eq::initRefStructure}
 \end{equation}
-After the initialization of $\mathbf{R}$, we will traverse through all elements of $\mathbf{R}$ and check if there exists infeasible reference structure pair (e.g. $r_i^t = j$ together with $r_j^t=i$).
+After the initialization of $\mathbf{R}^t$, we will traverse through all elements of $\mathbf{R}^t$ and check if there exists infeasible reference structure pair (e.g. $r_i^t = j$ together with $r_j^t=i$).
 In such infeasible case, we will refer to equation~\eqref{eq::selectionFunctionQ} for determining which one should change the reference camera until all reference structure pairs are feasible.
 As long as all reference structure pairs are feasible, we can directly sum up the cost of all cameras and the estimated lower bound is obtained.
 %
@@ -162,7 +161,7 @@ In short, the lower bound estimation procedure of an arbitrary sub solution set 
 \DecMargin{1em}
 %
 \begin{mylem}
-Considering a sub solution set $\mathcal{S}^t$, its lower bound estimated by algorithm~\ref{alg::bbAlgorithm} is the lowest objective value that can be obtained from the sub solution sets of further dividing $\mathcal{S}^t$.
+Considering a sub solution set $\mathcal{S}^t$, its lower bound estimated by algorithm~\ref{alg::lbEstimation} is the lowest objective value that can be obtained from the sub solution sets of further dividing $\mathcal{S}^t$.
 \label{lemma::lbEstimation}
 \end{mylem}
 \textbf{\emph{Proof:}}
@@ -177,7 +176,7 @@ Therefore, the initialization of $\mathbf{R}^t$ becomes:
 r_i^t = 
 \left\{ \begin{array}{cc}
 i,  &\text{ if $i \in \mathcal{I}^t$,} \\                  	   
-\underset{u_{ik}=1, k \in \mathcal{I}^t}{\arg\min} h_{ik},  &\text{ if $i \in \mathcal{P}^t$,} \\
+\underset{u_{ik}=1, k \in \mathcal{I}^t}{\arg\min} h_{ik}^t,  &\text{ if $i \in \mathcal{P}^t$,} \\
 \end{array} \right.
 \label{eq::initRefStructureAtLeaf}
 \end{equation}
@@ -192,7 +191,7 @@ For $\mathcal{S}^{t_1}$, camera $k$ is moved from undetermined cameras set to I-
 Therefore, we can claim that the cost of camera $k$ will increase for $\left( h_{kk} - \underset{u_{kj}=1}{\min} h_{kj}^t \right)$ since camera $k$ is required to encode its image independently instead of referencing from other cameras.
 Since the cost for other cameras $V\setminus \{k\}$ will stay the same, and hence $lb(\mathcal{S}^t) \leq lb(\mathcal{S}^{t_1})$.
 For $\mathcal{S}^{t_0}$, camera $k$ is moved from undetermined cameras set to P-frame cameras set such that $\mathcal{I}^{t_0} = \mathcal{I}^t$ and $\mathcal{P}^{t_0} = \mathcal{P}^t \cup \{k\}$, which indicates the cost for I-frame cameras in $\mathcal{S}^{t_0}$ will equal to $\mathcal{S}^t$.
-However, for those cameras in the set $V \setminus \mathcal{I}^{t_0}$, since the set $\mathcal{P}^{t_0}$ becomes larger than $\mathcal{P}^t$, we can thus claim that $\underset{u_{ij}=1, j \notin \mathcal{P}^{t_0}}{\arg\min} h_{ij} \geq \underset{u_{ij}=1, j \notin \mathcal{P}^{t}}{\arg\min} h_{ij}$ due to the reason that camera $k$ is removed from the candidate reference cameras set.
+However, for those cameras in the set $V \setminus \mathcal{I}^{t_0}$, since the set $\mathcal{P}^{t_0}$ becomes larger than $\mathcal{P}^t$, we can thus claim that $\underset{u_{ij}=1, j \notin \mathcal{P}^{t_0}}{\min} h_{ij}^t \geq \underset{u_{ij}=1, j \notin \mathcal{P}^{t}}{\min} h_{ij}^t$ due to the reason that camera $k$ is removed from the candidate reference cameras set.
 Therefore, we can claim that $lb(\mathcal{S}^t) \leq lb(\mathcal{S}^{t_0})$, and we have done showing that the second statement is true.
 
 By statement~$1$ and statement~$2$, we can learn that dividing $\mathcal{S}^t$ into sub solution sets will only increase the value of estimated lower bound.
@@ -212,7 +211,7 @@ That is, if $lb(\mathcal{S}^t)$ is greater than the best objective value obtaine
 
 \subsubsection{Branching Policy}
 \label{sec::proposedBBBranchingPolicy}
-After presenting the bounding policy of our proposed BB algorithm in the previous chapter, we introduce how we (a) divide the solution set $\mathcal{S}^t$ into subsets and (b) decide which subset to be traversed first.
+After presenting the bounding policy of our proposed BB algorithm in the previous chapter, we now introduce how we (a) divide the solution set $\mathcal{S}^t$ into subsets and (b) decide which subset to be traversed first.
 To answer the first question, note that since the decision variables $x_{ii}$ belongs to binary integer (i.e. $0$ or $1$), it is thus clearly that the division of $\mathcal{S}^t$ includes two different subsets $\mathcal{S}^{t_0}$ and $\mathcal{S}^{t_1}$, where  $\mathcal{S}^{t_0}$ and $\mathcal{S}^{t_1}$ is created by fixing one decision variable ${x_{kk},k \in V \setminus \{\mathcal{I}^t \cup \mathcal{P}^t\} }$ into $0$ or $1$, respectively.
 
 For the second question, although $k$ can be selected randomly from $ V \setminus \{\mathcal{I}^t \cup \mathcal{P}^t\}$, we claimed in this thesis that the priority of traversing $\mathcal{S}^{t_0}$ or $\mathcal{S}^{t_1}$ might affect the speed of convergence.
@@ -234,7 +233,7 @@ For a group of sub solution sets $\mathcal{S}^t, \mathcal{S}^{t+1}, \cdots$, we 
 \end{itemize}
 to be traversed first.
 Note that since $lb \gg |V|-|\mathcal{I}^t|-|\mathcal{P}^t|+1$, we will first check the depth of each sub solution sets, and if more than one sub solution sets have the same highest depth, and then the estimated lower bound will be taken into consideration; otherwise, $\frac{1}{|V|-|\mathcal{I}^t|-|\mathcal{P}^t|+1}$ will dominate the value of $\lambda_t$.
-As a summary, among all un-traversed sub solution sets, our proposed branching policy algorithm will select the one with the largest branching metric $\lambda_t$ to be traversed first, and the overall BB algorithm is then described in the following chapter.
+As a summary, among all un-traversed sub solution sets, our proposed branching policy will select the one with the largest branching metric $\lambda_t$ to be traversed first, and the overall BB algorithm is then described in the following chapter.
 %
 
 \subsubsection{Overall Algorithm}
@@ -249,7 +248,7 @@ For the setup of BB algorithm, we first define the whole solution set $\mathcal{
 We then divide $\mathcal{S}$ into two sub solution sets by fixing an arbitrary $x_{ii}, i \in V$ to $0$ and $1$, where the two divided sub solution sets are inserted into a queue for containing sub solution sets.
 Among all sub solution sets in queue, we refer to the branching metric~\eqref{eq::branchingMetric} for the determination of which one to be traversed first.
 As long as the lower bound estimated from algorithm~\ref{alg::lbEstimation} is lower than the minimum cost obtained so far, we keep dividing this sub solution set; otherwise, no more division is required since the optimal solution has no possibility to be found in this sub solution set.
-We now summarize the overall proposed BB algorithm in algorithm~\ref{alg::bbAlgorithm}.
+The overall procedure of our proposed BB algorithm can be summarized in algorithm~\ref{alg::bbAlgorithm}.
 \IncMargin{1em}
 \begin{algorithm}[]
  \SetAlgoLined

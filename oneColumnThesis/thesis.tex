@@ -1,4 +1,6 @@
-\documentclass[a4paper, 12pt, oneandahalfspaced]{tonic-thesis}
+%\documentclass[a4paper, 12pt, oneandahalfspaced]{tonic-thesis}
+\documentclass[a4paper, 12pt, oneandahalfspaced]{mouda}
+
 % Some useful LaTeX packages
 \usepackage{type1cm}
 \usepackage{textcomp}
@@ -19,6 +21,7 @@
 \usepackage{amssymb}
 \usepackage{bm}
 \usepackage{CJKutf8}
+\usepackage{xpatch}
 
 \usepackage[ruled,vlined,linesnumbered]{algorithm2e}
 \usepackage{url}
@@ -95,8 +98,7 @@
 \input{abstract.tex}
 \end{abstract}
 \contents
-\listoftables
-%\listofalgorithms
+\xpatchcmd{\listofalgocfs}{\algocf@seclistalgo*{\listalgorithmcfname}}{\algocf@seclistalgo*{\MakeUppercase\listalgorithmcfname}}{}{}
 \end{preliminary}
 
 \input{introduction.tex}

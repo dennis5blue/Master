@@ -7,13 +7,13 @@ Unlike conventional wireless sensor networks with dedicated network deployment, 
 %
 In addition, multimedia data often generate larger packets size and hence the limited wireless radio resource might become insufficient to support the {\em real-time transportation of the multimedia data}.
 
-Fortunately, since the deployment of cameras often has overlapped region of interest, to be able to transport a large amount of data from cameras to the back-end server, correlated data gathering has been considered as one effective technology for leveraging inter-view correlation among cameras.
+Fortunately, since the deployment of cameras often has overlapped field of views, to be able to transport a large amount of data from cameras to the back-end server, correlated data gathering has been considered as one effective technology for leveraging inter-view correlation among cameras.
 On the one hand, multiple cameras observing the same area from different point of view will produce correlated video streams. 
 On the other hand, multiview video encoding technique can allow us to reduce the packet size required to encode frames collected from different neighborhood cameras.
 Therefore, in this thesis, we exploit the idea of correlated data gathering via overhearing in wireless multi-camera networks for the sake of reducing the amount of encoded bits required to be transmitted through the wireless communication links.
 %
 While correlated data gathering has been popularly investigated in the literature, most related works has modeled the correlation between cameras from a theoretic perspective using their predefined position.
-As we describe in Section~\ref{sec::relatedWork}, such an assumption fails to consider the realistic correlation level in the multimedia devices.
+As we describe in Chapter~\ref{sec::relatedWork}, such an assumption fails to consider the realistic correlation level in the multimedia devices.
 Therefore, the theoretic correlation model may lead to sub-optimal solution in the context of wireless multi-camera networks with {\em tight radio resource constraints.}
 
 In this thesis, we investigate the problem of correlated data gathering from a set of cameras deployed in a city.
@@ -27,7 +27,7 @@ The first algorithm for selecting I-frame cameras is based on the branch-and-bou
 The second algorithm for choosing I-frame cameras is through a graph approximation approach for the sake of reducing computational complexity.
 %The second algorithm for determining the transmission schedule is a heuristic approach such that the order of transmission can be determined with less overhead of control message.
 To proceed, note that in general cameras are deployed for observing moving objects, and hence the correlation among cameras might vary as the time changes.
-For this reason, we also propose a centralized approach so that the overhearing source coding technique can be applied even though the correlation becomes different.
+For this reason, we also propose a centralized approach so that the overhearing source coding technique can be applied even though the correlation among cameras becomes different.
 To evaluate the proposed algorithms, we resort to a 3D modeling software to generate quasi-realistic city views for all cameras and use H.264 multiview video coding (MVC) reference software to encode collected images.
 Evaluation results show that the proposed algorithms can outperform baseline approaches, thus motivating further investigation along this direction.
 

@@ -1,0 +1,35 @@
+\chapter{Conclusion and Future Work}
+\label{sec::conclusion}
+In this chapter, we summarize the main contributions of our work, and point out some possible directions for further research.
+%
+\section{Conclusion}
+Motivated by the limitation of radio resource in the multi-camera networks, we argue that it is possible for serving the data collected by cameras rather than individual cameras.
+Therefore, in this thesis, we leverage the fact that in many deployment scenarios, multiple cameras may be deployed in a neighborhood area with overlapping perspectives of the street views.
+In order to exploit the inter-view correlation among those nearby cameras, we investigate the problem of bandwidth efficient data gathering for the sake of utilizing the radio resource in a more efficient way.
+An overhearing source coding scheme is thus been proposed to reduce the amount of required encoded bits under the requirement that images captured by all cameras should be successfully decoded at the data aggregator. 
+
+In Chapter~\ref{sec::OSC}, we formulated an optimization problem for the scheme of ``dependent'' data delivery in multi-camera networks with the help of multiview video coding and overhearing source coding.
+
+ exploits the data overheard before
+its transmission to reduce the correlated data. Though the derived knowledge for
+other machines decrease, it does not need information exchange between machines
+for global correlation structure. Furthermore, there is a chance for machines to
+use more resource to expand its transmission, and makes more others hear its data
+for redundancy reduction. As for the overhearing property, it forms a scheduling
+determining problem for finding the optimal resource usage. We formulate a joint
+node selection, scheduling and range expansion problem, and propose theoretical
+analysis for efficiently determining on the potential region for range expansion.
+Numerical results show promising results in leveraging the overhearing capability
+for better support M2M applications with correlated data source, and the benefits
+from range expansion stands out in a highly correlated data field
+
+We have designed algorithms based on branch-and-bound and graph approximation for solving the optimization problem of minimizing the amount of required transmission bits under the overhearing source coding scheme.
+To evaluate the proposed algorithms, we have resorted to a 3D modeling software to generate quasi-realistic city views for all cameras and we have used H.264 MVC reference software to encode collected images.
+Evaluation results have shown that the proposed scheduling algorithm can outperform baseline approaches for resource-constrained multi-camera networks, thus motivating further investigation along this direction.
+%
+\section{Future Work}
+In addition to the proposed approaches presented in this thesis, there still has some extensions that are worth to be further investigated to improve our work.
+\begin{itemize}
+\item Scheduling
+\item Protocol
+\end{itemize}

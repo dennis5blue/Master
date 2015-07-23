@@ -1,6 +1,3 @@
-%\documentclass[notitlepage, 12pt, a4paper]{report}
-%\documentclass{eethesis}
-%\documentclass[12pt,oneandahalfspaced]{tonic-thesis}%oneandahalfspaced,doublespaced
 \documentclass[a4paper, 12pt, oneandahalfspaced]{tonic-thesis}
 % Some useful LaTeX packages
 \usepackage{type1cm}
@@ -24,7 +21,6 @@
 \usepackage{CJKutf8}
 
 \usepackage[ruled,vlined,linesnumbered]{algorithm2e}
-%\usepackage{psfrag}
 \usepackage{url}
 \usepackage{array}
 \usepackage{indentfirst}
@@ -67,37 +63,7 @@
 %%
 
 \usepackage{tabularx}
-%--word side color:--
-%\usepackage{contour}
-%--font color:----
-%\usepackage{color}
-%--word type:----
-%\usepackage{txfonts}
-%Package: 	Description:
-%avant 	AvantGarde font as default sans
-%avantgar	ITC Avant Garde
-%bookman 	Bookman font as default roman. Avant Garde as default sans
-%chancery 	Zapf Chancery font as default roman
-%charter 	default roman
-%courier 	default ttdefault
-%helvet 	Helvetica font as default sans
-%helvetic 	Helvetica-Oblique font as default sans
-%mathpazo 	Palatino font as default roman. Math in Palatino where possible
-%mathptmx 	Times font as default roman. Math in Times where possible.
-%ncntrsbk 	NewCenturySchlbk-Roman
-%newcent 	NewCenturySchoolbook font as default roman
-%palatcm 	Palatino + Computer Modern math fonts
-%pifont 	Pi font support (special characters)
-%utopia 	Utopia font as default roman
-%zapfchan 	ITC Zapf Chancery as default roman
-%times		Times, Helvetica, Courier
-%pslatex	same as Times, but uses a specially narrowed Courier. This is preferred over Times because of the way it 			handles Courier.
-%palatino	Palatino, Helevetica, Courier
-%txfonts
-%--end-----
-%\usepackage[margin=2cm]{geometry}
 \setlength{\oddsidemargin}{1.125in}
-%\renewcommand{\thechapter}{\thegtchapter}
 \renewcommand{\thegtchapter}{\thechapter} %table of content-->chapter: 1,2...
 
 
@@ -122,14 +88,16 @@
 \addcontentsline{toc}{chapter}{\texorpdfstring{\Makeuppercase{Chinese Abstract}}{Chinese Abstract}}
 \chapter*{{\CJKfamily{bkai}摘要}}
 \vskip 0.5in
+\linespread{2.0}\selectfont
 \input{abstractCH.tex}
 \clearpage\end{CJK*}
 \begin{abstract}
 \input{abstract.tex}
 \end{abstract}
 \contents
+\listoftables
+%\listofalgorithms
 \end{preliminary}
-
 
 \input{introduction.tex}
 \input{background.tex}
@@ -142,12 +110,10 @@
 \input{evaluation.tex}
 \input{conclusion.tex}
 
-
 \begin{postliminary}
 \bibfiles{reference}
 \bibliographystyle{IEEEtran}
 \references
 \end{postliminary}
-
 
 \end{document}

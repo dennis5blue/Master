@@ -5,51 +5,57 @@
 \usepackage[english] {babel}
 
 \usepackage{amsmath,amsfonts,graphicx,mathrsfs,wrapfig}
-\usepackage{beamerleanprogress}
-\beamertemplatefootpagenumber 
+\usepackage{animate}
+%\usepackage{beamerleanprogress}
+\beamertemplatefootpagenumber
+
+\setbeamertemplate{blocks}[rounded][shadow=true]
+\setbeamertemplate{background canvas}[vertical shading][bottom=white,top=structure.fg!25]
+\setbeamertemplate{sidebar canvas left}[horizontal shading][left=white!40!black,right=black]
 
 \title
-  [From classical to quantum information theory\hspace{2em}]
-  {From Classical to Quantum Information Theory}
+  [Exploiting Inter-View Correlation for Bandwidth-Efficient Data Gathering in Wireless Multi-Camera Networks\hspace{2em}]
+  {Exploiting Inter-View Correlation for Bandwidth-Efficient Data Gathering in Wireless Multi-Camera Networks}
 
 \author
   []
-  {Chang-Yu Song\quad Chun-Hsiung Wang}
+  {Speaker: Chang-Yu Song \\
+   Advisor: Prof. Hung-Yun Hsieh}
 
 \date
-  {January 7, 2015}
+  {July 28th, 2015}
 
 \institute
-  {Graduate Institute of Communication Engineering \\
+  {TONIC Research Group \\
+  Graduate Institute of Communication Engineering \\
    National Taiwan University}
 
 
 \begin{document}
-
 \maketitle
 
 \section{Outline}
 \input{Outline.tex}
 
 \section{Background Knowledge}
-\input{Background.tex}
-\input{Qbit.tex}
-%\input{Measurement.tex}
-\input{DensityMatrix.tex}
-\input{Example.tex}
+\begin{frame}
+\frametitle{Sample frame title}
+This is a text in second frame. 
+For the sake of showing an example.
+ 
+\begin{itemize}
+ \item<1-> Text visible on slide 1
+ \item<2-> Text visible on slide 2
+ \item<3> Text visible on slide 3
+ \item<4-> Text visible on slide 4
+\end{itemize}
+ 
+\end{frame}
+
+
 
 \section{Quantum Information and Entropy}
-\input{QuantumInfo.tex}
-\input{QuEntropy.tex}
-\input{basicProperties.tex}
-\input{Definitions.tex}
-\input{NegCondQuEntropy.tex}
-%\input{ProofNegCond.tex}
-%\input{CoherentInfo.tex}
-\input{PosCondMutualInfo.tex}
-\input{StrongSubadd.tex}
-%\input{QuCapacity.tex}
-\input{HolevoBound.tex}
+
 
 
 %\begin{frame}{Pictures}
@@ -83,8 +89,6 @@
   \item Summary\pause
 \end{itemize}
 \end{frame}
-\input{Summary.tex}
-\input{Reference.tex}
 \begin{frame}{Q \& A}
   Thanks for Your Attention!
   %\nocite{lorem,ipsum}

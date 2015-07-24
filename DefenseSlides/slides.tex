@@ -1,34 +1,41 @@
-\documentclass[xcolor=svgnames,handout]{beamer}
+\documentclass[slidestop,compress,mathserif]{beamer}
+\usetheme{Montpellier}
+\usecolortheme{orchid}
 
 \usepackage[utf8]    {inputenc}
 \usepackage[T1]      {fontenc}
 \usepackage[english] {babel}
 
+\definecolor{myBlue}{RGB}{28,107,160}
+\definecolor{myBlack}{RGB}{10,50,40}
+\definecolor{myBrown}{RGB}{97,48,48}
+
 \usepackage{amsmath,amsfonts,graphicx,mathrsfs,wrapfig}
-\usepackage{animate}
-%\usepackage{beamerleanprogress}
-\beamertemplatefootpagenumber
+\setbeamertemplate{footline}[frame number]{}
+\setbeamercolor{footline}{fg=myBlack} % change the color of page number
+\beamertemplateballitem
+\beamertemplateshadingbackground{white!10}{myBlue!20}
+\beamertemplatenavigationsymbolsempty
+\setbeamercolor{frametitle}{fg=myBrown,bg=myBlue!30}
 
-\setbeamertemplate{blocks}[rounded][shadow=true]
-\setbeamertemplate{background canvas}[vertical shading][bottom=white,top=structure.fg!25]
-\setbeamertemplate{sidebar canvas left}[horizontal shading][left=white!40!black,right=black]
+\def\hilite<#1>{\temporal<#1>{\color{gray}}{\color{blue}}{\color{blue!25}}}
+\logo{\includegraphics[width=0.22\columnwidth]{Figures/NTU}\hspace{25pt}\vspace{-18pt}}
 
-\title
-  [Exploiting Inter-View Correlation for Bandwidth-Efficient Data Gathering in Wireless Multi-Camera Networks\hspace{2em}]
-  {Exploiting Inter-View Correlation for Bandwidth-Efficient Data Gathering in Wireless Multi-Camera Networks}
-
-\author
-  []
-  {Speaker: Chang-Yu Song \\
-   Advisor: Prof. Hung-Yun Hsieh}
-
-\date
-  {July 28th, 2015}
-
-\institute
-  {TONIC Research Group \\
-  Graduate Institute of Communication Engineering \\
-   National Taiwan University}
+\title[Exploiting Inter-View Correlation for Bandwidth-Efficient Data Gathering in Wireless Multi-Camera Networks]{Exploiting Inter-View Correlation for Bandwidth-Efficient Data Gathering in Wireless Multi-Camera Networks}
+\author[]{Speaker: Chang-Yu Song \\
+          Advisor: Prof. Hung-Yun Hsieh}
+\date{July 28th, 2015}
+\institute{TONIC Research Group \\
+  					Graduate Institute of Communication Engineering \\
+			    National Taiwan University}
+   
+\AtBeginSection[]
+{
+  \begin{frame}
+  \frametitle{Outline}
+  \tableofcontents[currentsection]
+  \end{frame}
+}
 
 
 \begin{document}
@@ -37,63 +44,39 @@
 \section{Outline}
 \input{Outline.tex}
 
-\section{Background Knowledge}
+\section{Introduction and Motivation}
+\subsection{Introduction}
+\input{Introduction.tex}
+\subsection{Related Work}
 \begin{frame}
-\frametitle{Sample frame title}
-This is a text in second frame. 
-For the sake of showing an example.
- 
 \begin{itemize}
- \item<1-> Text visible on slide 1
- \item<2-> Text visible on slide 2
- \item<3> Text visible on slide 3
- \item<4-> Text visible on slide 4
-\end{itemize}
- 
-\end{frame}
-
-
-
-\section{Quantum Information and Entropy}
-
-
-
-%\begin{frame}{Pictures}
-%  \begin{figure}[t]
-%    \centering
-%    \includegraphics[height=\dimexpr11\textheight/16\relax]{ducks}
-%    \caption{Kissing ducks}
-%  \end{figure}
-%\end{frame}
-
-
-%\begin{frame}{A Movie}
-
-  %\begin{block}{Some block}
-  %\end{block}
-
-  %\begin{exampleblock}{Some more block}
-  %\end{exampleblock}
-
-  %\begin{alertblock}{}
-  %\end{alertblock}
-%\end{frame}
-
-
-
-\section{Summary}
-\begin{frame}{}
-\begin{itemize}
-  {\color{gray}\item Background Knowledge\pause
-  \item Quantum Information and Entropy\pause}
-  \item Summary\pause
+\item If timmy \pause
+\item study for PHD \pause
+\item I will \pause
+\item be happy
 \end{itemize}
 \end{frame}
-\begin{frame}{Q \& A}
-  Thanks for Your Attention!
-  %\nocite{lorem,ipsum}
-  %\bibliographystyle{plain}
-  %\bibliography{demo}
+
+\section{Network Scenario and Camera Model}
+\begin{frame}
+\begin{itemize}
+\hilite<3> \item If timmy \pause
+\hilite<4> \item study for PHD \pause
+\hilite<5> \item I will \pause
+\hilite<6> \item be happy
+\end{itemize}
 \end{frame}
+
+\section{Correlated Data Gathering Under Overhearing Source Coding}
+\begin{frame}
+Hi
+\tiny{Hi}
+\large{Hi}
+\end{frame}
+
+\section{Correlated Data Gathering For Multi-Camera Networks}
+
+\section{Conclusion and Future Work}
+
 \end{document}
 

@@ -1,34 +1,72 @@
+%% Please use xelatex to compile
 \documentclass[slidestop,compress,mathserif]{beamer}
-\usetheme{Montpellier}
-\usecolortheme{orchid}
 
+%% Set the themes of my slides
+% more themes can be found at: http://deic.uab.es/~iblanes/beamer_gallery/index.html
+\usetheme{Montpellier}
+\usecolortheme{whale}
+\usefonttheme{professionalfonts}
+
+%% Include useful packages
 \usepackage[utf8]    {inputenc}
 \usepackage[T1]      {fontenc}
 \usepackage[english] {babel}
+\usepackage{amsmath,amsfonts,graphicx,mathrsfs,wrapfig}
+\usepackage{tgbonum} % for changing fonts
+\usepackage{amssymb} % for using ding{} symbols
+\usepackage{pifont} % for using ding{} symbols
 
+%% Define my own item
+% more info about ding symbols: http://tex.stackexchange.com/questions/42619/x-mark-to-match-checkmark
+\newcommand*{\myItem}{\item[\ding{98}]}
+\newcommand*{\mySubItem}{\item[\ding{243}]}
+
+%% Define my own color
 \definecolor{myBlue}{RGB}{28,107,160}
 \definecolor{myBlack}{RGB}{10,50,40}
 \definecolor{myBrown}{RGB}{97,48,48}
 
-\usepackage{amsmath,amsfonts,graphicx,mathrsfs,wrapfig}
-\setbeamertemplate{footline}[frame number]{}
-\setbeamercolor{footline}{fg=myBlack} % change the color of page number
-\beamertemplateballitem
-\beamertemplateshadingbackground{white!10}{myBlue!20}
-\beamertemplatenavigationsymbolsempty
-\setbeamercolor{frametitle}{fg=myBrown,bg=myBlue!30}
+%% Set the color of my slides
+ % change the color for footline
+ \setbeamertemplate{footline}[frame number]{}
+ \setbeamercolor{footline}{fg=myBlack}
+ % change the color of background
+ \beamertemplateshadingbackground{white!10}{myBlue!20}
+ % change the color of frame title
 
-\def\hilite<#1>{\temporal<#1>{\color{gray}}{\color{blue}}{\color{blue!25}}}
+\beamertemplateballitem % set itemize type
+\beamertemplatenavigationsymbolsempty % remove navigation symbols
+
+%% Set tonic logo
 \logo{\includegraphics[width=0.22\columnwidth]{Figures/NTU}\hspace{25pt}\vspace{-18pt}}
 
+%% Define for animiating itemize
+\def\hilite<#1>{\temporal<#1>{\color{gray}}{\color{blue}}{\color{blue!25}}}
+
+%% Create my own frame title style
+\setbeamercolor{myTitleColor}{fg=myBrown,bg=myBlue!35}
+\setbeamerfont{frametitle}{size=\large,series=\bfseries}
+\setbeamertemplate{frametitle}
+{
+    \nointerlineskip
+    \begin{beamercolorbox}[rounded=true,sep=0.3cm,ht=1.8em,wd=\paperwidth]{myTitleColor}
+        \vbox{}\vskip-2ex%
+        \strut\insertframetitle\strut
+        \vskip-0.8ex%
+    \end{beamercolorbox}
+}
+
+
+%% Start title
 \title[Exploiting Inter-View Correlation for Bandwidth-Efficient Data Gathering in Wireless Multi-Camera Networks]{Exploiting Inter-View Correlation for Bandwidth-Efficient Data Gathering in Wireless Multi-Camera Networks}
 \author[]{Speaker: Chang-Yu Song \\
           Advisor: Prof. Hung-Yun Hsieh}
-\date{July 28th, 2015}
+\date[]{July 28th, 2015}
 \institute{TONIC Research Group \\
-  					Graduate Institute of Communication Engineering \\
-			    National Taiwan University}
+  		   Graduate Institute of Communication Engineering \\
+		   National Taiwan University}
    
+%% Add outline at the beginning of each sections
 \AtBeginSection[]
 {
   \begin{frame}
@@ -37,46 +75,34 @@
   \end{frame}
 }
 
-
+%% Start document
 \begin{document}
 \maketitle
 
-\section{Outline}
+\section*{Outline}
 \input{Outline.tex}
 
 \section{Introduction and Motivation}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
 \subsection{Introduction}
 \input{Introduction.tex}
+\input{Motivation.tex}
+\input{RelatedWork.tex}
 \subsection{Related Work}
-\begin{frame}
-\begin{itemize}
-\item If timmy \pause
-\item study for PHD \pause
-\item I will \pause
-\item be happy
-\end{itemize}
-\end{frame}
+
 
 \section{Network Scenario and Camera Model}
-\begin{frame}
-\begin{itemize}
-\hilite<3> \item If timmy \pause
-\hilite<4> \item study for PHD \pause
-\hilite<5> \item I will \pause
-\hilite<6> \item be happy
-\end{itemize}
-\end{frame}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
 
-\section{Correlated Data Gathering Under Overhearing Source Coding}
-\begin{frame}
-Hi
-\tiny{Hi}
-\large{Hi}
-\end{frame}
+\section{Correlated Data Gathering under Overhearing Source Coding}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{3}}
 
-\section{Correlated Data Gathering For Multi-Camera Networks}
+\section{Correlated Data Gathering for Multi-Camera Networks}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{4}}
 
-\section{Conclusion and Future Work}
+\section{Conclusions and Future Work}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{5}}
 
+\input{example.tex}
 \end{document}
 

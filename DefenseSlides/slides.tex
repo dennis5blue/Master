@@ -15,6 +15,7 @@
 \usepackage{tgbonum} % for changing fonts
 \usepackage{amssymb} % for using ding{} symbols
 \usepackage{pifont} % for using ding{} symbols
+\usepackage[absolute,overlay]{textpos} % for textblocks
 
 %% Define my own item
 % more info about ding symbols: http://tex.stackexchange.com/questions/42619/x-mark-to-match-checkmark
@@ -31,8 +32,7 @@
  \setbeamertemplate{footline}[frame number]{}
  \setbeamercolor{footline}{fg=myBlack}
  % change the color of background
- \beamertemplateshadingbackground{white!10}{myBlue!20}
- % change the color of frame title
+ \beamertemplateshadingbackground{white!100}{myBlue!5}
 
 \beamertemplateballitem % set itemize type
 \beamertemplatenavigationsymbolsempty % remove navigation symbols
@@ -55,7 +55,6 @@
         \vskip-0.8ex%
     \end{beamercolorbox}
 }
-
 
 %% Start title
 \title[Exploiting Inter-View Correlation for Bandwidth-Efficient Data Gathering in Wireless Multi-Camera Networks]{Exploiting Inter-View Correlation for Bandwidth-Efficient Data Gathering in Wireless Multi-Camera Networks}
@@ -84,7 +83,7 @@
 
 \section{Introduction and Motivation}
 \addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
-\subsection{Introduction}
+\subsection{Introduction and Motivation}
 \input{Introduction.tex}
 \input{Motivation.tex}
 \input{RelatedWork.tex}

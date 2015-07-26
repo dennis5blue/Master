@@ -12,6 +12,8 @@
 \usepackage[T1]      {fontenc}
 \usepackage[english] {babel}
 \usepackage{amsmath,amsfonts,graphicx,mathrsfs,wrapfig}
+\usepackage[backend=bibtex]{biblatex}
+\bibliography{reference}
 \usepackage{tgbonum} % for changing fonts
 \usepackage{amssymb} % for using ding{} symbols
 \usepackage{pifont} % for using ding{} symbols
@@ -26,6 +28,9 @@
 \definecolor{myBlue}{RGB}{28,107,160}
 \definecolor{myBlack}{RGB}{10,50,40}
 \definecolor{myBrown}{RGB}{97,48,48}
+\definecolor{myGray}{RGB}{123,123,123}
+\definecolor{myOrange}{RGB}{217,70,0}
+\setbeamercolor{myEmphColor}{fg=myOrange,bg=myGray!20}
 
 %% Set the color of my slides
  % change the color for footline
@@ -56,6 +61,9 @@
     \end{beamercolorbox}
 }
 
+%% Change font size for foot citation
+\renewcommand{\footnotesize}{\tiny}
+
 %% Start title
 \title[Exploiting Inter-View Correlation for Bandwidth-Efficient Data Gathering in Wireless Multi-Camera Networks]{Exploiting Inter-View Correlation for Bandwidth-Efficient Data Gathering in Wireless Multi-Camera Networks}
 \author[]{Speaker: Chang-Yu Song \\
@@ -81,7 +89,7 @@
 \section*{Outline}
 \input{Outline.tex}
 
-\section{Introduction and Motivation}
+\section{Introduction and Related Work}
 \addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
 \subsection{Introduction and Motivation}
 \input{Introduction.tex}
@@ -101,7 +109,5 @@
 
 \section{Conclusions and Future Work}
 \addtocontents{toc}{\protect\setcounter{tocdepth}{5}}
-
 \input{example.tex}
 \end{document}
-

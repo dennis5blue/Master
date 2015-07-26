@@ -1,10 +1,72 @@
-\begin{frame}{Problem Formulation}
+\begin{frame}{Problem Formulation (1/4)}
 \begin{itemize}
 	\myItem Consider $V=\{1,2,\cdots,|V|\}$ as the set of cameras deployed for gathering video data, where camera $i$ will produce video frame $F_i$
 	\begin{itemize}
 		\mySubItem $F_i$ can be encoded as either I-frame or P-frame
-		\mySubItem $h_{ii}$ denotes the amount of bits required to encode $F_i$ as an I-frame
-		\mySubItem $h_{ij}$ denotes the amount of bits required to encode $F_i$ by referencing $F_j$
-	\end{itemize}	 
+		\mySubItem $h_{ii}$ and $h_{ij}$ denotes the amount of bits required to encode $F_i$ as an I-frame or a P-frame referenced from $F_j$, respectively
+	\end{itemize}	
+	\myItem Denote $\mathbf{X}=[x_{ij}]_{|V| \times |V|}$ as decision variables where $x_{ij} = 1$ indicates $F_i$ will reference from $F_j$, otherwise, $x_{ij} = 0$
+	\begin{itemize}
+		\mySubItem Our goal can be written as:
+		\begin{equation}
+			\underset{\mathbf{X}}{\min} \sum_{i=1}^{|V|} \sum_{j =1}^{|V|}  x_{ij} h_{ij}
+		\end{equation}
+		\mySubItem However, some constraints are necessary to be considered
+	\end{itemize}
+\end{itemize}
+\end{frame}
+%%
+\begin{frame}{Problem Formulation (2/4)}
+\begin{itemize}
+	\myItem The set of cameras that camera $i$ ``has the possibility'' to overhear is
+	\begin{equation}
+		U_i = \{ j \in V | \tau C_{ji} \geq h_{jj} \} \quad \Rightarrow \quad U_i = \{ j \in V | d_{ij} \leq \rho d_{j0} \}
+		\label{eq::inTransRange}
+	\end{equation}
+	\myItem Denote ${\mathbf{Z} = [z_1, z_2, \cdots, z_{|V|}]}$, ${1 \leq z_i \leq N}$, ${i=1,\cdots,|V|}$ as the scheduling vector such that ${z_i = n}$ if camera $i$ is scheduled at slot $n$.
+	\myItem According to $\mathbf{Z}$ and \eqref{eq::inTransRange}, The set of cameras that camera $i$ ``can'' overhear can be written as:
+	\begin{equation}
+		W_i = \{ j \in U_i | z_j \leq z_i \}
+		\label{eq::prevSet}
+	\end{equation}
+\end{itemize}
+\end{frame}
+%%
+\begin{frame}{Problem Formulation (3/4)}
+\begin{itemize}
+	\myItem All cameras has one dedicated transmission slot
+	\begin{equation}
+		|z_i - z_j| > 0, \forall i,j \in V, i \neq j
+		\label{eq::oneSlotOneCam}
+	\end{equation}
+	\myItem All cameras must transmit its video frame
+	\begin{equation}
+		\sum_{j \in W_i} x_{ij} = 1, \forall i \in V
+		\label{eq::referenceConstraint}
+	\end{equation}
+	\myItem Only overheard I-frame can be referenced
+	\begin{equation} \left\{ \begin{array}{ll}
+		x_{ij} = 0, &\forall i \in V, \forall j \in V \setminus W_i \\
+		x_{ij} \leq x_{jj}, &\forall i \in V, \forall j \in W_i \end{array} \right.
+		\label{eq::referenceOnlyIframe}
+	\end{equation}
+\end{itemize}
+\end{frame}
+%%
+\begin{frame}{Problem Formulation (4/4)}
+\begin{itemize}
+	\myItem The overall formulation can now be written as:
+	{\small	\begin{align}
+		&\underset{\mathbf{X},\mathbf{Z}}{\min} \sum_{i=1}^{|V|} \sum_{j \in W_i}  x_{ij} h_{ij}, & \nonumber \\
+\text{subject to} & & \nonumber \\
+		&U_i = \{ j \in V | d_{ij} \leq \rho d_{j0} \}, &\forall i \in V, \nonumber \\
+		&W_i = \{ j \in U_i | z_j \leq z_i \}, &\forall i \in V, \nonumber \\
+		&\sum_{j \in W_i} x_{ij} = 1, &\forall i \in V, \nonumber \\
+		&x_{ij} \leq x_{jj}, &\forall i \in V, \forall j \in W_i, \nonumber \\
+		&x_{ij} = 0, &\forall i \in V, \forall j \in V \setminus W_i, \nonumber \\
+		&|z_i - z_j| > 0, &\forall i,j \in V, i \neq j
+\label{eq::formulation}
+	\end{align} } % end small
+	\myItem The decision variables $\mathbf{X}$, $\mathbf{Z}$ are positive integers
 \end{itemize}
 \end{frame}

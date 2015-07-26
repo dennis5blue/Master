@@ -1,4 +1,4 @@
-\begin{frame}{Motivation}
+\begin{frame}{Motivation (1/2)}
 %
 \begin{itemize}
 	\myItem Limitation for available radio resource
@@ -13,8 +13,23 @@
 	\end{itemize}
 \end{itemize}
 %
-\begin{beamercolorbox}[shadow=true,rounded=true]{myEmphColor}
-Due to the resource limitation and video correlation, we should focus on serving the ``data'' instead of individual cameras
+\begin{beamercolorbox}[center,shadow=true,rounded=true]{myEmphColor}
+How to use the radio resource in an efficient way?
 \end{beamercolorbox}
+%
+\end{frame}
+%%
+\begin{frame}{Motivation (2/2)}
+\begin{itemize}
+	\myItem Due to the resource limitation and video correlation, we should focus on serving the ``video data'' instead of individual cameras
+	\myItem For example, suppose that camera $i$ and $j$ are observing the same object, is it efficient to encode their video frames independently?
+\end{itemize}
+%
+\begin{figure}
+\centering
+%\begin{textblock*}{1cm}(1cm,6cm) % {block width} (coords)
+\includegraphics[width=5.5cm]{Figures/multiCam.pdf}
+%\end{textblock*}
+\end{figure}
 %
 \end{frame}

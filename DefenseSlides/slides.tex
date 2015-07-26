@@ -12,7 +12,7 @@
 \usepackage[T1]      {fontenc}
 \usepackage[english] {babel}
 \usepackage{amsmath,amsfonts,graphicx,mathrsfs,wrapfig}
-\usepackage[backend=bibtex]{biblatex}
+\usepackage[backend=bibtex,style=ieee,doi=false]{biblatex}
 \bibliography{reference}
 \usepackage{tgbonum} % for changing fonts
 \usepackage{amssymb} % for using ding{} symbols
@@ -21,8 +21,8 @@
 
 %% Define my own item
 % more info about ding symbols: http://tex.stackexchange.com/questions/42619/x-mark-to-match-checkmark
-\newcommand*{\myItem}{\item[\ding{98}]}
-\newcommand*{\mySubItem}{\item[\ding{243}]}
+\newcommand*{\myItem}{\item[\ding{96}]} %98
+\newcommand*{\mySubItem}{\item[\ding{226}]} %243
 
 %% Define my own color
 \definecolor{myBlue}{RGB}{28,107,160}
@@ -56,7 +56,7 @@
     \nointerlineskip
     \begin{beamercolorbox}[rounded=true,sep=0.3cm,ht=1.8em,wd=\paperwidth]{myTitleColor}
         \vbox{}\vskip-2ex%
-        \strut\insertframetitle\strut
+        \strut\bf{\insertframetitle}\strut
         \vskip-0.8ex%
     \end{beamercolorbox}
 }
@@ -91,23 +91,31 @@
 
 \section{Introduction and Related Work}
 \addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
+%
 \subsection{Introduction and Motivation}
 \input{Introduction.tex}
 \input{Motivation.tex}
-\input{RelatedWork.tex}
+%
 \subsection{Related Work}
+\input{RelatedWork.tex}
 
 
-\section{Network Scenario and Camera Model}
-\addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
+\section{Network Scenario and Problem Formulation}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
+%
+\subsection{Network Scenario}
+\input{Scenario.tex}
+%
+\subsection{Problem Formulation}
+\input{Formulation.tex}
 
 \section{Correlated Data Gathering under Overhearing Source Coding}
-\addtocontents{toc}{\protect\setcounter{tocdepth}{3}}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
 
 \section{Correlated Data Gathering for Multi-Camera Networks}
-\addtocontents{toc}{\protect\setcounter{tocdepth}{4}}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
 
 \section{Conclusions and Future Work}
-\addtocontents{toc}{\protect\setcounter{tocdepth}{5}}
+\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
 \input{example.tex}
 \end{document}

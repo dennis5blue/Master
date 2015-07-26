@@ -1,0 +1,50 @@
+\begin{frame}{Network Scenario (1/2)}
+\begin{itemize}
+	\myItem We consider the scenario that a data aggregator is in charge of gathering video frames from cameras through direct wireless communication links
+	\myItem We assume that each camera is allocated one dedicated time slot for transmission
+	\begin{itemize}
+		\mySubItem Each camera has the \\
+				   possibility to overhear \\
+				   previous transmission \\
+				   for the sake of reducing \\
+				   the required packet size \\
+				   for encoding its video \\
+				   frame
+	\end{itemize}
+\end{itemize}
+%
+\begin{figure}
+\centering
+\begin{textblock*}{1cm}(6.3cm,5.1cm) % {block width} (coords)
+\includegraphics[width=6cm]{Figures/topo.pdf}
+\end{textblock*}
+\end{figure}
+%
+\end{frame}
+%%
+\begin{frame}{Network Scenario (2/2)}
+\begin{columns}
+	\column{0.7\textwidth}
+	\begin{itemize}
+		\myItem A video frame can be overheard if
+		\begin{itemize}
+			\mySubItem This frame is transmitted in advance
+			\mySubItem This frame can be successfully received
+		\end{itemize}
+		\myItem After receiving one overheard video frame, we can
+		\begin{itemize}
+			\mySubItem Reconstruct the overheard frame if this frame is an I-frame
+			\mySubItem Use MVC for inter-view prediction if the overheard frame can be reconstructed
+		\end{itemize}
+	\end{itemize}
+	\begin{beamercolorbox}[center,shadow=true,rounded=true]{myEmphColor}
+	Our problem thus includes the determination of (a) cameras schedule, and \\ (b) set of I-frame cameras
+	\end{beamercolorbox}
+ 
+	\column{0.3\textwidth}
+	\begin{figure}
+	\centering
+	\includegraphics[width=0.9\textwidth]{Figures/scenarioIntro.pdf}
+	\end{figure}
+\end{columns}
+\end{frame}

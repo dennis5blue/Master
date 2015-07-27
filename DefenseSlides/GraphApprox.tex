@@ -1,0 +1,65 @@
+\begin{frame}{Graph Approximation for BB Algorithm (1/3)}
+\begin{itemize}
+	\myItem In general, we can use a graph to model a network problem
+	\begin{itemize}
+		\mySubItem Consider a directed graph with both vertices and edges weighted, where $\omega_i = h_{ii}$ and $\omega_{i,j} = h_{ij}$
+		\mySubItem An edge $i \rightarrow j$ exists if camera $i$ can overhear camera $j$
+		\mySubItem $j$ is $i$'s neighbor (i.e. $j \in \mathcal{N}_i$) \\
+				   if and only if edge
+				   $i \rightarrow j$ exists
+	\end{itemize}
+\end{itemize}
+%
+\begin{itemize}
+	\myItem Requirements:
+	\begin{itemize}
+		\mySubItem Each P-frame cameras must have \\
+				   at least one I-frame camera as \\
+				   its neighbor
+		\mySubItem If a P-frame camera has multiple \\
+		 		   I-frame cameras as its neighbor, \\
+		 		   it will join the group having the \\
+		 		   smallest cost of edge.
+	\end{itemize}
+\end{itemize}
+%
+\begin{figure}
+\centering
+\begin{textblock*}{1cm}(7.85cm,4.65cm) % {block width} (coords)
+\includegraphics[width=4.5cm]{Figures/mdsGraphExample.pdf}
+\end{textblock*}
+\end{figure}
+%
+\end{frame}
+%%
+\begin{frame}{Graph Approximation for BB Algorithm (2/3)}
+\begin{itemize}
+	\myItem The requirements are similar to finding a minimum weighted dominating set
+	\begin{itemize}
+		\mySubItem I-frame camera will dominate P-frame camera
+	\end{itemize}
+	\myItem I-frame camera selection criterion:
+	\begin{itemize}
+		\mySubItem Proposed selection metric for camera $i$:
+		\begin{equation}
+			\mu_i = - \omega_i + \sum_{j:i \in \mathcal{N}_j} \left( \omega_j - \omega_{j,i} \right)
+			\label{eq::graphSelectionMetric}
+		\end{equation}
+		\mySubItem The larger $\mu_i$ is, the more possible that camera $i$ is selected as an I-frame camera
+	\end{itemize}
+\end{itemize}
+\end{frame}
+%%
+\begin{frame}{Graph Approximation for BB Algorithm (3/3)}
+\begin{itemize}
+	\item[1.] Construct a directed graph $\mathcal{G}$ according to the overhearing constraints and $\mathbf{H}$
+	\item[2.] Initialize $\mathcal{I} \gets \emptyset$ and $\mathcal{P} \gets \emptyset$
+	\item[3.] If $\mathcal{I} \cup \mathcal{P} \neq V$
+	\begin{itemize}
+		\item[3-1.] Add the camera with the largest selection metric~\eqref{eq::graphSelectionMetric} into $\mathcal{I}$, say camera $k$
+		\item[3-2.] Form the cameras group of I-frame camera $k$, where the member of this group is the camera whose best reference camera is camera $k$ (i.e. $\omega_{i,k} = \underset{j \in V \setminus \mathcal{P}_{MWDS}}{\min} \omega_{i,j}$)
+		\item[3-3.] Add the group members of camera $k$ into $\mathcal{P}$
+		\item[3-4.] Back to step 3
+	\end{itemize}
+\end{itemize}
+\end{frame}

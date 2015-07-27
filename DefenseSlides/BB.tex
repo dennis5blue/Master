@@ -2,7 +2,12 @@
 \begin{itemize}
 	\myItem Main idea:
 	\begin{itemize}
-		\mySubItem If 
+		\mySubItem Divide the whole solution set into subsets by fixing some elements in $diag(\mathbf{X})$ into $0$ or $1$
+		\mySubItem If a sub solution set has no possibility to contain the optimal solution, then it no longer needs to be divided
+		\mySubItem A lower bound \\
+				   estimation method \\
+				   is thus required \\
+				   to be designed
 	\end{itemize}
 \end{itemize}
 %
@@ -13,4 +18,81 @@
 \end{textblock*}
 \end{figure}
 %
+\end{frame}
+%%
+\begin{frame}{Proposed Lower Bound Estimation Method for BB Algorithm}
+\begin{columns}
+ 
+\column{0.7\textwidth}
+{\small
+\begin{itemize}
+	\item[1.] From the determined elements of $diag(\mathbf{X})$, we can know the set of I-frame cameras $\mathcal{I}^t$, set of P-frame cameras $\mathcal{P}^t$, and set of undetermined cameras $V \setminus \{\mathcal{I}^t \cup \mathcal{P}^t\}$
+	\item[2.] From $\mathcal{I}^t$ and $\mathcal{P}^t$, we can obtain the cost matrix $\mathbf{H}^t$ and the reference vector $\mathbf{R}^t$
+	\item[3.] If there has infeasible reference structure in $\mathbf{R}^t$
+	\begin{itemize}
+		{\footnotesize \item[3-1.] Calculate the incremental cost for changing reference camera}
+		{\footnotesize \item[3-2.] Change the reference camera having lower incremental cost}
+		{\footnotesize \item[3-3.] Back to step 3}
+	\end{itemize}
+	\item[4.] Sum up the required cost according to $\mathbf{R}^t$
+\end{itemize} } % end small
+\column{0.29\textwidth}
+{\tiny
+\begin{align*}
+\mathbf{H}^t
+&= \left[ \mathbf{h}_1^t \quad \mathbf{h}_2^t \quad \cdots \quad \mathbf{h}_{|V|}^t \right], \nonumber \\
+&= \left[ \begin{array}{cccc}
+h_{11}^t &h_{12}^t &\cdots &h_{1|V|}^t \\
+h_{21}^t &h_{22}^t &\cdots &h_{2|V|}^t \\
+\vdots &\vdots &\vdots &\vdots \\
+h_{|V|1}^t &h_{|V|2}^t &\cdots &h_{|V||V|}^t
+\end{array} \right]
+\label{eq::modBBcostMatrix}
+\end{align*}
+}
+%
+{\tiny
+\begin{equation*}
+\mathbf{h}^t_i = \left[ \begin{array}{c}
+\infty \\
+\infty \\
+\vdots \\
+\infty
+\end{array} \right],
+\quad \quad \forall i \in \mathcal{P}^t
+\label{eq::infColumn}
+\end{equation*}
+}
+%
+{\tiny
+\begin{equation*}
+\mathbf{R}^t = [r_1^t,r_2^t,\cdots,r_{|V|}^t]
+\end{equation*}
+}
+%
+{\tiny
+\begin{equation*}
+r_i^t = 
+\left\{ \begin{array}{cc}
+i,  &\text{ if $i \in \mathcal{I}^t$,} \\                  	   
+\underset{u_{ik}=1, k \in V \setminus \mathcal{P}^t}{\arg\min} h_{ik},  &\text{ if $i \in V\setminus \mathcal{I}^t$.} \\
+\end{array} \right.
+\label{eq::initRefStructure}
+\end{equation*}
+}
+\end{columns}
+\end{frame}
+%%
+\begin{frame}{Overall Branch-and-Bound Algorithm}
+\begin{itemize}
+	\item[1.] Initialize $ub(\mathcal{S}^*) \gets \infty$, $\Psi \gets \emptyset$
+	\item[2.] Fix $x_{11} = 0$ and $x_{11} = 1$ to form two sub solution sets and put them into $\Psi$
+	\item[3.] If $\Psi \neq \emptyset$?
+	\begin{itemize}
+		\item[3-1.] Select a sub solution set from $\Psi$, say $\mathcal{S}^t$
+		\item[3-2.] If all decision variables of $\mathcal{S}^t$ are determined, then update $ub(\mathcal{S}^*)$ when a better solution is found
+		\item[3-3.] If some decision variables of $\mathcal{S}^t$ have not been determined, and $lb(\mathcal{S}^t) \leq ub(\mathcal{S}^*)$, then further divide $\mathcal{S}^t$ by fixing one $k \in V \setminus \{\mathcal{I}^t \cup \mathcal{P}^t\}$ and put the divided sub solution sets into $\Psi$
+		\item[3-4.] Back to step 3
+	\end{itemize}
+\end{itemize}
 \end{frame}

@@ -75,7 +75,7 @@ h_{|V|1}^t &h_{|V|2}^t &\cdots &h_{|V||V|}^t
 r_i^t = 
 \left\{ \begin{array}{cc}
 i,  &\text{ if $i \in \mathcal{I}^t$,} \\                  	   
-\underset{u_{ik}=1, k \in V \setminus \mathcal{P}^t}{\arg\min} h_{ik},  &\text{ if $i \in V\setminus \mathcal{I}^t$.} \\
+\underset{k \in V \setminus \mathcal{P}^t, u_{ik}=1}{\arg\min} h_{ik},  &\text{ if $i \in V\setminus \mathcal{I}^t$.} \\
 \end{array} \right.
 \label{eq::initRefStructure}
 \end{equation*}
@@ -90,9 +90,24 @@ i,  &\text{ if $i \in \mathcal{I}^t$,} \\
 	\item[3.] If $\Psi \neq \emptyset$?
 	\begin{itemize}
 		\item[3-1.] Select a sub solution set from $\Psi$, say $\mathcal{S}^t$
-		\item[3-2.] If all decision variables of $\mathcal{S}^t$ are determined, then update $ub(\mathcal{S}^*)$ when a better solution is found
-		\item[3-3.] If some decision variables of $\mathcal{S}^t$ have not been determined, and $lb(\mathcal{S}^t) \leq ub(\mathcal{S}^*)$, then further divide $\mathcal{S}^t$ by fixing one $k \in V \setminus \{\mathcal{I}^t \cup \mathcal{P}^t\}$ and put the divided sub solution sets into $\Psi$
+		\item[3-2.] If all decision variables of $\mathcal{S}^t$ \\
+		 			are determined, then update $ub(\mathcal{S}^*)$ \\
+		 			when a better solution is found
+		\item[3-3.] If some decision variables of $\mathcal{S}^t$ \\
+					have not been determined, and \\
+					{\small $lb(\mathcal{S}^t) \leq ub(\mathcal{S}^*)$}, then further divide \\
+					$\mathcal{S}^t$ by fixing one {\small $k \in V \setminus \{\mathcal{I}^t \cup \mathcal{P}^t\}$} \\
+					and put the divided sub solution \\
+					sets into $\Psi$
 		\item[3-4.] Back to step 3
 	\end{itemize}
 \end{itemize}
+%
+\begin{figure}
+\centering
+\begin{textblock*}{1cm}(7.9cm,6cm) % {block width} (coords)
+\includegraphics[width=4.8cm]{Figures/BBdesignIframeSelection.pdf}
+\end{textblock*}
+\end{figure}
+%
 \end{frame}

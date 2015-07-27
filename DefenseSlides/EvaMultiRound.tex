@@ -1,0 +1,53 @@
+\begin{frame}{Evaluation Results (1/2)}
+\begin{columns}
+\column{0.6\textwidth}
+\begin{itemize}
+	\myItem Consider $10$ transmission rounds, where the video frames captured at different transmission rounds will change (i.e. $\mathbf{H}$ varies)
+	\myItem Three different policies are compared in our results
+	\begin{itemize}
+		\mySubItem Static $\mathbf{H}$
+		\mySubItem Dynamic $\mathbf{H}$ (perform CE and TS at the end of every transmission round)
+		\mySubItem Dynamic $\mathbf{H}$ (proposed method)
+	\end{itemize}
+\end{itemize}
+%
+\column{0.4\textwidth}
+\begin{figure}[!h]
+\centering
+	\subfloat{\includegraphics[width=0.4\textwidth]{Figures/multiSlots/cam3Slot1}} \hspace{0.2em}
+	\subfloat{\includegraphics[width=0.4\textwidth]{Figures/multiSlots/cam4Slot1}} \\
+	%
+	\subfloat{\includegraphics[width=0.4\textwidth]{Figures/multiSlots/cam3Slot7}} \hspace{0.2em}
+	\subfloat{\includegraphics[width=0.4\textwidth]{Figures/multiSlots/cam4Slot7}} \\
+	%
+	\subfloat{\includegraphics[width=0.4\textwidth]{Figures/multiSlots/cam3Slot3}} \hspace{0.2em}
+	\subfloat{\includegraphics[width=0.4\textwidth]{Figures/multiSlots/cam4Slot3}} \\
+	%
+	\subfloat{\includegraphics[width=0.4\textwidth]{Figures/multiSlots/cam3Slot5}} \hspace{0.2em}
+	\subfloat{\includegraphics[width=0.4\textwidth]{Figures/multiSlots/cam4Slot5}} 
+\end{figure}
+\end{columns}
+\end{frame}
+%%
+\begin{frame}{Evaluation Results (2/2)}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{itemize}
+	\myItem Compare the performance gain of different updating policies
+\end{itemize}
+\begin{figure}
+\centering
+\includegraphics[width=0.9\textwidth]{Figures/evaMultiSlots2.pdf}
+\end{figure}
+%
+\column{0.5\textwidth}
+\begin{itemize}
+	\myItem Compare the cumulative execution time of different updating policies
+\end{itemize}
+\begin{figure}
+\centering
+\includegraphics[width=0.9\textwidth]{Figures/cmuExecTime.pdf}
+\end{figure}
+\end{columns}
+%
+\end{frame}

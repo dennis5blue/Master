@@ -1,20 +1,74 @@
-\begin{frame}{Evaluation Results}
+\begin{frame}{Evaluation Results (1/3)}
 \begin{itemize}
-	\myItem We resort to a 3D modeling software~\footfullcite{Suicidator}~\footfullcite{Blender} for rendering ``semi-realistic'' city views as our data source.
+	\myItem We resort to a 3D modeling software~\footfullcite{Suicidator}$^,$~\footfullcite{Blender} \\
+			for rendering ``semi-realistic'' city views \\
+			as our data source
+	\myItem We then deploy $30$ cameras with \\
+			different view angles in the ``virtual'' \\
+			city to capture different but correlated \\
+			views of the city
+	\myItem We use a MVC reference software~\footfullcite{JMVC} to \\
+			experimentally generate $\mathbf{H}$
 \end{itemize}
 % 
 \begin{figure}
 \centering
-\begin{textblock*}{1cm}(7.85cm,0.1cm) % {block width} (coords)
-\includegraphics[width=4.5cm]{Figures/cityView}
+\begin{textblock*}{1cm}(8.35cm,2.55cm) % {block width} (coords)
+\includegraphics[width=4cm]{Figures/cityView}
 \end{textblock*}
 \end{figure}
 %
 \begin{figure}
 \centering
-\begin{textblock*}{1cm}(7.85cm,4.65cm) % {block width} (coords)
-\includegraphics[width=4.5cm]{Figures/deploy30_2.pdf}
+\begin{textblock*}{1cm}(8.35cm,4.8cm) % {block width} (coords)
+\includegraphics[width=4cm]{Figures/deploy30_2.pdf}
 \end{textblock*}
 \end{figure}
+%
+\end{frame}
+%%
+\begin{frame}{Evaluation Results (2/3)}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{itemize}
+	\myItem Show the convergence of different lower bound estimation method
+\end{itemize}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{Figures/compareLbEstimation.pdf}
+\end{figure}
+%
+\column{0.5\textwidth}
+\begin{itemize}
+	\myItem Compare the time complexity of different I-frame selection algorithm
+\end{itemize}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{Figures/complexity2.pdf}
+\end{figure}
+\end{columns}
+%
+\end{frame}
+%%
+\begin{frame}{Evaluation Results (3/3)}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{itemize}
+	\myItem Compare the performance of overhearing source coding under different I-frame selection algorithm
+\end{itemize}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{Figures/txBytes_diffAlg2.pdf}
+\end{figure}
+%
+\column{0.5\textwidth}
+\begin{itemize}
+	\myItem Compare the performance of overhearing source coding under different $\rho$
+\end{itemize}
+\begin{figure}
+\centering
+\includegraphics[width=0.9\textwidth]{Figures/overRange.pdf}
+\end{figure}
+\end{columns}
 %
 \end{frame}

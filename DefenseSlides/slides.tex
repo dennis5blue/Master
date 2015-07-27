@@ -20,6 +20,7 @@
 \usepackage[absolute,overlay]{textpos} % for textblocks
 \usepackage{extarrows} % for fancy arrows
 \usepackage{tcolorbox} % for tcolorbox
+\usepackage{subfig}
 
 %% Define my own item
 % more info about ding symbols: http://tex.stackexchange.com/questions/42619/x-mark-to-match-checkmark
@@ -110,7 +111,7 @@
 \subsection{Problem Formulation}
 \input{Formulation.tex}
 
-\section{Correlated Data Gathering under Overhearing Source Coding}
+\section{Correlated Image Gathering under Overhearing Source Coding}
 \addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
 %
 \subsection{Problem Decomposition}
@@ -122,10 +123,19 @@
 \subsection{Evaluation Results}
 \input{EvaIFrameSelection.tex}
 
-\section{Correlated Data Gathering for Multi-Camera Networks}
+\section{Correlated Video Gathering for Wireless Multi-Camera Networks}
 \addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
+%
+\subsection{Correlated Video Gathering}
+\input{CorrVideoGathering.tex}
+\subsection{Evaluation Results}
+\input{EvaMultiRound.tex}
 
 \section{Conclusions and Future Work}
 \addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
+\subsection{Conclusions}
+\input{Conclusions.tex}
+\subsection{Future Work}
+\input{FutureWork.tex}
 %\input{example.tex}
 \end{document}

@@ -1,0 +1,63 @@
+\begin{frame}{Problem Decomposition}
+\begin{itemize}
+	\myItem In Problem~\eqref{eq::formulation}, the determination of $\mathbf{X}$ is highly related to $\mathbf{Z}$, therefore, we decouple it into two sub-problems:
+	\begin{itemize}
+		\mySubItem I-frame selection sub-problem $\xLongrightarrow{\text{solve   }}$ $\mathbf{X}$
+		\mySubItem P-frame association sub-problem $\xLongrightarrow{\text{solve   }}$ $\mathbf{Z}$
+		\item[]
+		\item[]
+	\end{itemize}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\textwidth]{Figures/procedureOfSubproblems.pdf}
+	\end{figure}
+\end{itemize}
+\end{frame}
+%%
+\begin{frame}{I-Frame Selection Sub-Problem}
+\begin{itemize}
+	\myItem Remove the scheduling constraints (i.e. constraints about $\mathbf{Z}$) from the original formulation
+	{\small \begin{align}
+		&\underset{\mathbf{X}}{\min} \sum_{i=1}^{|V|} \sum_{j \in U_i}  x_{ij} h_{ij}, & \nonumber \\
+		\text{subject to} & & \nonumber \\
+		&U_i = \{ j \in V | d_{ij} \leq \rho d_{j0} \}, &\forall i \in V, \nonumber \\
+		&\sum_{j \in U_i} x_{ij} = 1, &\forall i \in V, \nonumber \\
+		&x_{ij} \leq x_{jj}, &\forall i \in V, \forall j \in W_i, \nonumber \\
+		&x_{ij} = 0, &\forall i \in V, \forall j \in V \setminus U_i, \nonumber \\
+		&x_{ij} = \{0,1\}, &\forall i,j \in V.
+		\label{eq::formulationSimplified}
+	\end{align} }% end small
+\end{itemize}
+\end{frame}
+%%
+\begin{frame}{I-Frame Selection Sub-Problem}
+\begin{itemize}
+	\myItem The idea of constraints in Problem~\eqref{eq::formulationSimplified} is to ensure that
+	\begin{itemize}
+		\mySubItem Only I-frame cameras can be referenced
+		\mySubItem Each P-frame camera must reference from one overheard I-frame camera
+	\end{itemize}
+	\myItem Define $u_{ij}$ such that $u_{ij} = 1$ if $j \in U_i$, otherwise, $u_{ij} = 0$
+	{\small \begin{align}
+		&\underset{diag(\mathbf{X})}{\min} \sum_{i=1}^{|V|} x_{ii}h_{ii} + \sum_{i=1}^{|V|} (1-x_{ii}) \hat{h}_i, & \nonumber \\
+		\text{subject to} & & \nonumber \\
+		&\sum_{j=1}^{|V|} u_{ij} x_{jj} \geq 1, &\forall i \in V, \nonumber \\
+		&x_{jj} = \{0,1\}, &\forall j \in V  
+		\label{eq::IframeSelectionSubProblem}
+	\end{align} }% end small
+\end{itemize}
+%
+\begin{textblock*}{2.6cm}(8.25cm,5.3cm)
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{Figures/arrow.pdf}
+\end{figure}
+\end{textblock*}
+%
+\begin{textblock*}{2.6cm}(9.85cm,6cm)
+\begin{beamercolorbox}[center,shadow=true,rounded=true]{myNoteColor}
+{\small $\hat{h}_i = \underset{u_{ij}x_{jj} = 1}{\min} h_{ij}$ }
+\end{beamercolorbox}
+\end{textblock*}
+%
+\end{frame}

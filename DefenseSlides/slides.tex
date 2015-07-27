@@ -18,10 +18,12 @@
 \usepackage{amssymb} % for using ding{} symbols
 \usepackage{pifont} % for using ding{} symbols
 \usepackage[absolute,overlay]{textpos} % for textblocks
+\usepackage{extarrows} % for fancy arrows
+\usepackage{tcolorbox} % for tcolorbox
 
 %% Define my own item
 % more info about ding symbols: http://tex.stackexchange.com/questions/42619/x-mark-to-match-checkmark
-\newcommand*{\myItem}{\item[\ding{96}]} %98 96
+\newcommand*{\myItem}{\item[\ding{96}]} %98
 \newcommand*{\mySubItem}{\item[\ding{226}]} %243
 
 %% Define my own color
@@ -30,7 +32,9 @@
 \definecolor{myBrown}{RGB}{97,48,48}
 \definecolor{myGray}{RGB}{123,123,123}
 \definecolor{myOrange}{RGB}{217,70,0}
+\definecolor{myRed}{RGB}{206,0,0}
 \setbeamercolor{myEmphColor}{fg=myOrange,bg=myGray!20}
+\setbeamercolor{myNoteColor}{fg=myRed,bg=myGray!10}
 
 %% Set the color of my slides
  % change the color for footline
@@ -95,22 +99,22 @@
 \subsection{Introduction and Motivation}
 \input{Introduction.tex}
 \input{Motivation.tex}
-%
 \subsection{Related Work}
 \input{RelatedWork.tex}
-
 
 \section{Network Scenario and Problem Formulation}
 \addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
 %
 \subsection{Network Scenario}
 \input{Scenario.tex}
-%
 \subsection{Problem Formulation}
 \input{Formulation.tex}
 
 \section{Correlated Data Gathering under Overhearing Source Coding}
 \addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
+%
+\subsection{Problem Decomposition}
+\input{Decomposition.tex}
 
 \section{Correlated Data Gathering for Multi-Camera Networks}
 \addtocontents{toc}{\protect\setcounter{tocdepth}{1}}

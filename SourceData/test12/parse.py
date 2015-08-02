@@ -8,7 +8,7 @@ def main(argv=None):
 	corrFilePrefix = "./outFiles/camera"
 	outFilePath = "./"
 
-        N = 10 # number of cameras
+        N = 24 # number of cameras
 
 	indepCompression = open(indepFile,"r")
 	indepByte = open(outFilePath+"indepByte.txt","w+")

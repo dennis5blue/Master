@@ -1,4 +1,4 @@
-function [improveRatio] = SAselection (in_numCams,in_testVersion,in_searchRange,in_overRange,in_iterLimit)
+function [improveRatio] = SAselection_noGuided (in_numCams,in_testVersion,in_searchRange,in_overRange,in_iterLimit)
     %clc;
     %clear;
     %in_numCams = '20';
@@ -98,17 +98,8 @@ function [improveRatio] = SAselection (in_numCams,in_testVersion,in_searchRange,
             end
             m_CamSet = 1:N;
             m_CamSet(currSelection) = [];
-            % Select one camera to add according to the inverse of its payoff
-            vecPayoff = zeros(1,length(m_CamSet));
-            for i = 1:length(m_CamSet)
-                camToAdd = m_CamSet(i);
-                vecPayoff(i) = CalSAPayoff( [currSelection camToAdd], N, pos, bsX, bsY, rho, matCost );
-            end
-            vecProb = zeros(1,length(m_CamSet));
-            for i = 1:length(m_CamSet)
-                vecProb(i) = (1/vecPayoff(i))/(sum(1./vecPayoff));
-            end
-            camToAdd = MySelectionAccordingToProb(vecProb,m_CamSet);
+            % Select one camera to add randomly
+            camToAdd = m_CamSet( ceil(rand*length(m_CamSet)) );
             % Determine if we should change cameras selection
             payoffOld = CalSAPayoff( currSelection, N, pos, bsX, bsY, rho, matCost );
             payoffNew = CalSAPayoff( [currSelection camToAdd], N, pos, bsX, bsY, rho, matCost );
@@ -129,18 +120,8 @@ function [improveRatio] = SAselection (in_numCams,in_testVersion,in_searchRange,
             if length(currSelection) == 0
                 continue;
             end
-            % Select one camera to discard according to the inverse of its payoff
-            vecPayoff = zeros(1,length(currSelection));
-            for i = 1:length(currSelection)
-                tempSelection = currSelection;
-                tempSelection(i) = [];
-                vecPayoff(i) = CalSAPayoff( tempSelection, N, pos, bsX, bsY, rho, matCost );
-            end
-            vecProb = zeros(1,length(currSelection));
-            for i = 1:length(currSelection)
-                vecProb(i) = (1/vecPayoff(i))/(sum(1./vecPayoff));
-            end
-            camToDiscard = MySelectionAccordingToProb(vecProb,currSelection);
+            % Select one camera to discard randomly
+            camToDiscard = currSelection(ceil(rand*length(currSelection)));
             % Determine if we should change cameras selection
             payoffOld = CalSAPayoff( currSelection, N, pos, bsX, bsY, rho, matCost );
             tempSelection = currSelection;
@@ -179,17 +160,8 @@ function [improveRatio] = SAselection (in_numCams,in_testVersion,in_searchRange,
             end
             m_CamSet = 1:N;
             m_CamSet(currSelection) = [];
-            % Select one camera to add according to the inverse of its payoff
-            vecPayoff = zeros(1,length(m_CamSet));
-            for i = 1:length(m_CamSet)
-                camToAdd = m_CamSet(i);
-                vecPayoff(i) = CalSAPayoff( [currSelection camToAdd], N, pos, bsX, bsY, rho, matCost_GeoTech );
-            end
-            vecProb = zeros(1,length(m_CamSet));
-            for i = 1:length(m_CamSet)
-                vecProb(i) = (1/vecPayoff(i))/(sum(1./vecPayoff));
-            end
-            camToAdd = MySelectionAccordingToProb(vecProb,m_CamSet);
+            % Select one camera to add randomly
+            camToAdd = m_CamSet(ceil(rand*length(m_CamSet)));
             % Determine if we should change cameras selection
             payoffOld = CalSAPayoff( currSelection, N, pos, bsX, bsY, rho, matCost_GeoTech );
             tempSelection = [currSelection camToAdd];
@@ -211,18 +183,8 @@ function [improveRatio] = SAselection (in_numCams,in_testVersion,in_searchRange,
             if length(currSelection) == 0
                 continue;
             end
-            % Select one camera to discard according to the inverse of its payoff
-            vecPayoff = zeros(1,length(currSelection));
-            for i = 1:length(currSelection)
-                tempSelection = currSelection;
-                tempSelection(i) = [];
-                vecPayoff(i) = CalSAPayoff( tempSelection, N, pos, bsX, bsY, rho, matCost_GeoTech );
-            end
-            vecProb = zeros(1,length(currSelection));
-            for i = 1:length(currSelection)
-                vecProb(i) = (1/vecPayoff(i))/(sum(1./vecPayoff));
-            end
-            camToDiscard = MySelectionAccordingToProb(vecProb,currSelection);
+            % Select one camera to discard randomly
+            camToDiscard = currSelection(ceil(rand*length(currSelection)));
             % Determine if we should change cameras selection
             payoffOld = CalSAPayoff( currSelection, N, pos, bsX, bsY, rho, matCost_GeoTech );
             tempSelection = currSelection;
@@ -250,6 +212,6 @@ function [improveRatio] = SAselection (in_numCams,in_testVersion,in_searchRange,
     bestSelection
     bestSelection_GeoTech
     
-    saveFileName = ['mat/SAselectionGuided_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' in_overRange '_iter' in_iterLimit '.mat'];
+    saveFileName = ['mat/SAselectionNoGuided_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' in_overRange '_iter' in_iterLimit '.mat'];
     save(saveFileName);
 end

@@ -25,7 +25,11 @@ function [ cost ] = CalExactCostConsiderOverRange( vecX, matCost, pos, bsX, bsY,
                 end
             end
             [val idx] = sort(vecTmpCost,'ascend');
-            vecRefStruc(i) = iFrames(idx(1));
+            if length(idx) > 0
+                vecRefStruc(i) = iFrames(idx(1));
+            else
+                vecRefStruc(i) = i;
+            end
         end
     end
     

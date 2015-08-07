@@ -2,12 +2,12 @@ clc;
 clear;
 addpath('../Utility');
 
-inputFileName = ['../mat/SAselectionGuided_test12_cam24_rng512_rho1_iter5000.mat'];
+inputFileName = ['../mat/SA/SAselectionGuided_test12_cam24_rng512_rho1_iter5000.mat'];
 load(inputFileName);
 plotRealGuide = (sum(vecBits) - vecRecordPayoff)./sum(vecBits);
 plotGeoGuide = (sum(vecBits) - vecRecordPayoff_GeoTech)./sum(vecBits);
 
-inputFileName = ['../mat/SAselectionNoGuided_test12_cam24_rng512_rho1_iter5000.mat'];
+inputFileName = ['../mat/SA/SAselectionNoGuided_test12_cam24_rng512_rho1_iter5000.mat'];
 load(inputFileName);
 plotRealNoGuide = (sum(vecBits) - vecRecordPayoff)./sum(vecBits);
 plotGeoNoGuide = (sum(vecBits) - vecRecordPayoff_GeoTech)./sum(vecBits);

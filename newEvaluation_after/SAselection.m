@@ -1,11 +1,11 @@
-function [improveRatio] = SAselection (in_numCams,in_testVersion,in_searchRange,in_overRange,in_iterLimit)
+function [improveRatio_real improveRatio_geoTech] = SAselection (in_ifSave,in_numCams,in_testVersion,in_searchRange,in_overRange,in_iterLimit)
     %clc;
     %clear;
     %in_numCams = '20';
     %in_testVersion = '12';
     %in_searchRange = '512';
     %in_overRange = '1';
-    
+    ifSaveFile = str2num(in_ifSave);
     addpath('./Utility');
     inputPath = ['../SourceData/test' in_testVersion '/'];
     searchRange = str2num(in_searchRange);
@@ -247,9 +247,16 @@ function [improveRatio] = SAselection (in_numCams,in_testVersion,in_searchRange,
         end
     end
 
-    bestSelection
-    bestSelection_GeoTech
+    bestSelection;
+    bestSelection_GeoTech;
     
-    saveFileName = ['mat/SAselectionGuided_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' in_overRange '_iter' in_iterLimit '.mat'];
-    save(saveFileName);
+    gg1 = CalSAPayoff( bestSelection, N, pos, bsX, bsY, rho, matCost );
+    gg2 = CalSAPayoff( bestSelection_GeoTech, N, pos, bsX, bsY, rho, matCost );
+    improveRatio_real = (sum(vecBits) - gg1)/sum(vecBits);
+    improveRatio_geoTech = (sum(vecBits)-gg2)/sum(vecBits);
+    
+    if ifSaveFile == 1
+        saveFileName = ['mat/SA/SAselectionGuided_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' in_overRange '_iter' in_iterLimit '.mat'];
+        save(saveFileName);
+    end
 end

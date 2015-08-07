@@ -1,11 +1,11 @@
-function [improveRatio] = SAselection_noGuided (in_numCams,in_testVersion,in_searchRange,in_overRange,in_iterLimit)
+function [improveRatio] = SAselection_noGuided (in_ifSave,in_numCams,in_testVersion,in_searchRange,in_overRange,in_iterLimit)
     %clc;
     %clear;
     %in_numCams = '20';
     %in_testVersion = '12';
     %in_searchRange = '512';
     %in_overRange = '1';
-    
+    ifSaveFile = str2num(in_ifSave);
     addpath('./Utility');
     inputPath = ['../SourceData/test' in_testVersion '/'];
     searchRange = str2num(in_searchRange);
@@ -211,7 +211,8 @@ function [improveRatio] = SAselection_noGuided (in_numCams,in_testVersion,in_sea
 
     bestSelection
     bestSelection_GeoTech
-    
-    saveFileName = ['mat/SAselectionNoGuided_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' in_overRange '_iter' in_iterLimit '.mat'];
-    save(saveFileName);
+    if ifSaveFile == 1
+        saveFileName = ['mat/SA/SAselectionNoGuided_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' in_overRange '_iter' in_iterLimit '.mat'];
+        save(saveFileName);
+    end
 end

@@ -1,4 +1,4 @@
-function [improveRatio] = MDS_baseline (in_ifSave,in_numCams,in_testVersion,in_searchRange,in_overRange)
+function [improveRatio] = MDS_proposed_geoTech_Inter (in_ifSave,in_numCams,in_testVersion,in_searchRange,in_overRange)
     %clc;
     %clear;
     %in_numCams = '30';
@@ -18,24 +18,55 @@ function [improveRatio] = MDS_baseline (in_ifSave,in_numCams,in_testVersion,in_s
 
     % Parameters settings
     bsX = 0; bsY = 0; % position of base station
-    tau = 1; % ms
-    txPower = 0.1; % transmission power (watt)
-    n0 = 1e-16; % cannot change this value (hard code in CalChannelGain)
     N = str2num(in_numCams); % number of total cameras
-    W = 180; % kHz
     rho = str2num(in_overRange);
-    for i = 1:N
+    d_GeoTech = 50;
+    numIntersections = 4; % only for test version 12
+    initNumCams = 24; % only for test version 12
+    
+    % Generate cost matrix by camera pos and direction
+    matCost_GeoTech = zeros(initNumCams,initNumCams);
+    for i = 1:initNumCams
+        for j = 1:initNumCams
+            camDistance = sqrt( (pos(i,1)-pos(j,1))^2 + (pos(i,2)-pos(j,2))^2 );
+            theta = dir(i)-dir(j); % in radius
+            if camDistance == 0
+                disparity = 0.25*( abs((d_GeoTech*sin(theta))/(d_GeoTech+cos(theta))) + ...
+                                   abs((d_GeoTech*sin(theta))/(d_GeoTech-cos(theta))) + ...
+                                   abs((d_GeoTech*cos(theta))/(d_GeoTech+sin(theta)) - 1) + ...
+                                   abs((-d_GeoTech*cos(theta))/(d_GeoTech-sin(theta)) + 1) );
+            else
+                disparity = 1;
+            end
+            if i == j
+                disparity = 1;
+            end
+            matCost_GeoTech(i,j) = disparity;
+        end
+    end
+    
+    % Initialize matCost according to N
+    for i = 1:length(vecBits)
         matCost(i,i) = vecBits(i);
     end
-    matCost = matCost(1:N,1:N);
-    vecBits = vecBits(1:N);
-
-    vecC = [];
-    for i = 1:N
-        snr = txPower*CalChannelGain(pos(i,1),pos(i,2),bsX,bsY)/n0;
-        capacity = tau*W*log2(1+snr);
-        vecC = [vecC capacity];
+    if mod(N,numIntersections) ~= 0
+        disp ('Error, Bad number of cameras (must be a multiply of 4 for test version 12)');
+    elseif mod(N,numIntersections) == 0
+        needToRm = [];
+        gg = (initNumCams - N)/numIntersections;
+        qq = initNumCams/numIntersections;
+        for i = 0:numIntersections-1
+            for j = qq-gg+1:qq
+                needToRm = [needToRm i*qq+j];
+            end
+        end
     end
+    vecBits(needToRm) = [];
+    matCost(needToRm,:) = [];
+    matCost(:,needToRm) = [];
+    matCost_GeoTech(needToRm,:) = [];
+    matCost_GeoTech(:,needToRm) = [];
+    matCost_GeoTech = matCost_GeoTech.*(sum(vecBits)/length(vecBits));
 
     % Conduct overhearing graph
     vecAdjGraph = [];
@@ -50,66 +81,42 @@ function [improveRatio] = MDS_baseline (in_ifSave,in_numCams,in_testVersion,in_s
                 m_inEdge = [m_inEdge j];
             end
         end
-        newNode = struct('idx',i,'weight',vecBits(i),'outEdge',m_outEdge,'inEdge',m_inEdge,'ifIFrame',-1,'cost',inf);
+        newNode = struct('idx',i,'weight',vecBits(i),'outEdge',m_outEdge,'ifIFrame',-1,'cost',inf);
         vecAdjGraph = [vecAdjGraph newNode];
     end
     
-    % Initialize cluster heads (become head if it is the smallest vertex weight among all inEdge nodes)
-    for i = 1:N
-        m_node = vecAdjGraph(i);
-        iFlag = 1;
-        for j = 1:length(m_node.inEdge)
-            cam = m_node.inEdge(j);
-            if vecBits(cam) < m_node.weight
-                iFlag = 0;
-            end
-        end
-        
-        if iFlag == 1
-            m_node.ifIFrame = 1;
-            m_node.cost = vecBits(i);
-            %m_node.outEdge = [];
-            vecAdjGraph(i) = m_node;
-        end
-    end
-    
-    % For remaining cameras, join a head if this head is its smallest weight neighbor (outEdges)
-    for cam = 1:N
-        m_node = vecAdjGraph(cam);
-        if m_node.ifIFrame == -1
-            m_outEdge = m_node.outEdge;
-            m_candidateI = []; % best vertex among outEdges
-            m_cost = inf; % weight of best vertex among outEdges
-            for i = 1:length(m_outEdge)
-                refcam = m_outEdge(i);
-                if vecAdjGraph(refcam).ifIFrame == 1 && vecAdjGraph(refcam).weight < m_cost
-                    m_candidateI = refcam;
-                    m_cost = vecAdjGraph(refcam).weight;
-                end
-            end
-            
-            pFlag = 1;
-            for i = 1:length(m_outEdge)
-                refcam = m_outEdge(i);
-                if vecAdjGraph(refcam).weight < m_cost
-                    pFlag = 0;
-                end
-            end
-            
-            if pFlag == 1
-                m_node.ifIFrame = 0;
-                m_node.cost = matCost(cam,m_candidateI);
-                %m_node.outEdge = m_candidateI;
-                vecAdjGraph(cam) = m_node;
-            end
-        end
-    end
-    
-    iter = 0;
+    countIter = 0;
     while(1)
-        iter = iter + 1;
-        % attach P-cam to new generated I-cam
-        % For remaining cameras, join a head if this head is its smallest weight neighbor (outEdges)
+        countIter = countIter + 1;
+        % Cal the head metric by each camera's best out edge
+        vecBestOutEdge = FindBestOutEdge( vecAdjGraph,matCost_GeoTech );
+        vecHeadMetric = zeros(1,N);
+        for cam = 1:N
+            m_node = vecAdjGraph(cam);
+            if m_node.ifIFrame == -1
+                m_headMetric = - m_node.weight;
+                for i = 1:N
+                    if vecBestOutEdge(i) == cam
+                        m_headMetric = m_headMetric + ( vecBits(i) - matCost_GeoTech(i,cam) );
+                    end
+                end
+            elseif m_node.ifIFrame == 0 || m_node.ifIFrame == 1
+                m_headMetric = -inf; % already been determined
+            else
+                disp('Something wrong when assigning nwe I-frame');
+            end
+            vecHeadMetric(cam) = m_headMetric;
+        end
+        % Select one cluster head (become head if it has the largest head metric)
+        [val idx] = sort(vecHeadMetric,'descend');
+        newNode = vecAdjGraph(idx(1));
+        newNode.ifIFrame = 1;
+        newNode.cost = vecBits(idx(1));
+        newNode.outEdge = [];
+        vecAdjGraph(idx(1)) = newNode;
+    
+        % Attach P-cam to new generated I-cam
+        % Attach an I-cam if this edge is the best outEdge
         for cam = 1:N
             m_node = vecAdjGraph(cam);
             if m_node.ifIFrame == -1
@@ -118,29 +125,30 @@ function [improveRatio] = MDS_baseline (in_ifSave,in_numCams,in_testVersion,in_s
                 m_cost = inf; % weight of best vertex among outEdges
                 for i = 1:length(m_outEdge)
                     refcam = m_outEdge(i);
-                    if vecAdjGraph(refcam).ifIFrame == 1 && vecAdjGraph(refcam).weight < m_cost
+                    if vecAdjGraph(refcam).ifIFrame == 1 && matCost_GeoTech(cam,refcam) < m_cost
                         m_candidateI = refcam;
-                        m_cost = vecAdjGraph(refcam).weight;
+                        m_cost = matCost_GeoTech(cam,refcam);
                     end
                 end
             
                 pFlag = 1;
                 for i = 1:length(m_outEdge)
                     refcam = m_outEdge(i);
-                    if vecAdjGraph(refcam).weight < m_cost
+                    if matCost_GeoTech(cam,refcam) < m_cost && vecAdjGraph(refcam).ifIFrame ~= 0
                         pFlag = 0;
                     end
                 end
             
                 if pFlag == 1
                     m_node.ifIFrame = 0;
-                    m_node.cost = matCost(cam,m_candidateI);
-                    %m_node.outEdge = m_candidateI;
+                    m_node.cost = matCost_GeoTech(cam,m_candidateI);
+                    m_node.outEdge = m_candidateI;
                     vecAdjGraph(cam) = m_node;
                 end
             end
         end
         
+        %{
         % For remaining cameras, if all its neighbors is determined as P-frame, it becomes an I-frame
         for cam = 1:N
             m_node = vecAdjGraph(cam);
@@ -166,28 +174,17 @@ function [improveRatio] = MDS_baseline (in_ifSave,in_numCams,in_testVersion,in_s
                 end
             end
         end
+        %}
         
         % check if all cameras are determined
         ifbreak = 1;
         for i = 1:N
-            m_node = vecAdjGraph(i);
-            %[m_node.idx m_node.ifIFrame]
+            m_node = vecAdjGraph(i); 
             if m_node.ifIFrame == -1
                 ifbreak = 0;
             end
         end
         if ifbreak == 1
-            break;
-        end
-        if iter > 100
-            for i = 1:N
-                m_node = vecAdjGraph(i);
-                if m_node.ifIFrame == -1
-                    m_node.ifIFrame = 1;
-                    m_node.cost = vecBits(i);
-                    vecAdjGraph(i) = m_node;
-                end
-            end
             break;
         end
     end
@@ -205,11 +202,11 @@ function [improveRatio] = MDS_baseline (in_ifSave,in_numCams,in_testVersion,in_s
 
     bestSelection;
     totalCost;
+    %improveRatio = (sum(vecBits(1:N))-totalCost)/sum(vecBits(1:N));
     finalTxBits = CalExactCostConsiderOverRange( bestSelection,matCost,pos,bsX,bsY,rho );
     improveRatio = (sum(vecBits(1:N))-finalTxBits)/sum(vecBits(1:N));
-    %improveRatio = (sum(vecBits(1:N))-totalCost)/sum(vecBits(1:N))
     if ifSaveFile == 1
-        saveFileName = ['mat/MDS/MDSBaselineOutput_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' in_overRange '.mat'];
+        saveFileName = ['mat/MDS/MDSProposedOutput2_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' in_overRange '.mat'];
         save(saveFileName);
     end
 end

@@ -1,10 +1,11 @@
-function [improveRatio] = MDS_proposed (in_numCams,in_testVersion,in_searchRange,in_overRange)
+function [improveRatio] = MDS_proposed (in_ifSave,in_numCams,in_testVersion,in_searchRange,in_overRange)
     %clc;
     %clear;
     %in_numCams = '30';
     %in_testVersion = '10';
     %in_searchRange = '512';
     %in_overRange = '1';
+    ifSaveFile = str2num(in_ifSave);
     addpath('./Utility');
     inputPath = ['../SourceData/test' in_testVersion '/'];
     searchRange = str2num(in_searchRange);
@@ -53,7 +54,9 @@ function [improveRatio] = MDS_proposed (in_numCams,in_testVersion,in_searchRange
         vecAdjGraph = [vecAdjGraph newNode];
     end
     
+    countIter = 0;
     while(1)
+        countIter = countIter + 1;
         % Cal the head metric by each camera's best out edge
         vecBestOutEdge = FindBestOutEdge( vecAdjGraph,matCost );
         vecHeadMetric = zeros(1,N);
@@ -171,6 +174,8 @@ function [improveRatio] = MDS_proposed (in_numCams,in_testVersion,in_searchRange
     %improveRatio = (sum(vecBits(1:N))-totalCost)/sum(vecBits(1:N));
     finalTxBits = CalExactCostConsiderOverRange( bestSelection,matCost,pos,bsX,bsY,rho );
     improveRatio = (sum(vecBits(1:N))-finalTxBits)/sum(vecBits(1:N));
-    %saveFileName = ['mat/MDSProposedOutput2_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' in_overRange '.mat'];
-    %save(saveFileName);
+    if ifSaveFile == 1
+        saveFileName = ['mat/MDS/MDSProposedOutput2_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' in_overRange '.mat'];
+        save(saveFileName);
+    end
 end

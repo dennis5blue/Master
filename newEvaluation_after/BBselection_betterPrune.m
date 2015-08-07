@@ -17,11 +17,7 @@ function [improveRatio] = BBselection_betterPrune (in_numCams,in_testVersion,in_
 
     % Parameters settings
     bsX = 0; bsY = 0; % position of base station
-    tau = 1; % ms
-    txPower = 0.1; % transmission power (watt)
-    n0 = 1e-16; % cannot change this value (hard code in CalChannelGain)
     N = str2num(in_numCams); % number of total cameras
-    W = 180; % kHz
     rho = str2num(in_overRange);
     firstCam = 1;
     for i = 1:N
@@ -29,13 +25,6 @@ function [improveRatio] = BBselection_betterPrune (in_numCams,in_testVersion,in_
     end
     matCost = matCost(1:N,1:N);
     vecBits = vecBits(1:N);
-
-    vecC = [];
-    for i = 1:N
-        snr = txPower*CalChannelGain(pos(i,1),pos(i,2),bsX,bsY)/n0;
-        capacity = tau*W*log2(1+snr);
-        vecC = [vecC capacity];
-    end
 
     % First branch
     vecX = -1*ones(1,N); % indicate if a camera is encoded as an I-frame
@@ -106,6 +95,6 @@ function [improveRatio] = BBselection_betterPrune (in_numCams,in_testVersion,in_
     finalTxBits = CalExactCostConsiderOverRange( bestSelection,matCost,pos,bsX,bsY,rho );
     improveRatio = (sum(vecBits(1:N))-finalTxBits)/sum(vecBits(1:N));
     reducedIter = (2^N - length(recordLb))/(2^N);
-    %saveFileName = ['mat/BBBetterPruneOutput2_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' num2str(rho) '.mat'];
-    %save(saveFileName);
+    saveFileName = ['mat/BBBetterPruneOutput2_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' num2str(rho) '.mat'];
+    save(saveFileName);
 end

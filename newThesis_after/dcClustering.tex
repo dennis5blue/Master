@@ -1,0 +1,38 @@
+\subsection{Data-Centric Clustering}
+\label{sec::dcClustering}
+%
+For the multi-camera networks, cameras are deployed for collecting data around a neighboring area, and thus video streams of those cameras are correlated in nature.
+Therefore, for the sake of using the radio resource in an efficient way, we should therefore focus on the quality of the gathered data at the base station instead of the data rate of individual cameras especially when the radio resource (e.g. channel bandwidth, allocated time slot) is limited.
+In order to achieve such a ``data-centirc'' approach, we apply a hierarchical \emph{two-hop relay} communication model for uplink transmission in our previous works~\cite{steven} for the sake of exploiting spatial reuse as shown in Fig.~\ref{fig::dcModel}.
+%
+\begin{figure}
+\centering
+\includegraphics[width=0.95\columnwidth]{Figures/model}
+\caption{\label{fig::dcModel}System model for clustered communication}
+\end{figure}
+%
+More specifically, suppose that there has a set of cameras deployed over a city for gathering multimedia data from different intersections, where a base station with limited radio resource (e.g. time slots in TDMA or resource block in OFDMA) is deployed in the city for collecting data from those cameras through wireless communication links.
+Data collected from individual cameras is to be periodically transmitted back to the base station for forwarding to a back-end server.
+We then divide cameras into several clusters and each cluster will select one camera to act as cluster head for relaying data of its member to the base station.
+In such a two-tier cluster communication model, cluster heads are allocated \emph{orthogonal radio resource} (tier-1 radio resource) for direct communicating with the base station.
+However, cameras belong to different clusters can share the same resource (tier-2 radio resource) for concurrently forwarding their data to its serving cluster head, and hence inter-cluster interference must be properly controlled to ensure successfully data reception by all cluster heads. 
+Within each cluster, in order to prevent from intra-cluster interference, only one transmission is active at one time instant.
+The data transmission scheme of clustered communication model can now be summarized as the following two phases:
+\begin{itemize}
+\item Tier-2 transmission: In order to leverage the advantages of frequency reuse for different clusters, multiple cameras belonged to different clusters are allowed to deliver their data to their serving cluster heads simultaneously.
+That is, multiple packets might be transmitted on the same frequency band at the same time.
+Therefore, under the hierarchical two-hop relay communication model, cameras will experience interference from the active cameras from other clusters.
+However, if the transmission schedule is not jointly determined over all clusters, we cannot know the set of cameras that will cause interference to other clusters at a given time slot.
+Due to this reason, we consider the worst interference case in this thesis for the sake of ensuring the determined transmission schedule is feasible no matter which cameras are transmitting their data at the same time slot.
+More details about the interference management of the clustered communication model is explained in our previous work~\cite{steven}.
+\item Tier-1 transmission: For the sake of applying correlated data gathering, cluster heads are assumed to be able to compress data collected from their member cameras.
+Afterwards, cluster heads are then responsible for forwarding the compressed data to the base station.
+We assume that the base station allocated orthogonal radio resource for the tier-1 transmission so that only one cluster head is active for transmission at a given time slot.
+Therefore, the radio resource usage for tier-1 transmission only depends on the data rate of each cluster heads, and different tier-1 transmission schedule dose not change the required radio resource. 
+\end{itemize}
+
+In our previous works~\cite{VTCCluster}, we proposed a solution for the optimization problem for jointly considering cluster formation and transmission power control.
+The power control mechanism is to ensure that all cameras can transmit their data successfully to its serving head under the worst interference case.
+Although the tier-2 transmission schedule is not investigated in our previous work, power control for any arbitrary transmission schedule is feasible due to the reason that the worst case is already considered.
+However, note that in multi-camera networks, data collected from nearby cameras are often correlated, and hence it is possible for each camera only forwards ``useful'' information to its serving head.
+Therefore, in this thesis, cameras are assumed to be able to overhear transmission from nearby cameras for the sake of exploiting the benefit of correlated data gathering, and we consider the scenario \emph{within one cluster}, which will be further presented along with some useful models in Chapter~\ref{sec::networkScenario} and Chapter~\ref{sec::dataModel}.

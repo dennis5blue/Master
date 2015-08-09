@@ -8,56 +8,87 @@ vecImprovSA_realBits = [];
 vecImprovSA_geoTech = [];
 vecImprovMDS_realBits = [];
 vecImprovMDS_geoTech = [];
+vecIterMDS_realBits = [];
+vecIterMDS_geoTech = [];
 
-numCamAtInter = [2 3 4 5 6];
-numOfInter = 4; % since we have four intersections for test version 12
+vecBitsBB = [];
+vecBitsMDS = [];
+
+vecDegree = [10:5:40];
+numOfInter = 1; % since we have four intersections for test version 13
 searchRng = 512;
-testVersion = 12;
+testVersion = 13;
 rho = 1;
-SAiterLimit = 1000;
+SAiterLimit = 300;
 ifSaveFile = 0;
-for i = 1:length(numCamAtInter)
-    N = numCamAtInter(i)*numOfInter
+N = 8;
+inputPath = ['../SourceData/test' num2str(testVersion) '/'];
+vecEpsilon = [];
+for deg = vecDegree
+    vecBits = 8.*dlmread([inputPath 'outFiles/' num2str(deg) '/indepByte.txt']); % bits
+    matCost = 8.*dlmread([inputPath 'outFiles/' num2str(deg) '/corrMatrix.txt']);
+    vecTemp = [];
+    for i = 1:N
+        matCost(i,i) = vecBits(i);
+        vecTemp = [vecTemp vecBits(i)/min(matCost(i,:))];
+    end
+    vecEpsilon = [vecEpsilon max(vecTemp)];
     
-    ratio = 100*BBselection_betterPrune_Inter(num2str(ifSaveFile),num2str(N),num2str(testVersion),num2str(searchRng),num2str(rho));
-    vecImprovBB_realBits = [vecImprovBB_realBits ratio];
-    ratio = 100*BBselection_betterPrune_geoTech_Inter(num2str(ifSaveFile),num2str(N),num2str(testVersion),num2str(searchRng),num2str(rho));
-    vecImprovBB_geoTech = [vecImprovBB_geoTech ratio];
+    ratio = BBselection_betterPrune_Inter(num2str(ifSaveFile),num2str(N),num2str(testVersion),num2str(rho),num2str(deg));
+    vecImprovBB_realBits = [vecImprovBB_realBits 100*ratio];
+    vecBitsBB = [vecBitsBB sum(vecBits(1:N))*(1-ratio)];
+    %ratio = 100*BBselection_betterPrune_geoTech_Inter(num2str(ifSaveFile),num2str(N),num2str(testVersion),num2str(rho),num2str(deg));
+    %vecImprovBB_geoTech = [vecImprovBB_geoTech ratio];
     
-    [ratio_real ratio_geoTech] = SAselection (num2str(ifSaveFile),num2str(N),num2str(testVersion),num2str(searchRng),num2str(rho),num2str(SAiterLimit));
+    [ratio countIter] = MDS_proposed_Inter(num2str(ifSaveFile),num2str(N),num2str(testVersion),num2str(rho),num2str(deg));
+    vecImprovMDS_realBits = [vecImprovMDS_realBits 100*ratio];
+    vecIterMDS_realBits = [vecIterMDS_realBits countIter];
+    vecBitsMDS = [vecBitsMDS sum(vecBits(1:N))*(1-ratio)];
+    %[ratio countIter] = MDS_proposed_geoTech_Inter(num2str(ifSaveFile),num2str(N),num2str(testVersion),num2str(rho),num2str(deg));
+    %vecImprovMDS_geoTech = [vecImprovMDS_geoTech 100*ratio];
+    %vecIterMDS_geoTech = [vecIterMDS_geoTech countIter];
+    
+    [ratio_real ratio_geoTech] = SAselection_Inter (num2str(ifSaveFile),num2str(N),num2str(testVersion),num2str(rho),num2str(deg),num2str(SAiterLimit));
     vecImprovSA_realBits = [vecImprovSA_realBits 100*ratio_real];
-    vecImprovSA_geoTech = [vecImprovSA_geoTech 100*ratio_geoTech];
-    
-    ratio = 100*MDS_proposed_Inter(num2str(ifSaveFile),num2str(N),num2str(testVersion),num2str(searchRng),num2str(rho));
-    vecImprovMDS_realBits = [vecImprovMDS_realBits ratio];
-    ratio = 100*MDS_proposed_geoTech_Inter(num2str(ifSaveFile),num2str(N),num2str(testVersion),num2str(searchRng),num2str(rho));
-    vecImprovMDS_geoTech = [vecImprovMDS_geoTech ratio];
-    
+    %vecImprovSA_geoTech = [vecImprovSA_geoTech 100*ratio_geoTech];
 end
 
+AoV = 50;
+plotCorr = [];
+for deg = vecDegree
+    plotCorr = [plotCorr 100*(AoV-deg)/AoV];
+end
 % Start plotting figures
 figure(1);
-plot(numCamAtInter,vecImprovBB_realBits,'^-','LineWidth',2,'DisplayName', ...
+plot(fliplr(plotCorr),fliplr(vecImprovBB_realBits),'^-','LineWidth',2,'DisplayName', ...
     'BB algorithm','Color','r','MarkerSize',10); hold on;
-%plot(numCamAtInter,vecImprovBB_geoTech,'^--','LineWidth',2,'DisplayName', ...
-%    'BB algorithm (geo)','Color','r','MarkerSize',10); hold on;
-
-plot(numCamAtInter,vecImprovSA_realBits,'x-','LineWidth',2,'DisplayName', ...
-    'SA algorithm','Color','c','MarkerSize',10); hold on;
-%plot(numCamAtInter,vecImprovSA_geoTech,'x--','LineWidth',2,'DisplayName', ...
-%    'SA algorithm (geo)','Color','c','MarkerSize',10); hold on;
-
-plot(numCamAtInter,vecImprovMDS_realBits,'s-','LineWidth',2,'DisplayName', ...
+plot(fliplr(plotCorr),fliplr(vecImprovSA_realBits),'s-','LineWidth',2,'DisplayName', ...
+    'SA algorithm','Color','g','MarkerSize',10); hold on;
+plot(fliplr(plotCorr),fliplr(vecImprovMDS_realBits),'x-','LineWidth',2,'DisplayName', ...
     'Graph approximation','Color','b','MarkerSize',10); hold on;
-%plot(numCamAtInter,vecImprovMDS_geoTech,'s--','LineWidth',2,'DisplayName', ...
-%    'Graph approximation (geo)','Color','b','MarkerSize',10);
-
-%set (gca, 'XTick',[5:1:9]);
-%xt = get(gca, 'XTick');
-%set (gca, 'XTickLabel', 2.^xt);
 leg = legend('show','location','NorthWest');
 set(leg,'FontSize',12);
-axis([-inf inf -inf inf]);
+axis([-inf inf 3 38.5]);
 ylabel('Improvement ratio (%)','FontSize',11);
-xlabel('Number of cameras at one intersections','FontSize',11);
+xlabel('FoV overlapped proportion (%)','FontSize',11);
+grid on;
+
+figure(2);
+plotApproxRatio_real = vecBitsMDS./vecBitsBB;
+plotApproxRatio_estimate = [];
+for i = 1:length(vecDegree)
+    ep = vecEpsilon(i);
+    itNum = vecIterMDS_realBits(i);
+    appRatio = ep - (ep*(N-itNum)-N-itNum)/N;
+    plotApproxRatio_estimate = [plotApproxRatio_estimate appRatio];
+end
+plot(fliplr(plotCorr),fliplr(plotApproxRatio_estimate),'o-','LineWidth',2,'DisplayName', ...
+    'Estimated approximation ratio','Color','b','MarkerSize',10); hold on;
+plot(fliplr(plotCorr),fliplr(plotApproxRatio_real),'^-','LineWidth',2,'DisplayName', ...
+    'Evaluated approximation ratio','Color','r','MarkerSize',10); hold on;
+leg = legend('show','location','NorthWest');
+set(leg,'FontSize',12);
+axis([-inf inf 1 2.5]);
+ylabel('Approximation ratio','FontSize',11);
+xlabel('FoV overlapped proportion (%)','FontSize',11);
 grid on;

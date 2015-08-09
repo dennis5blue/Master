@@ -1,20 +1,15 @@
-function [improveRatio] = BBselection_betterPrune_geoTech_Inter (in_ifSave,in_numCams,in_testVersion,in_searchRange,in_overRange)
+function [improveRatio] = BBselection_betterPrune_geoTech_Inter (in_ifSave,in_numCams,in_testVersion,in_overRange,in_degree)
     %clc;
     %clear;
-    %in_numCams = '30';
-    %in_testVersion = '10';
-    %in_searchRange = '512';
-    %in_overRange = '1';
     ifSaveFile = str2num(in_ifSave);
     addpath('./Utility');
     inputPath = ['../SourceData/test' in_testVersion '/'];
-    searchRange = str2num(in_searchRange);
 
     % Read files
-    vecBits = 8.*dlmread([inputPath 'outFiles/rng' in_searchRange '/indepByte.txt']); % bits
-    pos = dlmread([inputPath 'plotTopo/pos.txt']);
-    dir = dlmread([inputPath 'plotTopo/dir.txt']);
-    matCost = 8.*dlmread([inputPath 'outFiles/rng' in_searchRange '/corrMatrix.txt']);
+    vecBits = 8.*dlmread([inputPath 'outFiles/' in_degree '/indepByte.txt']); % bits
+    matCost = 8.*dlmread([inputPath 'outFiles/' in_degree '/corrMatrix.txt']);
+    pos = dlmread([inputPath 'plotTopo/pos_' in_degree '.txt']);
+    dir = dlmread([inputPath 'plotTopo/dir_' in_degree '.txt']);
 
     % Parameters settings
     bsX = 0; bsY = 0; % position of base station
@@ -22,13 +17,11 @@ function [improveRatio] = BBselection_betterPrune_geoTech_Inter (in_ifSave,in_nu
     rho = str2num(in_overRange);
     firstCam = 1;
     d_GeoTech = 50;
-    numIntersections = 4; % only for test version 12
-    initNumCams = 24; % only for test version 12
     
     % Generate cost matrix by camera pos and direction
-    matCost_GeoTech = zeros(initNumCams,initNumCams);
-    for i = 1:initNumCams
-        for j = 1:initNumCams
+    matCost_GeoTech = zeros(N,N);
+    for i = 1:N
+        for j = 1:N
             camDistance = sqrt( (pos(i,1)-pos(j,1))^2 + (pos(i,2)-pos(j,2))^2 );
             theta = dir(i)-dir(j); % in radius
             if camDistance == 0
@@ -45,30 +38,12 @@ function [improveRatio] = BBselection_betterPrune_geoTech_Inter (in_ifSave,in_nu
             matCost_GeoTech(i,j) = disparity;
         end
     end
+    matCost_GeoTech = matCost_GeoTech.*(sum(vecBits)/length(vecBits));
     
     % Initialize matCost according to N
     for i = 1:length(vecBits)
         matCost(i,i) = vecBits(i);
     end
-    if mod(N,numIntersections) ~= 0
-        disp ('Error, Bad number of cameras (must be a multiply of 4 for test version 12)');
-    elseif mod(N,numIntersections) == 0
-        needToRm = [];
-        gg = (initNumCams - N)/numIntersections;
-        qq = initNumCams/numIntersections;
-        for i = 0:numIntersections-1
-            for j = qq-gg+1:qq
-                needToRm = [needToRm i*qq+j];
-            end
-        end
-    end
-    vecBits(needToRm) = [];
-    matCost(needToRm,:) = [];
-    matCost(:,needToRm) = [];
-    matCost_GeoTech(needToRm,:) = [];
-    matCost_GeoTech(:,needToRm) = [];
-    matCost_GeoTech = matCost_GeoTech.*(sum(vecBits)/length(vecBits));
-
 
     % First branch
     vecX = -1*ones(1,N); % indicate if a camera is encoded as an I-frame

@@ -34,6 +34,15 @@ The goal of the selection is to find the set of images that contribute most sign
 The authors in~\cite{CorrAwareScheduling} further proposed a scheduling algorithm based on the importance of data collected by each cameras, and the transmission of later scheduled cameras might be dropped due to the constraints of wireless radio resource.
 Such a selective report mechanism is different from our work, where the information from all cameras are retained without loss in the overall quality of the data collected at the aggregator.
 %
+
+We also need to mention that many network problems can be modeled as graph problems.
+In~\cite{MWDS_baseline}, the authors aimed to partition weighted nodes of a mobile network into clusters such that the network requirement can be achieved.
+For this purpose, they modeled the network into an undirected weighted graph and transformed their problem into the well-known minimum weighted dominating set (MWDS) problem, where the MWDS problem is to find a minimum-weighted vertex subset such that for any vertex, it is contained in this subset or it has a neighbor contained in this subset.
+In~\cite{newAppMWDS}, the authors also studied the problem of MWDS and they proposed a ($4+\epsilon$)-approximation algorithm for a MWDS based on the idea of dynamic programming.
+Note that we also investigate this problem though an approximated approach as presented in Chapter~\ref{sec::graphApprox}.
+Although the idea of MWDS is similar to our target problem as described in Chapter~\ref{sec::OSC}, however, not only vertices but also edges are weighted in our formulation, whereas both the work in~\cite{MWDS_baseline}~and~\cite{newAppMWDS} considered vertex weight only.
+Besides, our network graph is a directed graph instead of an undirected graph, which is also different from the work in~\cite{MWDS_baseline,newAppMWDS}.
+Therefore, their proposed methods might lead to sub-optimal solution of our target scenario. 
 \subsubsection{Resource Allocation}
 Problem of resource allocation for multi-camera networks is also investigated in literature.
 %

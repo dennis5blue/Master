@@ -148,3 +148,43 @@ In short, we summarize our proposed grouping algorithm for constructing a minimu
 \end{table*}
 %
 %
+\subsubsection{Analysis of Graph Approximation Algorithm}
+\label{sec::GraphApproxAnalysis}
+%
+According to~\cite{ApproxAlgs}, the \emph{approximation ratio} of an algorithm can be defined as:
+\begin{mydef}[\textbf{Approximation Ratio}]
+A $\beta$-approximation algorithm for an optimization problem is a polynomial time algorithm that for all instances of the problem produces a solution whose value is within a factor of $\beta$ of the value of the optimal solution, where $\beta$ is denoted as the approximation ratio of this algorithm.
+\label{def::ApproxRatio}
+\end{mydef}
+%
+\begin{mythm}
+Our proposed method for constructing a minimum weight dominating set can achieve an approximation ratio of $\frac{(1+\epsilon)|V|+K}{|V|}$, where $K$ is the required iterations of our proposed method and $\epsilon$ is the maximum reduction ratio of packet size among all cameras.
+\end{mythm}
+\textbf{\emph{Proof:}}
+To start the proof, note that the required encoded bits for all camera can be written as:
+\begin{equation}
+\sum_{i \in \mathcal{I}_{MWDS}} \omega_{ii} + \sum_{i \in \mathcal{P}_{MWDS}} \underset{j \in \mathcal{I}_{MWDS}}{\min} \omega_{ij}
+\label{eq::proofInitCost}
+\end{equation}
+Besides, according to algorithm~\ref{alg::minWeightDS}, if the algorithm requires $K$ iterations for convergence, then $K$ cameras will be selected for becoming I-frame cameras.
+Therefore, if we denote
+\begin{equation*}
+\tilde{\omega} = \underset{i \in V}{\max} \quad \omega_{ii},
+\end{equation*}
+as the largest I-frame size and
+\begin{equation*}
+\epsilon = \underset{i \in V}{\max} \quad \frac{\omega_{ii}}{\underset{j \in V}{\min} \quad \omega_{ij}},
+\end{equation*}
+as the maximum reduction ratio among all P-frame cameras, then equation~\eqref{eq::proofInitCost} will be upper bounded as:
+\begin{align}
+&\quad \sum_{i \in \mathcal{I}_{MWDS}} \omega_{ii} + \sum_{i \in \mathcal{P}_{MWDS}} \underset{j \in \mathcal{I}_{MWDS}}{\min} \omega_{ij}, \nonumber \\
+&\leq K \tilde{\omega} + (|V|-K) \frac{1}{\epsilon} \tilde{\omega}, \nonumber \\
+&= (1-\frac{1}{\epsilon})K \tilde{\omega} + |V| \frac{1}{\epsilon} \tilde{\omega}, \nonumber \\
+&= |V| \tilde{\omega} - (1-\frac{1}{\epsilon})(|V|-K)\tilde{\omega}, \nonumber \\
+&\leq \epsilon OPT - (1-\frac{1}{\epsilon})(|V|-K)\tilde{\omega}, \nonumber \\
+&=\epsilon OPT - (|V|-K)\tilde{\omega} + (|V|+K) \frac{1}{\epsilon} \tilde{\omega}, \nonumber \\
+&\leq \epsilon OPT - \frac{\epsilon}{|V|}(|V|-K)OPT + \frac{|V|+K}{|V|}OPT, \nonumber \\
+&= \frac{\epsilon |V|+|V|+K}{|V|}OPT.
+\label{eq::proofApproxRatio}
+\end{align}
+\hfill$\mathsmaller{\mathsmaller{\blacksquare}}$

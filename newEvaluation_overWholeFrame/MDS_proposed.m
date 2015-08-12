@@ -171,6 +171,6 @@ function [improveRatio] = MDS_proposed (in_numCams,in_testVersion,in_searchRange
     %improveRatio = (sum(vecBits(1:N))-totalCost)/sum(vecBits(1:N));
     finalTxBits = CalExactCostConsiderOverRange( bestSelection,matCost,pos,bsX,bsY,rho );
     improveRatio = (sum(vecBits(1:N))-finalTxBits)/sum(vecBits(1:N));
-    %saveFileName = ['mat/MDSProposedOutput2_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' in_overRange '.mat'];
-    %save(saveFileName);
+    saveFileName = ['mat/MDSProposedOutput2_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' in_overRange '.mat'];
+    save(saveFileName);
 end

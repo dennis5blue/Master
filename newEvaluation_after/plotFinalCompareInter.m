@@ -15,7 +15,7 @@ for i = 1:length(vecDegree)
     deg = vecDegree(i);
     vecBits = 8.*dlmread([inputPath 'outFiles/' num2str(deg) '/indepByte.txt']);
     
-    [imRatio] = DMCP ('0',num2str(N),num2str(testVersion),num2str(rho),num2str(deg));
+    [imRatio] = DMCP_InterNew ('0',num2str(N),num2str(testVersion),num2str(rho),num2str(deg));
     %matPlot(i,2) = (sum(vecBits)*(1-imRatio))/(8*1024);
     matPlot(i,1) = 100*imRatio;
     

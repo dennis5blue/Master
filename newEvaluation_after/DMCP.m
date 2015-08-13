@@ -1,22 +1,21 @@
-function [improveRatio] = DMCP (in_ifSave,in_numCams,in_testVersion,in_overRange,in_degree)
+function [improveRatio] = DMCP (in_ifSave,in_numCams,in_testVersion,in_searchRange,in_overRange)
     %clc;
     %clear;
     ifSaveFile = str2num(in_ifSave);
     addpath('./Utility');
     inputPath = ['../SourceData/test' in_testVersion '/'];
+    searchRange = str2num(in_searchRange);
 
     % Read files
-    vecBits = 8.*dlmread([inputPath 'outFiles/' in_degree '/indepByte.txt']); % bits
-    matCost = 8.*dlmread([inputPath 'outFiles/' in_degree '/corrMatrix.txt']);
-    pos = dlmread([inputPath 'plotTopo/pos_' in_degree '.txt']);
-    dir = dlmread([inputPath 'plotTopo/dir_' in_degree '.txt']);
+    vecBits = 8.*dlmread([inputPath 'outFiles/rng' in_searchRange '/indepByte.txt']); % bits
+    pos = dlmread([inputPath 'plotTopo/pos.txt']);
+    dir = dlmread([inputPath 'plotTopo/dir.txt']);
+    matCost = 8.*dlmread([inputPath 'outFiles/rng' in_searchRange '/corrMatrix.txt']);
     
     % Parameters settings
     bsX = 0; bsY = 0; % position of base station
     N = str2num(in_numCams); % number of total cameras
     rho = str2num(in_overRange);
-    numHeads = 2;
-    magicNum = 2;
     d_GeoTech = 50;
     
     % Generate cost matrix by camera pos and direction
@@ -46,72 +45,82 @@ function [improveRatio] = DMCP (in_ifSave,in_numCams,in_testVersion,in_overRange
         matCost_GeoTech(i,i) = vecBits(i);
     end
     
-    coverTopo = zeros(N,N); % since all cameras are placed at the same position
+    % Conduct overhearing graph
+    vecAdjGraph = [];
     for i = 1:N
+        m_outEdge = []; % for camera i, out edge i -> j means i can hear j
+        m_inEdge = []; % for camera i, in edge k -> i means k can hear i
         for j = 1:N
-            if sqrt( (pos(i,1)-pos(j,1))^2 + (pos(i,2)-pos(j,2))^2 ) <= sqrt( (pos(i,1)-bsX)^2 + (pos(i,2)-bsY)^2 )
-                coverTopo(i,j) = 1;  % means i covers j
+            if IfCanOverhear( pos(i,1),pos(i,2),pos(j,1),pos(j,2),bsX,bsY,rho ) == 1 % check if i can hear j
+                m_outEdge = [m_outEdge j];
+            end
+            if IfCanOverhear( pos(j,1),pos(j,2),pos(i,1),pos(i,2),bsX,bsY,rho ) == 1 % check if j can hear i
+                m_inEdge = [m_inEdge j];
             end
         end
+        newNode = struct('idx',i,'weight',vecBits(i),'outEdge',m_outEdge,'inEdge',m_inEdge,'ifIFrame',-1,'cost',inf);
+        vecAdjGraph = [vecAdjGraph newNode];
     end
-    constCoverTopo = coverTopo;
     
-    % start DMCP
-    recordCoverTimes = zeros(1,N);
-    metric = zeros(1,N);
-    clusterHeads = zeros(1,numHeads);
-    m_numHeads = 0;
-    
-    % Determine cluster heads
-    while m_numHeads < numHeads
-        m_numHeads = m_numHeads + 1;
-        for i=1:N
-            m_coverdNodesTemp = find(coverTopo(i,:)==1);
-            m_coverdNodes = [];
-            for k=1:length(m_coverdNodesTemp)
-                node_k = m_coverdNodesTemp(k);
-                if recordCoverTimes(node_k) < magicNum
-                    m_coverdNodes = [m_coverdNodes node_k];
+    vecIfDetermined = zeros(1,N);
+    bestSelection = zeros(1,N);
+    countIter = 0;
+    while sum(vecIfDetermined) < N
+        countIter = countIter + 1;
+        %vecIfDetermined
+        vecMetric = zeros(1,N);
+        for cam = 1:N
+            if vecIfDetermined(cam) == 1
+                vecMetric(cam) = inf;
+            elseif vecIfDetermined(cam) == 0
+                vecCanHearMe = vecAdjGraph(cam).inEdge;
+                if length(vecCanHearMe) > 0
+                    metric = CalJointEmtropy(vecCanHearMe,vecBits,matCost_GeoTech)/length(vecCanHearMe);
+                else
+                    metric = inf;
+                end
+                vecMetric(cam) = metric;
+            end
+        end
+        
+        for cam = 1:N
+            if vecIfDetermined(cam) == 0
+                vecTwoHopCams = [];
+                vecCanHearMe = vecAdjGraph(cam).inEdge;
+                for i = vecCanHearMe
+                    if vecIfDetermined(i) == 0
+                        vecTwoHopCams = [vecTwoHopCams i];
+                    end
+                end
+                for oneHopCam = vecCanHearMe
+                    vecCanHearOneHopCam = vecAdjGraph(oneHopCam).inEdge;
+                    for twoHopCam = vecCanHearOneHopCam
+                        if vecIfDetermined(twoHopCam) == 0
+                            if ismember(twoHopCam,vecTwoHopCams) == 0
+                                vecTwoHopCams = [vecTwoHopCams twoHopCam];
+                            end
+                        end
+                    end
+                end
+                
+                vecMetric;
+                % add as I-frame camera if metric is the smaller among 2-hops cameras
+                if vecMetric(cam) == min(vecMetric(vecTwoHopCams))
+                    if bestSelection(cam) == 0
+                        bestSelection(cam) = 1;
+                        vecIfDetermined(cam) = 1;
+                        vecIfDetermined(vecAdjGraph(cam).inEdge) = 1;
+                    end
                 end
             end
-            m_coverdNum = length(m_coverdNodes);
-            if m_coverdNum > 0
-                metric(i) = CalJointEmtropy(m_coverdNodes,vecBits,matCost_GeoTech)/m_coverdNum;
-            else
-                metric(i) = inf;
-            end
         end
-        [m_val m_index] = sort(metric,'ascend');
-        clusterHeads(m_numHeads) = m_index(1);
-        coverTopo(:,m_index(1)) = zeros(N,1);
-        coverTopo(m_index(1),:) = zeros(1,N);
-        % Update recordCoverTimes
-        recordCoverTimes = recordCoverTimes + coverTopo(m_index(1),:);
     end
-
-    % Determine cluster members
-    attachCondition = zeros(2,N); % 1st row is node index, 2nd row is its cluster head
-    for i=1:N
-        node_i = i;
-        vecCost = [];
-        for h=1:numHeads
-            vecCost = [vecCost matCost_GeoTech(node_i,clusterHeads(h))];
-        end
-        [m_val m_index] = sort(vecCost,'ascend');
-        attachCondition(1,node_i) = node_i;
-        attachCondition(2,node_i) = clusterHeads(m_index(1));
-    end
-    attachCondition;
-    clusterHeads;
-    bestSelection = zeros(1,N);
-    for i = 1:length(clusterHeads)
-        bestSelection(clusterHeads(i)) = 1;
-    end
+    %bestSelection
     finalTxBits = CalExactCostConsiderOverRange( bestSelection,matCost,pos,bsX,bsY,rho );
     improveRatio = (sum(vecBits(1:N))-finalTxBits)/sum(vecBits(1:N));
     %reducedIter = (2^N - length(recordLb))/(2^N);
     if ifSaveFile == 1
-        saveFileName = ['mat/DMCP_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' num2str(rho) '.mat'];
+        saveFileName = ['mat/DMCP/DMCP_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' num2str(rho) '.mat'];
         save(saveFileName);
     end
 end

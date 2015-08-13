@@ -53,7 +53,7 @@ function [improveRatio_real] = SAselection (in_ifSave,in_numCams,in_testVersion,
         counter = counter + 1;
         iter = iter + 1;
         if counter > 5*iterLimit
-            iter
+            iter;
         end
         vecRecordProb = [ vecRecordProb probChange ];
         if ifRecord == 1

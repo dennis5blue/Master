@@ -1,15 +1,14 @@
-function [improveRatio countIter] = DMCP_InterNew (in_ifSave,in_numCams,in_testVersion,in_overRange,in_degree)
+function[totalCost bestSelection] = DMCP_MultiSlots (in_numCams,in_testVersion,in_whichSlot,in_searchRng,in_overRange)
     %clc;
     %clear;
-    ifSaveFile = str2num(in_ifSave);
     addpath('./Utility');
     inputPath = ['../SourceData/test' in_testVersion '/'];
 
     % Read files
-    vecBits = 8.*dlmread([inputPath 'outFiles/' in_degree '/indepByte.txt']); % bits
-    matCost = 8.*dlmread([inputPath 'outFiles/' in_degree '/corrMatrix.txt']);
-    pos = dlmread([inputPath 'plotTopo/pos_' in_degree '.txt']);
-    dir = dlmread([inputPath 'plotTopo/dir_' in_degree '.txt']);
+    vecBits = 8.*dlmread([inputPath 'outFiles/rng' in_searchRng '/slot' in_whichSlot '/indepByte.txt']); % bits
+    pos = dlmread([inputPath 'plotTopo/pos.txt']);
+    dir = dlmread([inputPath 'plotTopo/dir.txt']);
+    matCost = 8.*dlmread([inputPath 'outFiles/rng' in_searchRng '/slot' in_whichSlot '/corrMatrix.txt']);
     
     % Parameters settings
     bsX = 0; bsY = 0; % position of base station
@@ -115,11 +114,6 @@ function [improveRatio countIter] = DMCP_InterNew (in_ifSave,in_numCams,in_testV
         end
     end
     %bestSelection
-    finalTxBits = CalExactCostConsiderOverRange( bestSelection,matCost,pos,bsX,bsY,rho );
-    improveRatio = (sum(vecBits(1:N))-finalTxBits)/sum(vecBits(1:N));
-    %reducedIter = (2^N - length(recordLb))/(2^N);
-    if ifSaveFile == 1
-        saveFileName = ['mat/DMCP/DMCP_test' in_testVersion '_cam' num2str(N) '_rng' in_searchRange '_rho' num2str(rho) '.mat'];
-        save(saveFileName);
-    end
+    totalCost = CalExactCostConsiderOverRange( bestSelection,matCost,pos,bsX,bsY,rho );
+    improveRatio = (sum(vecBits(1:N))-totalCost)/sum(vecBits(1:N));
 end

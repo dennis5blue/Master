@@ -1,4 +1,4 @@
-function [improveRatio] = BBselection_betterPrune_Inter (in_ifSave,in_numCams,in_testVersion,in_overRange,in_degree)
+function [improveRatio countIter] = BBselection_betterPrune_Inter (in_ifSave,in_numCams,in_testVersion,in_overRange,in_degree)
     %clc;
     %clear;
     ifSaveFile = str2num(in_ifSave);
@@ -85,7 +85,7 @@ function [improveRatio] = BBselection_betterPrune_Inter (in_ifSave,in_numCams,in
         recordLb = [recordLb BBnode.lb];
         recordNumInQueue = [recordNumInQueue length(BBqueue)];
     end
-
+    countIter = length(recordLb);
     bestSelection;
     %finalTxBits = CalExactCost(bestSelection,matCost)
     finalTxBits = CalExactCostConsiderOverRange( bestSelection,matCost,pos,bsX,bsY,rho );

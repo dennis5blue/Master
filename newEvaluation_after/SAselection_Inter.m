@@ -4,6 +4,8 @@ function [improveRatio_real improveRatio_geoTech] = SAselection_Inter (in_ifSave
     ifSaveFile = str2num(in_ifSave);
     addpath('./Utility');
     inputPath = ['../SourceData/test' in_testVersion '/'];
+    improveRatio_real = 0;
+    improveRatio_geoTech = 0;
 
     % Read files
     vecBits = 8.*dlmread([inputPath 'outFiles/' in_degree '/indepByte.txt']); % bits

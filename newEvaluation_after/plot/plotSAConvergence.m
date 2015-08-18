@@ -5,6 +5,9 @@ addpath('../Utility');
 inputFileName = ['../mat/SA/SAselectionGuided_test10_cam30_rng512_rho5_iter1000.mat'];
 load(inputFileName);
 plotRealGuide = vecRecordImprovement;
+inputFileName = ['../mat/SA/SAselectionGuidedGeoTemp_test10_cam30_rng512_rho5_iter500.mat'];
+load(inputFileName);
+plotRealGuideGeo = vecRecordImprovement;
 inputFileName = ['../mat/SA/SAselectionNoGuided_test10_cam30_rng512_rho5_iter1000_good.mat'];
 load(inputFileName);
 plotRealNoGuide = vecRecordImprovement;
@@ -14,7 +17,9 @@ figure(1);
 plot(1:length(plotRealNoGuide),plotRealNoGuide,'-','LineWidth',2,'DisplayName', ...
     'No Guided local search','Color','r','MarkerSize',10); hold on;
 plot(1:length(plotRealGuide),plotRealGuide,'-','LineWidth',2,'DisplayName', ...
-    'Guided local search','Color','b','MarkerSize',10); hold on;
+    'Guided local search (log)','Color','b','MarkerSize',10); hold on;
+plot(1:length(plotRealGuideGeo),plotRealGuideGeo,'-','LineWidth',2,'DisplayName', ...
+    'Guided local search (geometric)','Color','m','MarkerSize',10); hold on;
 
 %set (gca, 'XTick',[5:1:9]);
 %xt = get(gca, 'XTick');

@@ -6,7 +6,7 @@ addpath('./Utility');
 inputPath = ['../SourceData/test' num2str(testVersion) '/'];
 vecDegree = [40 30 20 10];
 numAlgs = 4;
-SAIter = 300;
+SAIter = 300; %300
 bsX = 0; bsY = 0; % position of base station
 N = 8; % number of total cameras
 rho = 1;
@@ -67,7 +67,7 @@ vecDegree = [45 40 35 30 25 20 15 10 5];
 bsX = 0; bsY = 0; % position of base station
 N = 8; % number of total cameras
 rho = 1;
-SAIter = 300;
+SAIter = 10;
 numAverage = 10;
 
 vecDMCPElTime = [];
@@ -85,8 +85,7 @@ for i = 1:length(vecDegree)
         eltimeDMCP = eltimeDMCP + toc();
     end
     vecDMCPElTime = [vecDMCPElTime eltimeDMCP];
-    
-    %{
+      
     eltimeSA = 0;
     for ttt = 1:numAverage
         tic();
@@ -94,7 +93,6 @@ for i = 1:length(vecDegree)
         eltimeSA = eltimeSA + toc();
     end
     vecSAElTime = [vecSAElTime eltimeSA];
-    %}
     
     eltimeMDS = 0;
     for ttt = 1:numAverage
@@ -118,8 +116,8 @@ plot(vecDegree,vecBBElTime,'*-','LineWidth',2,'DisplayName', ...
     'Proposed BB','Color',[0.8 0 0.1],'MarkerSize',10); hold on;
 plot(vecDegree,vecMDSElTime,'^-','LineWidth',2,'DisplayName', ...
     'Graph approximation','Color',[1 0.9 0],'MarkerSize',10);
-%plot(vecDegree,vecSAElTime,'x-','LineWidth',2,'DisplayName', ...
-%    'Proposed SA','Color','c','MarkerSize',10);
+plot(vecDegree,vecSAElTime,'x-','LineWidth',2,'DisplayName', ...
+    'Proposed SA','Color','c','MarkerSize',10);
 plot(vecDegree,vecDMCPElTime,'o-','LineWidth',2,'DisplayName', ...
     'DMCP','Color',[0 0 0.8],'MarkerSize',10);
 
